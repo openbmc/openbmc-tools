@@ -3,6 +3,7 @@
 import argparse
 import requests
 
+
 class BMC:
     def __init__(self, server):
         self.url = "https://{0}/".format(server)
@@ -11,7 +12,7 @@ class BMC:
 
     def login(self):
         r = self.session.post(self.url + 'login',
-                              json={ 'data': [ 'root', '0penBmc']},
+                              json={'data': ['root', '0penBmc']},
                               verify=False)
         j = r.json()
         if j['status'] != 'ok':
