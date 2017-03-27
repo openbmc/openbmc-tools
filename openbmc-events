@@ -50,6 +50,7 @@ def do_view_event(args):
     s = BMC(server=args.server)
     print(s.get_event(args.event))
 
+
 def do_get_esel(args):
     s = BMC(server=args.server)
     e = s.get_event(args.event)
