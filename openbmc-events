@@ -16,6 +16,19 @@ class BMC:
         if j['status'] != 'ok':
             raise Exception("Failed to login: \n" + r.text)
 
+    def list_events(self):
+        r = self.session.get(self.url + 'xyz/openbmc_project/logging/entry/',
+                             verify=False)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to query entries: \n" + r.text)
+
+        events = j['data']
+        events.sort(key=lambda x: int(x.split("/")[-1]))
+
+        return events
 
 
 s = BMC(server="w50.aus.stglabs.ibm.com")
+for e in s.list_events():
+    print(e)
