@@ -1,0 +1,21 @@
+#!/bin/env python
+
+import requests
+
+class BMC:
+    def __init__(self, server):
+        self.url = "https://{0}/".format(server)
+        self.session = requests.Session()
+        self.login()
+
+    def login(self):
+        r = self.session.post(self.url + 'login',
+                              json={ 'data': [ 'root', '0penBmc']},
+                              verify=False)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to login: \n" + r.text)
+
+
+
+s = BMC(server="w50.aus.stglabs.ibm.com")
