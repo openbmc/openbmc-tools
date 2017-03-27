@@ -62,6 +62,11 @@ def do_get_esel(args):
         if tag != 'ESEL':
             continue
         data = "=".join(data)
+        if args.binary:
+            data = data.split(" ")
+            if '' == data[-1]:
+                data.pop()
+            data = "".join(map(lambda x: chr(int(x, 16)), data))
         print(data)
 
 
@@ -79,6 +84,8 @@ view_event.set_defaults(func=do_view_event)
 get_esel = subparsers.add_parser(
     'get-esel', help='Extract OpenPOWER eSEL data for an individual event')
 get_esel.add_argument('event', help='The event to get eSEL from')
+get_esel.add_argument('--binary', help='Print event in raw binary',
+                      action='store_const', const=True)
 get_esel.set_defaults(func=do_get_esel)
 
 args = parser.parse_args()
