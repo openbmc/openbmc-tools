@@ -29,11 +29,26 @@ class BMC:
 
         return events
 
+    def get_event(self, event):
+        r = self.session.get(self.url + event, verify=False)
+
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to get event " + event + ": \n" + r.text)
+
+        return j['data']
+
 
 def do_list_events(args):
     s = BMC(server=args.server)
     for e in s.list_events():
         print(e)
+
+
+def do_view_event(args):
+    s = BMC(server=args.server)
+    print(s.get_event(args.event))
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--server', help='hostname or IP of BMC', type=str,
@@ -42,6 +57,10 @@ parser.add_argument('--server', help='hostname or IP of BMC', type=str,
 subparsers = parser.add_subparsers()
 list_events = subparsers.add_parser('list', help='List all events on BMC')
 list_events.set_defaults(func=do_list_events)
+view_event = subparsers.add_parser(
+    'view', help='View all data for an individual event')
+view_event.add_argument('event', help='The event to view')
+view_event.set_defaults(func=do_view_event)
 
 args = parser.parse_args()
 
