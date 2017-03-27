@@ -57,7 +57,8 @@ def do_get_esel(args):
        e['Message'] != 'org.open_power.Error.Host.Event.Event':
         raise Exception("Event is not from Host: " + e['Message'])
     for d in e['AdditionalData']:
-        (tag,*data) = d.split("=")
+        data = d.split("=")
+        tag = data.pop(0)
         if tag != 'ESEL':
             continue
         data = "=".join(data)
