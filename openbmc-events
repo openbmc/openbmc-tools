@@ -1,5 +1,6 @@
 #!/bin/env python
 
+import argparse
 import requests
 
 class BMC:
@@ -29,6 +30,22 @@ class BMC:
         return events
 
 
-s = BMC(server="w50.aus.stglabs.ibm.com")
-for e in s.list_events():
-    print(e)
+def do_list_events(args):
+    s = BMC(server=args.server)
+    for e in s.list_events():
+        print(e)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--server', help='hostname or IP of BMC', type=str,
+                    required=True)
+
+subparsers = parser.add_subparsers()
+list_events = subparsers.add_parser('list', help='List all events on BMC')
+list_events.set_defaults(func=do_list_events)
+
+args = parser.parse_args()
+
+if 'func' in args:
+    args.func(args)
+else:
+    parser.print_help()
