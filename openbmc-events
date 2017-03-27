@@ -50,6 +50,19 @@ def do_view_event(args):
     s = BMC(server=args.server)
     print(s.get_event(args.event))
 
+def do_get_esel(args):
+    s = BMC(server=args.server)
+    e = s.get_event(args.event)
+    if e['Message'] != 'org.open_power.Error.Host.Event' and\
+       e['Message'] != 'org.open_power.Error.Host.Event.Event':
+        raise Exception("Event is not from Host: " + e['Message'])
+    for d in e['AdditionalData']:
+        (tag,*data) = d.split("=")
+        if tag != 'ESEL':
+            continue
+        data = "=".join(data)
+        print(data)
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--server', help='hostname or IP of BMC', type=str,
@@ -62,6 +75,10 @@ view_event = subparsers.add_parser(
     'view', help='View all data for an individual event')
 view_event.add_argument('event', help='The event to view')
 view_event.set_defaults(func=do_view_event)
+get_esel = subparsers.add_parser(
+    'get-esel', help='Extract OpenPOWER eSEL data for an individual event')
+get_esel.add_argument('event', help='The event to get eSEL from')
+get_esel.set_defaults(func=do_get_esel)
 
 args = parser.parse_args()
 
