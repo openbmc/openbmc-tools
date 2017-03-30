@@ -2,7 +2,7 @@
 
 set timeout 300
 
-spawn ssh -p2200 $argv
+spawn ssh -p2200 {*}[lrange $argv 0 end]
 
 expect {
 	-ex "Petitboot"	{ exit }
