@@ -41,6 +41,12 @@ class BMC:
             raise Exception("Failed to get event " + event + ": \n" + r.text)
 
         return j['data']
+    
+    def clear_event(self,event):
+        r = self.session.delete(self.url + event)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to clear event " + event + ": \n" + r.text)
 
 
 def do_list_events(args):
@@ -53,6 +59,9 @@ def do_view_event(args):
     s = BMC(server=args.server)
     print(s.get_event(args.event))
 
+def do_clear_event(args):
+    s = BMC(server=args.server)
+    s.clear_event(args.event)
 
 def do_get_esel(args):
     s = BMC(server=args.server)
@@ -79,18 +88,26 @@ parser.add_argument('--server', help='hostname or IP of BMC', type=str,
                     required=True)
 
 subparsers = parser.add_subparsers()
+
 list_events = subparsers.add_parser('list', help='List all events on BMC')
 list_events.set_defaults(func=do_list_events)
+
 view_event = subparsers.add_parser(
     'view', help='View all data for an individual event')
 view_event.add_argument('event', help='The event to view')
 view_event.set_defaults(func=do_view_event)
+
 get_esel = subparsers.add_parser(
     'get-esel', help='Extract OpenPOWER eSEL data for an individual event')
 get_esel.add_argument('event', help='The event to get eSEL from')
 get_esel.add_argument('--binary', help='Print event in raw binary',
                       action='store_const', const=True)
 get_esel.set_defaults(func=do_get_esel)
+
+clear_event = subparsers.add_parser(
+    'clear', help="Clear individual event")
+clear_event.add_argument('event', help="The event to clear")
+clear_event.set_defaults(func=do_clear_event)
 
 args = parser.parse_args()
 
