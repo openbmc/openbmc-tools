@@ -49,6 +49,36 @@ class BMC:
         if j['status'] != 'ok':
             raise Exception("Failed to clear event " + event + ": \n" + r.text)
 
+    def list_dumps(self):
+        r = self.session.get(self.url + 'xyz/openbmc_project/dump/entry/',
+                             verify=False)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to list dumps: \n" + r.text)
+
+        dumps = j['data']
+        dumps.sort(key=lambda x: int(x.split("/")[-1]))
+
+        return dumps
+    
+    def create_dump(self):
+        r = self.session.post(self.url + 'xyz/openbmc_project/dump/action/CreateDump')
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to create dump: \n" + r.text)
+        
+    def get_dump(self,dump):
+        r = self.session.get(self.url + dump,
+                             verify=False)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to get dump " + event + ": \n" + r.text)
+
+    def clear_dump(self,dump):
+        r = self.session.delete(self.url + dump)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to clear dump " + dump + ": \n" + r.text)        
 
 def do_list_events(args):
     s = BMC(server=args.server)
@@ -64,6 +94,23 @@ def do_view_event(args):
 def do_clear_event(args):
     s = BMC(server=args.server)
     s.clear_event(args.event)
+
+def do_list_dumps(args):
+    s = BMC(server=args.server)
+    for e in s.list_dumps():
+        print(e)
+
+def do_create_dump(args):
+    s = BMC(server=args.server)
+    s.create_dump()
+    
+def do_get_dump(args):
+    s = BMC(server=args.server)
+    s.get_dump(args.dump)
+
+def do_clear_dump(args):
+    s = BMC(server=args.server)
+    s.clear_dump(args.dump)
 
 def do_get_esel(args):
     s = BMC(server=args.server)
@@ -110,6 +157,24 @@ clear_event = subparsers.add_parser(
     'clear', help="Clear individual event")
 clear_event.add_argument('event', help="The event to clear")
 clear_event.set_defaults(func=do_clear_event)
+
+list_dumps = subparsers.add_parser(
+    'list-dumps', help="List all dumps")
+list_dumps.set_defaults(func=do_list_dumps)
+
+create_dump = subparsers.add_parser(
+    'create-dump', help="Create a dump")
+create_dump.set_defaults(func=do_create_dump)
+
+get_dump = subparsers.add_parser(
+    'get-dump', help="Get a dump")
+get_dump.add_argument('dump', help="The dump to get")
+get_dump.set_defaults(func=do_get_dump)
+
+clear_dump = subparsers.add_parser(
+    'clear-dump', help="Clear individual dump")
+clear_dump.add_argument('dump', help="The dump to clear")
+clear_dump.set_defaults(func=do_clear_dump)
 
 args = parser.parse_args()
 
