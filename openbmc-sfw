@@ -58,7 +58,7 @@ class BMC:
 
     def activate_image(self, image_id):
         r = self.session.put(self.url + "/xyz/openbmc_project/software/" + image_id + "/attr/RequestedActivation", 
-                             data="xyz.openbmc_project.Software.Activation.RequestedActivations.Active",
+                             json={'data': 'xyz.openbmc_project.Software.Activation.RequestedActivations.Active'},
                              verify=False)
         
         j = r.json()
