@@ -1,0 +1,96 @@
+#!/bin/env python
+
+import argparse
+import requests
+import json
+
+import urllib3
+import _sysconfigdata
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+class BMC:
+    def __init__(self, server):
+        self.url = "https://{0}/".format(server)
+        self.session = requests.Session()
+        self.login()
+
+    def login(self):
+        r = self.session.post(self.url + 'login',
+                              json={'data': ['root', '0penBmc']},
+                              verify=False)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to login: \n" + r.text)
+
+    def list_sfw(self):
+        r = self.session.get(self.url + 'xyz/openbmc_project/software/',
+                             verify=False)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to query entries: \n" + r.text)
+
+        events = j['data']
+
+        return events
+
+    def get_image(self, image):
+        r = self.session.get(self.url + image, verify=False)
+
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to get event " + image + ": \n" + r.text)
+
+        return j['data']
+
+    def upload_image(self, image):
+        
+        data = open(image,'rb').read()
+        r = self.session.post(self.url + "/upload/image",
+                              data=data,
+                              headers={'Content-Type': 'application/octet-stream'},
+                              verify=False)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to get event " + image + ": \n" + r.text)
+
+        return j['data']
+
+
+def do_list_sfw(args):
+    s = BMC(server=args.server)
+    for e in s.list_sfw():
+        info = s.get_image(e)
+        print(e)
+        print json.dumps(info, indent=4)
+        
+def do_view_image(args):
+    s = BMC(server=args.server)
+    print json.dumps(s.get_image(args.image), indent=4)
+
+def do_upload_image(args):
+    s = BMC(server=args.server)
+    s.upload_image(args.image)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--server', help='hostname or IP of BMC', type=str,
+                    required=True)
+
+subparsers = parser.add_subparsers()
+list_events = subparsers.add_parser('list', help='List all software images on BMC')
+list_events.set_defaults(func=do_list_sfw)
+
+image_view = subparsers.add_parser('view', help='View info of input image')
+image_view.add_argument('image', help='The image to analyze')
+image_view.set_defaults(func=do_view_image)
+
+image_upload = subparsers.add_parser('upload', help='Upload input image')
+image_upload.add_argument('image', help='The image to upload')
+image_upload.set_defaults(func=do_upload_image)
+
+args = parser.parse_args()
+
+if 'func' in args:
+    args.func(args)
+else:
+    parser.print_help()
