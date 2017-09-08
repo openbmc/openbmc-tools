@@ -28,7 +28,7 @@ class BMC:
                              verify=False)
         j = r.json()
         if j['status'] != 'ok':
-            raise Exception("Failed to query entries: \n" + r.text)
+            raise Exception("Failed to query software: \n" + r.text)
 
         events = j['data']
 
@@ -39,7 +39,7 @@ class BMC:
 
         j = r.json()
         if j['status'] != 'ok':
-            raise Exception("Failed to get event " + image + ": \n" + r.text)
+            raise Exception("Failed to get image " + image + ": \n" + r.text)
 
         return j['data']
 
@@ -53,6 +53,17 @@ class BMC:
         j = r.json()
         if j['status'] != 'ok':
             raise Exception("Failed to get event " + image + ": \n" + r.text)
+
+        return j['data']
+
+    def activate_image(self, image_id):
+        r = self.session.put(self.url + "/xyz/openbmc_project/software/" + image_id + "/attr/RequestedActivation", 
+                             data="xyz.openbmc_project.Software.Activation.RequestedActivations.Active",
+                             verify=False)
+        
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to activate image " + image_id + ": \n" + r.text)
 
         return j['data']
 
@@ -72,6 +83,10 @@ def do_upload_image(args):
     s = BMC(server=args.server)
     s.upload_image(args.image)
 
+def do_activate_image(args):
+    s = BMC(server=args.server)
+    s.activate_image(args.image_id)
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--server', help='hostname or IP of BMC', type=str,
                     required=True)
@@ -87,6 +102,10 @@ image_view.set_defaults(func=do_view_image)
 image_upload = subparsers.add_parser('upload', help='Upload input image')
 image_upload.add_argument('image', help='The image to upload')
 image_upload.set_defaults(func=do_upload_image)
+
+image_activate = subparsers.add_parser('activate', help='Activate input image id')
+image_activate.add_argument('image_id', help='The image id to activate')
+image_activate.set_defaults(func=do_activate_image)
 
 args = parser.parse_args()
 
