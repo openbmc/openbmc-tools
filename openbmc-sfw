@@ -7,7 +7,7 @@ import time
 import json
 
 import urllib3
-import _sysconfigdata
+#import _sysconfigdata
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -184,16 +184,9 @@ image_update_auto = subparsers.add_parser('update_auto', help='Upload and '
 image_update_auto.add_argument('image', help='The image to update to')
 image_update_auto.add_argument(
     '--reboot',
-    dest='reboot',
     action='store_true',
     default=False,
     help='Set if the BMC should reboot after the update')
-image_update_auto.add_argument(
-    '--no-reboot',
-    dest='reboot',
-    action='store_false',
-    default=False,
-    help='Setif the BMC should not reboot after the update')
 image_update_auto.set_defaults(func=do_update_auto)
 
 args = parser.parse_args()
