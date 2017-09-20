@@ -113,7 +113,7 @@ class BMC:
             # Look for our the image with the given version in software
             for path in software:
                 image = self.get_image(path)
-                if image_version == image['Version']:
+                if 'Version' in image and image_version == image['Version']:
                     return path.split('/')[-1]
             time.sleep(15)
         return False
