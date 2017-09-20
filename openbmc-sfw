@@ -138,9 +138,15 @@ class BMC:
 def do_list_sfw(args):
     s = BMC(server=args.server)
     for e in s.list_sfw():
+        if (e == '/xyz/openbmc_project/software/active'):
+            continue
         info = s.get_image(e)
-        print(e)
-        print json.dumps(info, indent=4)
+        if (((info['Purpose'] == 'xyz.openbmc_project.Software.Version.VersionPurpose.BMC') and 
+             (args.bmc or not args.host)) or \
+           ((info['Purpose'] == 'xyz.openbmc_project.Software.Version.VersionPurpose.Host') and
+            (args.host or not args.bmc))):
+            print(e)
+            print json.dumps(info, indent=4)
 
 def do_view_image(args):
     s = BMC(server=args.server)
@@ -165,6 +171,16 @@ parser.add_argument('--server', help='hostname or IP of BMC', type=str,
 subparsers = parser.add_subparsers()
 list_events = subparsers.add_parser('list', help='List all software images on BMC')
 list_events.set_defaults(func=do_list_sfw)
+list_events.add_argument(
+    '--bmc',
+    action='store_true',
+    default=False,
+    help='Set if you want to see BMC images')
+list_events.add_argument(
+    '--host',
+    action='store_true',
+    default=False,
+    help='Set if you want to see Host images')
 
 image_view = subparsers.add_parser('view', help='View info of input image')
 image_view.add_argument('image', help='The image to analyze')
