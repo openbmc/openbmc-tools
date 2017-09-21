@@ -69,6 +69,18 @@ class BMC:
 
         return j['data']
 
+    def delete_image(self, image_id):
+        r = self.session.post(self.url + "/xyz/openbmc_project/software/" + image_id + "/action/delete",
+                            headers={'Content-Type': 'application/json'},
+                            data='{"data":[]}',
+                            verify=False)
+
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to delete image " + image_id + ": \n" + r.text)
+
+        return j['data']
+
     def update_auto(self, image, reboot):
         image_version = self.__get_image_version(image)
         self.upload_image(image)
@@ -164,6 +176,10 @@ def do_update_auto(args):
     s = BMC(server=args.server)
     s.update_auto(args.image, args.reboot)
 
+def do_delete_image(args):
+    s = BMC(server=args.server)
+    s.delete_image(args.image_id)
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--server', help='hostname or IP of BMC', type=str,
                     required=True)
@@ -204,6 +220,10 @@ image_update_auto.add_argument(
     default=False,
     help='Set if the BMC should reboot after the update')
 image_update_auto.set_defaults(func=do_update_auto)
+
+image_delete = subparsers.add_parser('delete', help='Delete input image id')
+image_delete.add_argument('image_id', help='The image id to delete')
+image_delete.set_defaults(func=do_delete_image)
 
 args = parser.parse_args()
 
