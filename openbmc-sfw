@@ -69,6 +69,17 @@ class BMC:
 
         return j['data']
 
+    def set_priority(self, image_id, priority):
+        r = self.session.put(self.url + "/xyz/openbmc_project/software/" + image_id + "/attr/Priority",
+                             json={'data': int(priority)},
+                             verify=False)
+
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to set priority of image " + image_id + ": \n" + r.text)
+
+        return j['data']
+
     def delete_image(self, image_id):
         r = self.session.post(self.url + "/xyz/openbmc_project/software/" + image_id + "/action/delete",
                             headers={'Content-Type': 'application/json'},
@@ -180,6 +191,10 @@ def do_delete_image(args):
     s = BMC(server=args.server)
     s.delete_image(args.image_id)
 
+def do_set_priority(args):
+    s = BMC(server=args.server)
+    s.set_priority(args.image_id,args.priority)
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--server', help='hostname or IP of BMC', type=str,
                     required=True)
@@ -224,6 +239,11 @@ image_update_auto.set_defaults(func=do_update_auto)
 image_delete = subparsers.add_parser('delete', help='Delete input image id')
 image_delete.add_argument('image_id', help='The image id to delete')
 image_delete.set_defaults(func=do_delete_image)
+
+image_priority = subparsers.add_parser('priority', help='Set priority of input image')
+image_priority.add_argument('image_id', help='The image id to set priority of')
+image_priority.add_argument('priority', help='The priority to set')
+image_priority.set_defaults(func=do_set_priority)
 
 args = parser.parse_args()
 
