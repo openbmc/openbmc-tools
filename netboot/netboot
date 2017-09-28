@@ -72,9 +72,10 @@ def main():
                 i, m, d = conn.expect_or_raise([
                     r"Bytes transferred = \d+ \([0-9a-f]+ hex\)",
                     "Not retrying...",
+                    r"## Warning:",
                     r"[*]{3} ERROR:",
                 ])
-                if i == 1 or i == 2:
+                if i > 0:
                     print("Error detected, exiting", file=sys.stderr)
                     return
 
