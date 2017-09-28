@@ -32,7 +32,8 @@ def init_telnet(host, port=0, timeout=None):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("machine")
+    parser.add_argument("machine", nargs="?")
+    parser.add_argument("-l", "--list-machines", action="store_true")
     args = parser.parse_args()
 
     confbase = BaseDirectory.save_config_path("obmc-scripts")
@@ -42,6 +43,14 @@ def main():
         sys.exit(1)
 
     conf = toml.load(conffile)
+    if args.list_machines:
+        print("Machines:", *list(sorted(conf.keys())), sep="\n\t")
+        sys.exit(0)
+
+    if not args.machine:
+        print("Machine name required")
+        sys.exit(1)
+
     mach = conf[args.machine]
     console = mach["console"]
     conn = init_telnet(console["host"], console["port"])
