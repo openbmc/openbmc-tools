@@ -5,6 +5,7 @@ import requests
 import json
 
 import urllib3
+from warnings import catch_warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -26,6 +27,9 @@ class BMC:
         r = self.session.get(self.url + 'xyz/openbmc_project/logging/entry/',
                              verify=False)
         j = r.json()
+        if j['message'] == '404 Not Found':
+            print "No error logs on system\n"
+            return
         if j['status'] != 'ok':
             raise Exception("Failed to query entries: \n" + r.text)
 
@@ -82,8 +86,12 @@ class BMC:
 
 def do_list_events(args):
     s = BMC(server=args.server)
-    for e in s.list_events():
-        print(e)
+    try:
+        for e in s.list_events():
+            print(e)
+    except:
+        # ignore if we get nothing back
+        return;
 
 
 def do_view_event(args):
