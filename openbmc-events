@@ -88,7 +88,6 @@ def do_list_events(args):
 
 def do_view_event(args):
     s = BMC(server=args.server)
-    print(s.get_event(args.event))
     print json.dumps(s.get_event(args.event), indent=4)
 
 def do_clear_event(args):
