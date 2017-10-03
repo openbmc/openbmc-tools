@@ -53,6 +53,15 @@ class BMC:
         if j['status'] != 'ok':
             raise Exception("Failed to clear event " + event + ": \n" + r.text)
 
+    def clear_all_events(self):
+        r = self.session.post(self.url + 'xyz/openbmc_project/logging/action/deleteall',
+                             headers={'Content-Type': 'application/json'},
+                             data='{"data":[]}',
+                             verify=False)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to clear all events\n" + r.text)
+
     def list_dumps(self):
         r = self.session.get(self.url + 'xyz/openbmc_project/dump/entry/',
                              verify=False)
@@ -101,6 +110,10 @@ def do_view_event(args):
 def do_clear_event(args):
     s = BMC(server=args.server)
     s.clear_event(args.event)
+
+def do_clear_all_events(args):
+    s = BMC(server=args.server)
+    s.clear_all_events()
 
 def do_list_dumps(args):
     s = BMC(server=args.server)
@@ -164,6 +177,10 @@ clear_event = subparsers.add_parser(
     'clear', help="Clear individual event")
 clear_event.add_argument('event', help="The event to clear")
 clear_event.set_defaults(func=do_clear_event)
+
+clear_all_events = subparsers.add_parser(
+    'clear-all', help="Clear all event")
+clear_all_events.set_defaults(func=do_clear_all_events)
 
 list_dumps = subparsers.add_parser(
     'list-dumps', help="List all dumps")
