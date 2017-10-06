@@ -34,6 +34,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("machine", nargs="?")
     parser.add_argument("-l", "--list-machines", action="store_true")
+    parser.add_argument("-i", "--initramfs", action="store_true")
     args = parser.parse_args()
 
     confbase = BaseDirectory.save_config_path("obmc-scripts")
@@ -83,19 +84,24 @@ def main():
                     "Not retrying...",
                     r"## Warning:",
                     r"[*]{3} ERROR:",
+                    "Abort",
                 ])
                 if i > 0:
                     print("Error detected, exiting", file=sys.stderr)
                     return
 
-        conn.encode_and_write("printenv set_bootargs")
-        i, m, d = conn.expect_or_raise([
-            "set_bootargs=.*$",
-            "## Error: \"set_bootargs\" not defined",
-        ], 1)
-        if i == 0:
-            conn.encode_and_write("run set_bootargs")
+        if args.initramfs:
+            conn.encode_and_write("setenv bootargs console=ttyS4,115200n root=/dev/ram rw earlyprintk debug")
             conn.read_until(b"ast#")
+        else:
+            conn.encode_and_write("printenv set_bootargs")
+            i, m, d = conn.expect_or_raise([
+                "set_bootargs=.*$",
+                "## Error: \"set_bootargs\" not defined",
+            ], 1)
+            if i == 0:
+                conn.encode_and_write("run set_bootargs")
+                conn.read_until(b"ast#")
 
         conn.encode_and_write("bootm")
         conn.read_until(b"Starting kernel")
