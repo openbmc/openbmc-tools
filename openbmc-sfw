@@ -6,9 +6,6 @@ import tarfile
 import time
 import json
 
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 class BMC:
     def __init__(self, server):
         self.url = "https://{0}/".format(server)
@@ -198,6 +195,8 @@ def do_set_priority(args):
 parser = argparse.ArgumentParser()
 parser.add_argument('--server', help='hostname or IP of BMC', type=str,
                     required=True)
+parser.add_argument('--suppress-insecure-warnings', '-I', action="store_true",
+                    default=False)
 
 subparsers = parser.add_subparsers()
 list_events = subparsers.add_parser('list', help='List all software images on BMC')
@@ -246,6 +245,10 @@ image_priority.add_argument('priority', help='The priority to set')
 image_priority.set_defaults(func=do_set_priority)
 
 args = parser.parse_args()
+
+if args.suppress_insecure_warnings:
+    import urllib3
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 if 'func' in args:
     args.func(args)
