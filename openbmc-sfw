@@ -247,8 +247,8 @@ image_priority.set_defaults(func=do_set_priority)
 args = parser.parse_args()
 
 if args.suppress_insecure_warnings:
-    import urllib3
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 if 'func' in args:
     args.func(args)
