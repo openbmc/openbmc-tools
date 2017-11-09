@@ -30,7 +30,7 @@ class BMC:
             raise Exception("Failed to query sensors: \n" + r.text)
 
         sensors = j['data']
-        #sensors.sort(key=lambda x: int(x.split("/")[-1]))
+        sensors = sorted(sensors,key=lambda x: x.split("/")[-1])
 
         return sensors
 
@@ -41,7 +41,7 @@ class BMC:
         if j['status'] != 'ok':
             raise Exception("Failed to get sensor " + sensor + ": \n" + r.text)
 
-        return j['data']      
+        return j['data']
 
 def do_list_all(args):
     s = BMC(server=args.server)
