@@ -34,6 +34,18 @@ class BMC:
 
         return sensors
 
+    def occ_all(self):
+        r = self.session.get(self.url + 'org/open_power/control/enumerate',
+                             verify=False)
+        j = r.json()
+        if j['status'] != 'ok':
+            raise Exception("Failed to query occ sensors: \n" + r.text)
+
+        sensors = j['data']
+        #sensors = sorted(sensors,key=lambda x: x.split("/")[-1])
+
+        return sensors
+
     def get_sensor(self, sensor):
         r = self.session.get(self.url + sensor, verify=False)
 
@@ -51,6 +63,11 @@ def do_list_all(args):
             print(e + ' : '+ str(value["Value"]))
         else:
             print(e)
+
+def do_occ_all(args):
+    s = BMC(server=args.server)
+    print json.dumps(s.occ_all(), indent=4)
+
 
 def do_view_sensor(args):
     s = BMC(server=args.server)
@@ -75,6 +92,10 @@ view_sensor = subparsers.add_parser(
     'view', help='View all data for an individual sensor')
 view_sensor.add_argument('sensor', help='The sensor to view')
 view_sensor.set_defaults(func=do_view_sensor)
+
+# occ has some 'special' sensors not in the sensor namespace
+occ_sensors = subparsers.add_parser('occ', help='List the special occ sensors')
+occ_sensors.set_defaults(func=do_occ_all)
 
 args = parser.parse_args()
 
