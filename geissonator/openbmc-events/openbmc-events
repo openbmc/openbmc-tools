@@ -75,7 +75,10 @@ class BMC:
         return dumps
     
     def create_dump(self):
-        r = self.session.post(self.url + 'xyz/openbmc_project/dump/action/CreateDump')
+        r = self.session.post(self.url + 'xyz/openbmc_project/dump/action/CreateDump',
+                              headers={'Content-Type': 'application/json'},
+                              data='{"data":[]}',
+                              verify=False)
         j = r.json()
         if j['status'] != 'ok':
             raise Exception("Failed to create dump: \n" + r.text)
