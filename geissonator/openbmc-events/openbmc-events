@@ -66,6 +66,9 @@ class BMC:
         r = self.session.get(self.url + 'xyz/openbmc_project/dump/entry/',
                              verify=False)
         j = r.json()
+        if j['message'] == '404 Not Found':
+            print "No dumps on system\n"
+            return
         if j['status'] != 'ok':
             raise Exception("Failed to list dumps: \n" + r.text)
 
@@ -119,8 +122,12 @@ def do_clear_all_events(args):
 
 def do_list_dumps(args):
     s = BMC(server=args.server)
-    for e in s.list_dumps():
-        print(e)
+    try:
+        for e in s.list_dumps():
+            print(e)
+    except:
+        # ignore if we get nothing back
+        return;
 
 def do_create_dump(args):
     s = BMC(server=args.server)
