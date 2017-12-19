@@ -84,11 +84,10 @@ class BMC:
             raise Exception("Failed to create dump: \n" + r.text)
         
     def get_dump(self,dump):
-        r = self.session.get(self.url + dump,
+        r = self.session.get(self.url + "/download/dump/" + dump,
                              verify=False)
-        j = r.json()
-        if j['status'] != 'ok':
-            raise Exception("Failed to get dump " + event + ": \n" + r.text)
+        with open("dump" + dump + ".tar.gz","wb") as dump:
+            dump.write(r.content)
 
     def clear_dump(self,dump):
         r = self.session.delete(self.url + dump)
