@@ -6,9 +6,6 @@ import tarfile
 import time
 import json
 
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 class BMC:
     def __init__(self, server):
         self.url = "https://{0}/".format(server)
