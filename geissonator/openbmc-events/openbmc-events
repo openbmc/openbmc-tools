@@ -5,9 +5,6 @@ import requests
 import json
 
 import urllib3
-from warnings import catch_warnings
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 
 class BMC:
     def __init__(self, server):
@@ -66,6 +63,9 @@ class BMC:
         r = self.session.get(self.url + 'xyz/openbmc_project/dump/entry/',
                              verify=False)
         j = r.json()
+        if j['message'] == '404 Not Found':
+            print "No dumps on system\n"
+            return []
         if j['status'] != 'ok':
             raise Exception("Failed to list dumps: \n" + r.text)
 
@@ -75,17 +75,18 @@ class BMC:
         return dumps
     
     def create_dump(self):
-        r = self.session.post(self.url + 'xyz/openbmc_project/dump/action/CreateDump')
+        r = self.session.post(self.url + 'xyz/openbmc_project/dump/action/CreateDump',
+                              headers={'Content-Type': 'application/json'},
+                              data='{"data":[]}')
         j = r.json()
         if j['status'] != 'ok':
             raise Exception("Failed to create dump: \n" + r.text)
         
     def get_dump(self,dump):
-        r = self.session.get(self.url + dump,
+        r = self.session.get(self.url + "/download/dump/" + dump,
                              verify=False)
-        j = r.json()
-        if j['status'] != 'ok':
-            raise Exception("Failed to get dump " + event + ": \n" + r.text)
+        with open("dump" + dump + ".tar.gz","wb") as dump:
+            dump.write(r.content)
 
     def clear_dump(self,dump):
         r = self.session.delete(self.url + dump)
@@ -155,6 +156,8 @@ def do_get_esel(args):
 parser = argparse.ArgumentParser()
 parser.add_argument('--server', help='hostname or IP of BMC', type=str,
                     required=True)
+parser.add_argument('--suppress-insecure-warnings', '-I', action="store_true",
+                    default=False)
 
 subparsers = parser.add_subparsers()
 
@@ -201,6 +204,10 @@ clear_dump.add_argument('dump', help="The dump to clear")
 clear_dump.set_defaults(func=do_clear_dump)
 
 args = parser.parse_args()
+
+if args.suppress_insecure_warnings:
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 if 'func' in args:
     args.func(args)
