@@ -87,6 +87,7 @@ def main():
                     r"## Warning:",
                     r"[*]{3} ERROR:",
                     "Abort",
+                    "Retry count exceeded; starting again",
                 ])
                 if i > 0:
                     print("Error detected, exiting", file=sys.stderr)
