@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (C) 2018 IBM Corp.
+
+set -eou pipefail
+
+if [ $# -lt 1 ]
+then
+	echo Usage: $0 [USER@]HOST
+	exit 1
+fi
+
+POWER_TARGET="$1"
+
+ssh "${POWER_TARGET}" <<-EOF
+
+set -eou pipefail
+set -x
+
+# Just make sure the GPIOs are exported
+echo $((280 + 25)) > /sys/class/gpio/export || true
+echo $((280 + 137)) > /sys/class/gpio/export || true
+
+# Configure the GPIOs to apply power
+echo out > /sys/class/gpio/gpio$((280 + 25))/direction
+echo out > /sys/class/gpio/gpio$((280 + 137))/direction
+echo 1 > /sys/class/gpio/gpio$((280 + 137))/value
+echo 1 > /sys/class/gpio/gpio$((280 + 25))/value
+EOF
+
