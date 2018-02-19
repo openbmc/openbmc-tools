@@ -61,10 +61,12 @@ def main():
         i, m, d = conn.expect_or_raise([
             "%s login:" % (mach["platform"]),
             "root@%s:.*#" % (mach["platform"]),
+            "root@%s:.*#" % (args.machine),
             "ast#",
+            "# ",
         ], 5)
 
-        if i != 2:
+        if i != 3:
             if i == 0:
                 conn.encode_and_write(mach["user"])
                 conn.read_until(b"Password:")
@@ -85,6 +87,7 @@ def main():
                     r"## Warning:",
                     r"[*]{3} ERROR:",
                     "Abort",
+                    "Retry count exceeded; starting again",
                 ])
                 if i > 0:
                     print("Error detected, exiting", file=sys.stderr)
