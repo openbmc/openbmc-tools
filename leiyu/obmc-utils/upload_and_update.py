@@ -113,10 +113,10 @@ def getProgress(bmc):
 
 
 def reboot(bmc):
-    url = 'https://%s/org/openbmc/control/bmc0/action/warmReset' % bmc
-    cmds = ['curl', '-s', '-b', 'cjar', '-k', '-X', 'POST', '-H',
+    url = 'https://%s/xyz/openbmc_project/state/bmc0/attr/RequestedBMCTransition' % bmc
+    cmds = ['curl', '-s', '-b', 'cjar', '-k', '-X', 'PUT', '-H',
             'Content-Type: application/json', '-d',
-            '{"data": []}', url]
+            '{"data": "xyz.openbmc_project.State.BMC.Transition.Reboot"}', url]
     check_call(cmds, stdout=FNULL, stderr=FNULL)
 
 
