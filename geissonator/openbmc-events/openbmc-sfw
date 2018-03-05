@@ -97,10 +97,10 @@ class BMC:
             self.reboot()
 
     def reboot(self):
-        r = self.session.post(
-            self.url + '/org/openbmc/control/bmc0/action/warmReset',
+        r = self.session.put(
+            self.url + '/xyz/openbmc_project/state/bmc0/attr/RequestedBMCTransition',
             headers={'Content-Type': 'application/json'},
-            data='{"data":[]}',
+            data='{"data": "xyz.openbmc_project.State.BMC.Transition.Reboot"}',
             verify=False)
 
         j = r.json()
