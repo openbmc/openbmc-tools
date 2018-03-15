@@ -25,6 +25,9 @@ import binascii
 import subprocess
 import platform
 import zipfile
+import tarfile
+import tempfile
+import hashlib
 
 def hilight(textToColor, color, bold):
     """
@@ -193,6 +196,29 @@ def tableDisplay(keylist, colNames, output):
     
     return outputText
 
+def checkFWactivation(host, args, session):
+    """
+        Checks the software inventory for an image that is being activated. 
+        
+        @return: True if an image is being activated, false is no activations are happening
+    """
+    url="https://"+host+"/xyz/openbmc_project/software/enumerate"
+    httpHeader = {'Content-Type':'application/json'}        
+    try:
+        resp = session.get(url, headers=httpHeader, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        print(connectionErrHandler(args.json, "Timeout", None))
+        return(True)
+    except(requests.exceptions.ConnectionError) as err:
+        print( connectionErrHandler(args.json, "ConnectionError", err))
+        return True
+    fwInfo = json.loads(resp.text)['data']
+    for key in fwInfo:
+        if 'Activation' in fwInfo[key]:
+            if 'Activating' in fwInfo[key]['Activation'] or 'Activating' in fwInfo[key]['RequestedActivation']:
+                return True
+    return False
+    
 def login(host, username, pw,jsonFormat):
     """
          Logs into the BMC and creates a session
@@ -462,12 +488,18 @@ def sensor(host, args, session):
             try:
                 senDict['units'] = sensors[key]['Unit'].split('.')[-1]
             except KeyError:
-                print('Key Error: '+ key)
+                senDict['units'] = "N/A"
             if('Scale' in sensors[key]): 
                 scale = 10 ** sensors[key]['Scale'] 
             else: 
                 scale = 1
-            senDict['value'] = str(sensors[key]['Value'] * scale)
+            try:
+                senDict['value'] = str(sensors[key]['Value'] * scale)
+            except KeyError: 
+                if 'value' in sensors[key]:
+                    senDict['value'] = sensors[key]['value']
+                else:
+                    senDict['value'] = "N/A"
             if 'Target' in sensors[key]:
                 senDict['target'] = str(sensors[key]['Target'])
             else:
@@ -527,7 +559,7 @@ def parseESEL(args, eselRAW):
     esel_bin = binascii.unhexlify(''.join(eselRAW.split()[16:]))
     #search terms contains the search term as the key and the return dictionary key as it's value
     searchTerms = { 'Signature Description':'signatureDescription', 'devdesc':'devdesc',
-                    'Callout type': 'calloutType', 'Procedure':'procedure'}
+                    'Callout type': 'calloutType', 'Procedure':'procedure', 'Sensor Type': 'sensorType'}
     
     with open('/tmp/esel.bin', 'wb') as f:
         f.write(esel_bin)
@@ -575,7 +607,10 @@ def parseESEL(args, eselRAW):
                                         i=i-1
                                         break
                                     temp = temp + lines[i][lines[i].find(':'):].strip()[:-1].strip()[:-1].strip()
-                        eselParts[searchTerms[term]] = temp
+                        if(searchTerms[term] in eselParts):
+                            eselParts[searchTerms[term]] = eselParts[searchTerms[term]] + ", " + temp
+                        else:
+                            eselParts[searchTerms[term]] = temp
         os.remove('/tmp/esel.bin')
     else:
         print("errl file cannot be found")
@@ -687,7 +722,10 @@ def parseAlerts(policyTable, selEntries, args):
                     fruCallout = str(addDataPiece[i]).split('=')[1].strip()
                     
             if(calloutFound):
-                policyKey = messageID +"||" +  fruCallout
+                if fruCallout != "":
+                    policyKey = messageID +"||" +  fruCallout
+                else:
+                    policyKey = messageID
             else:
                 policyKey = messageID
             event = {}
@@ -1029,6 +1067,8 @@ def chassisPower(host, args, session):
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption 
     """ 
     if(args.powcmd == 'on'):
+        if checkFWactivation(host, args, session):
+            return ("Chassis Power control disabled during firmware activation")
         print("Attempting to Power on...:")
         url="https://"+host+"/xyz/openbmc_project/state/host0/attr/RequestedHostTransition"
         httpHeader = {'Content-Type':'application/json',}
@@ -1039,6 +1079,8 @@ def chassisPower(host, args, session):
             return(connectionErrHandler(args.json, "Timeout", None))
         return res.text
     elif(args.powcmd == 'softoff'):
+        if checkFWactivation(host, args, session):
+            return ("Chassis Power control disabled during firmware activation")
         print("Attempting to Power off gracefully...:")
         url="https://"+host+"/xyz/openbmc_project/state/host0/attr/RequestedHostTransition"
         httpHeader = {'Content-Type':'application/json'}
@@ -1049,6 +1091,8 @@ def chassisPower(host, args, session):
             return(connectionErrHandler(args.json, "Timeout", None))
         return res.text
     elif(args.powcmd == 'hardoff'):
+        if checkFWactivation(host, args, session):
+            return ("Chassis Power control disabled during firmware activation")
         print("Attempting to Power off immediately...:")
         url="https://"+host+"/xyz/openbmc_project/state/chassis0/attr/RequestedPowerTransition"
         httpHeader = {'Content-Type':'application/json'}
@@ -1150,7 +1194,7 @@ def chassis(host, args, session):
     elif(hasattr(args, 'identcmd')):
         result = chassisIdent(host, args, session)
     else:
-        return "to be completed"
+        return "This feature is not yet implemented"
     return result
 
 def bmcDumpRetrieve(host, args, session):
@@ -1309,6 +1353,8 @@ def collectServiceData(host, args, session):
          @param session: the active session to use
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption 
     """
+    
+    global toolVersion
     #create a bmc dump
     dumpcount = len(json.loads(bmcDumpList(host, args, session))['data'])
     try:
@@ -1427,7 +1473,7 @@ def collectServiceData(host, args, session):
         
     #create the zip file
     try:    
-        filename = myDir.split('/tmp/')[-1] + '.zip'
+        filename = myDir.split('/tmp/')[-1] + "_" + toolVersion + '_openbmc.zip'
         zf = zipfile.ZipFile(myDir+'/' + filename, 'w')
         for myfile in filelist:
             zf.write(myfile, os.path.basename(myfile))
@@ -1551,6 +1597,8 @@ def bmcReset(host, args, session):
          @param session: the active session to use
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption 
     """ 
+    if checkFWactivation(host, args, session):
+        return ("BMC reset control disabled during firmware activation")
     if(args.type == "warm"):
         print("\nAttempting to reboot the BMC...:")
         url="https://"+host+"/xyz/openbmc_project/state/bmc0/attr/RequestedBMCTransition"
@@ -1640,12 +1688,81 @@ def activateFWImage(host, args, session):
         return connectionErrHandler(args.json, "ConnectionError", err)
     if(not args.json):
         if resp.status_code == 200 and resp1.status_code == 200:
-            return 'Firmware activation completed. Please reboot the BMC for the changes to take effect.'
+            return 'Firmware flash and activation completed. Please reboot the bmc and then boot the host OS for the changes to take effect. '
         else:
             return "Firmware activation failed."
     else:
         return resp.text + resp1.text
-    
+
+def activateStatus(host, args, session):
+    if checkFWactivation(host, args, session):
+        return("Firmware is currently being activated. Do not reboot the BMC or start the Host OS")
+    else:
+        return("No firmware activations are pending")
+
+def extractFWimage(path, imageType):
+    """
+         extracts the bmc image and returns information about the package
+           
+         @param path: the path and file name of the firmware image
+         @param imageType: The type of image the user is trying to flash. Host or BMC
+         @return: the image id associated with the package. returns an empty string on error.
+    """ 
+    f = tempfile.TemporaryFile()
+    tmpDir = tempfile.gettempdir()
+    newImageID = ""
+    if os.path.exists(path):
+        try:
+            imageFile = tarfile.open(path,'r')
+            contents = imageFile.getmembers()
+            for tf in contents:
+                if 'MANIFEST' in tf.name:
+                    imageFile.extract(tf.name, path=tmpDir)
+                    with open(tempfile.gettempdir() +os.sep+ tf.name, 'r') as imageInfo:
+                        for line in imageInfo:
+                            if 'purpose' in line:
+                                purpose = line.split('=')[1]
+                                if imageType not in purpose.split('.')[-1]: 
+                                    print('The specified image is not for ' + imageType)
+                                    print('Please try again with the image for ' + imageType)
+                                    return ""
+                            if 'version' == line.split('=')[0]:
+                                version = line.split('=')[1].strip().encode('utf-8')
+                                m = hashlib.sha512()
+                                m.update(version)
+                                newImageID = m.hexdigest()[:8]
+                                break
+                    try:
+                        os.remove(tempfile.gettempdir() +os.sep+ tf.name)
+                    except OSError:
+                        pass
+                    return newImageID
+        except tarfile.ExtractError as e:
+            print('Unable to extract information from the firmware file.')
+            print('Ensure you have write access to the directory: ' + tmpDir)
+            return newImageID
+        except tarfile.TarError as e:
+            print('This is not a valid firmware file.')
+            return newImageID
+        print("This is not a valid firmware file.")
+        return newImageID
+    else:
+        print('The filename and path provided are not valid.')
+        return newImageID
+                        
+def getAllFWImageIDs(fwInvDict):
+    """
+         gets a list of all the firmware image IDs
+           
+         @param fwInvDict: the dictionary to search for FW image IDs
+         @return: list containing string representation of the found image ids
+    """ 
+    idList = []
+    for key in fwInvDict:
+        if 'Version' in fwInvDict[key]:
+            idList.append(key.split('/')[-1])
+    return idList                        
+                        
 def fwFlash(host, args, session):
     """
          updates the bmc firmware and pnor firmware
@@ -1654,12 +1771,19 @@ def fwFlash(host, args, session):
          @param args: contains additional arguments used by the fwflash sub command
          @param session: the active session to use
     """ 
-    
+    d = vars(args)
     if(args.type == 'bmc'):
         purp = 'BMC'
     else:
         purp = 'Host'
-    #determine the existing versions
+    
+    #check power state of the machine. No concurrent FW updates allowed    
+    d['powcmd'] = 'status'
+    powerstate = chassisPower(host, args, session)
+    if 'Chassis Power State: On' in powerstate:
+        return("Aborting firmware update. Host is powered on. Please turn off the host and try again.")
+    
+    #determine the existing images on the bmc
     httpHeader = {'Content-Type':'application/json'}
     url="https://"+host+"/xyz/openbmc_project/software/enumerate"
     try:
@@ -1670,66 +1794,87 @@ def fwFlash(host, args, session):
         return connectionErrHandler(args.json, "ConnectionError", err)
     oldsoftware = json.loads(resp.text)['data']
     
-    #upload the file
-    httpHeader = {'Content-Type':'application/octet-stream'}
-    url="https://"+host+"/upload/image"
-    data=open(args.fileloc,'rb').read()
-    print("Uploading file to BMC")
-    try:
-        resp = session.post(url, headers=httpHeader, data=data, verify=False)
-    except(requests.exceptions.Timeout):
-        return connectionErrHandler(args.json, "Timeout", None)
-    except(requests.exceptions.ConnectionError) as err:
-        return connectionErrHandler(args.json, "ConnectionError", err)
-    if resp.status_code != 200:
-        return "Failed to upload the file to the bmc"
-    else:
-        print("Upload complete.")
-    
-    #determine the version number
-    software ={}
-    for i in range(0, 5):
-        httpHeader = {'Content-Type':'application/json'}
-        url="https://"+host+"/xyz/openbmc_project/software/enumerate"
+    #Extract the tar and get information from the manifest file
+    newversionID = extractFWimage(args.fileloc, purp)
+    if  newversionID == "":
+        return "Unable to verify FW image."
+   
+   
+    #check if the new image is already on the bmc
+    if newversionID not in getAllFWImageIDs(oldsoftware):
+      
+        #upload the file
+        httpHeader = {'Content-Type':'application/octet-stream'}
+        url="https://"+host+"/upload/image"
+        data=open(args.fileloc,'rb').read()
+        print("Uploading file to BMC")
         try:
-            resp = session.get(url, headers=httpHeader, verify=False, timeout=30)
+            resp = session.post(url, headers=httpHeader, data=data, verify=False)
         except(requests.exceptions.Timeout):
             return connectionErrHandler(args.json, "Timeout", None)
         except(requests.exceptions.ConnectionError) as err:
             return connectionErrHandler(args.json, "ConnectionError", err)
-        software = json.loads(resp.text)['data']
-        #check if bmc is done processing the new image
-        if (len(software.keys()) > len(oldsoftware.keys())):
-            break
+        if resp.status_code != 200:
+            return "Failed to upload the file to the bmc"
         else:
-            time.sleep(15)
-    newversionID = ''
-    for key in software:
-        if key not in oldsoftware:
-            idPart = key.split('/')[-1]
-            if idPart == 'inventory': 
-                continue
-            softPurpose = software['/xyz/openbmc_project/software/' +idPart]['Purpose'].split('.')[-1]
-            if(purp in softPurpose):
-                newversionID = idPart
+            print("Upload complete.")
+        
+        #verify bmc processed the image
+        software ={}
+        for i in range(0, 5):
+            httpHeader = {'Content-Type':'application/json'}
+            url="https://"+host+"/xyz/openbmc_project/software/enumerate"
+            try:
+                resp = session.get(url, headers=httpHeader, verify=False, timeout=30)
+            except(requests.exceptions.Timeout):
+                return connectionErrHandler(args.json, "Timeout", None)
+            except(requests.exceptions.ConnectionError) as err:
+                return connectionErrHandler(args.json, "ConnectionError", err)
+            software = json.loads(resp.text)['data']
+            #check if bmc is done processing the new image
+            if (newversionID in getAllFWImageIDs(software)):
                 break
-    if newversionID == '':
-        return('Could not find the new version of the firmware on the bmc, it may already exist.' + 
-               "\nRun fru print command and check for the version number. If found, use the firmware activate command to change to using that image.\n"
-               "If you are reapplying the same image, reboot the bmc to complete the update. ")
-
-    #activate the new image
-    print("Activating new image")
-    url="https://"+host+"/xyz/openbmc_project/software/"+ newversionID + "/attr/RequestedActivation"
-    data = '{"data":"xyz.openbmc_project.Software.Activation.RequestedActivations.Active"}' 
-    try:
-        resp = session.put(url, headers=httpHeader, data=data, verify=False, timeout=30)
-    except(requests.exceptions.Timeout):
-        return connectionErrHandler(args.json, "Timeout", None)
-    except(requests.exceptions.ConnectionError) as err:
-        return connectionErrHandler(args.json, "ConnectionError", err)
+            else:
+                time.sleep(15)
+        
+        #activate the new image
+        print("Activating new image: "+newversionID)
+        url="https://"+host+"/xyz/openbmc_project/software/"+ newversionID + "/attr/RequestedActivation"
+        data = '{"data":"xyz.openbmc_project.Software.Activation.RequestedActivations.Active"}' 
+        try:
+            resp = session.put(url, headers=httpHeader, data=data, verify=False, timeout=30)
+        except(requests.exceptions.Timeout):
+            return connectionErrHandler(args.json, "Timeout", None)
+        except(requests.exceptions.ConnectionError) as err:
+            return connectionErrHandler(args.json, "ConnectionError", err)
+        
+        #wait for the activation to complete, timeout after ~1 hour
+        i=0
+        while i < 360:
+            url="https://"+host+"/xyz/openbmc_project/software/"+ newversionID
+            data = '{"data":"xyz.openbmc_project.Software.Activation.RequestedActivations.Active"}' 
+            try:
+                resp = session.get(url, headers=httpHeader, verify=False, timeout=30)
+            except(requests.exceptions.Timeout):
+                return connectionErrHandler(args.json, "Timeout", None)
+            except(requests.exceptions.ConnectionError) as err:
+                return connectionErrHandler(args.json, "ConnectionError", err)
+            fwInfo = json.loads(resp.text)['data']
+            if 'Activating' not in fwInfo['Activation'] and 'Activating' not in fwInfo['RequestedActivation']:
+                print('')
+                break
+            else:
+                sys.stdout.write('.')
+                sys.stdout.flush()
+                time.sleep(10) #check every 10 seconds
+        return "Firmware flash and activation completed. Please reboot the bmc and then boot the host OS for the changes to take effect. "
+    else:
+        print("This image has been found on the bmc. Activating image: " + newversionID)
+        
+        d['imageID'] = newversionID
+        return activateFWImage(host, args, session)
     
-    return "Firmware flash completed. Please allow a few minutes for the activation to complete. After the activation is complete you will need to reboot the bmc and the host OS for the changes to take effect. "
+    
 
 def createCommandParser():
     """
@@ -1787,6 +1932,7 @@ def createCommandParser():
     sel_print.add_argument('-v', '--verbose', action='store_true', help="Changes the output to being very verbose")
     sel_print.add_argument('-f', '--fileloc', help='Parse a file instead of the BMC output')
     sel_print.set_defaults(func=selPrint)
+    
     #sel list
     sel_list = sel_subparser.add_parser("list", help="Lists all SELs in the platform. Specifying a specific number will pull all the details for that individual SEL")
     sel_list.add_argument("selNum", nargs='?', type=int, help="The SEL entry to get details on")
@@ -1852,6 +1998,7 @@ def createCommandParser():
     parser_dumpretrieve.add_argument("-s", "--dumpSaveLoc", help="The location to save the bmc dump file")
     parser_dumpretrieve.set_defaults(func=bmcDumpRetrieve)
     
+    #bmc command for reseting the bmc
     parser_bmc = subparsers.add_parser('bmc', help="Work with the bmc")
     bmc_sub = parser_bmc.add_subparsers(title='subcommands', description='valid subcommands',help="sub-command help", dest='command')
     parser_BMCReset = bmc_sub.add_parser('reset', help='Reset the bmc' )
@@ -1881,9 +2028,13 @@ def createCommandParser():
     fwflash.add_argument('-f', '--fileloc', required=True, help="The absolute path to the firmware image")
     fwflash.set_defaults(func=fwFlash)
     
-    fwActivate = fwflash_subproc.add_parser('activate', help="Active existing image on the bmc")
+    fwActivate = fwflash_subproc.add_parser('activate', help="Activate existing image on the bmc")
     fwActivate.add_argument('imageID', help="The image ID to activate from the firmware list. Ex: 63c95399")
     fwActivate.set_defaults(func=activateFWImage)
+    
+    fwActivateStatus = fwflash_subproc.add_parser('activation_status', help="Check Status of activations")
+    fwActivateStatus.set_defaults(func=activateStatus)
+
     
     return parser
 
@@ -1891,6 +2042,8 @@ def main(argv=None):
     """
          main function for running the command line utility as a sub application  
     """ 
+    global toolVersion 
+    toolVersion = "1.03"
     parser = createCommandParser()
     args = parser.parse_args(argv)
         
@@ -1901,7 +2054,7 @@ def main(argv=None):
     if sys.version_info >= (3,0):
         requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
     if (args.version):
-        print("Version: 1.0")
+        print("Version: "+ toolVersion)
         sys.exit(0)
     if (hasattr(args, 'fileloc') and args.fileloc is not None and 'print' in args.command):
         mysess = None
