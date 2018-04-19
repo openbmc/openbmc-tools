@@ -4,6 +4,7 @@ Usage: upload_and_update.py <--file tarball>
                             <--tftp user@tftp-ip:/path/to/tftproot>
                             [--password SSH-PASSWORD-TO-TFTP]
                             --bmc <bmc-ip>
+                            [--noprepare]
                             [-v]
 
 This scripts copies OpenBMC tarball to TFTP server,
@@ -141,21 +142,26 @@ def upload(tftp, password, tarball):
     check_call(cmds, stdout=FNULL, stderr=FNULL)
 
 
-def update(tftp, tarball, bmc):
+def update(tftp, tarball, bmc, noprepare):
     print 'Update...'
 
-    login(bmc)
-    print 'Prepare BMC to update'
-    prepare(bmc)
+    if not noprepare:
+        login(bmc)
 
-    # After prepare, BMC will reboot, let's wait for it
-    print 'Waiting BMC to reboot...'
-    sleep(30)
-    while not checkBmcAlive(bmc):
+        print 'Prepare BMC to update'
+        prepare(bmc)
+
+        # After prepare, BMC will reboot, let's wait for it
+        print 'Waiting BMC to reboot...'
+        sleep(30)
+        while not checkBmcAlive(bmc):
+            sleep(5)
+        print 'BMC is back'
+
+    while not login(bmc):
+        print 'Login fails, retry...'
         sleep(5)
-    print 'BMC is back'
 
-    login(bmc)
     print 'Logged in'
 
     print 'Preserve network...'
@@ -192,6 +198,8 @@ def main():
                         help='The password of TFTP server')
     parser.add_argument('-b', '--bmc', required=True, dest='bmc',
                         help='The BMC IP address')
+    parser.add_argument('-n', '--noprepare', action='store_true',
+                        help='Do not invoke prepare, update directly')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Print verbose log')
 
@@ -214,7 +222,7 @@ def main():
         exit(1)
 
     upload(args['tftp'], args['password'], args['tarball'])
-    update(args['tftp'], args['tarball'], args['bmc'])
+    update(args['tftp'], args['tarball'], args['bmc'], args['noprepare'])
 
     print 'Completed!'
 
