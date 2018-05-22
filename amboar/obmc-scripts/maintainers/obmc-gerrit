@@ -21,6 +21,8 @@ def get_reviewers(root: Optional[str]=None, mname: str='MAINTAINERS') -> List[st
     if not root:
         root = git('rev-parse', '--show-toplevel').strip()
     mfile = os.path.join(root, mname)
+    if not os.path.exists(mfile):
+        return reviewers
     with open(mfile, 'r') as mstream:
         maintainers.trash_preamble(mstream)
         block = maintainers.parse_block(mstream)
@@ -43,6 +45,8 @@ def gerrit_refspec_args(reviewers: Optional[List[str]]=None) -> str:
 
 def decorate_refspec(refspec: str) -> str:
     gargs = gerrit_refspec_args(get_reviewers())
+    if not gargs:
+        return refspec
     if '%' in refspec:
         return "{},{}".format(refspec, gargs)
     return "{}%{}".format(refspec, gargs)
