@@ -22,7 +22,20 @@ repository with an OpenBMC-compatible MAINTAINERS file at its top level,
 automatically added to the changes pushed:
 
 ```
-$ obmc-gerrit push gerrit HEAD:refs/for/master
+$ obmc-gerrit push gerrit HEAD:refs/for/master/maintainers
+Counting objects: 13, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (13/13), 7.22 KiB | 7.22 MiB/s, done.
+Total 13 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2)
+remote: Processing changes: updated: 1, refs: 1, done
+remote:
+remote: Updated Changes:
+remote:   https://gerrit.openbmc-project.xyz/10735 obmc-scripts: Add maintainers
+remote:
+To ssh://gerrit.openbmc-project.xyz:29418/openbmc/openbmc-tools
+ * [new branch]                HEAD -> refs/for/master/maintainers%r=...
 ```
 
 Installation
