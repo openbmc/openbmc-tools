@@ -17,7 +17,7 @@ import sys
 git = sh.git.bake()
 
 def get_reviewers(root: Optional[str]=None, mname: str='MAINTAINERS') -> List[str]:
-    reviewers: List[str] = list()
+    reviewers = cast(List[str], list())
     if not root:
         root = git('rev-parse', '--show-toplevel').strip()
     mfile = os.path.join(root, mname)

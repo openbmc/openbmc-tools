@@ -106,7 +106,7 @@ B = Dict[LineType, D]
 
 def parse_block(src: Iterator[str]) -> Optional[B]:
     state = ParseState.BEGIN
-    repo: Dict[LineType, D] = OrderedDict()
+    repo = cast(B, OrderedDict())
     for line in src:
         try:
             entry = parse_line(line)
@@ -149,10 +149,10 @@ def trash_preamble(src: Iterator[str]) -> None:
             break
 
 def parse_maintainers(src: Iterator[str]) -> Dict[D, B]:
-    maintainers: Dict[D, B] = OrderedDict()
+    maintainers = cast(Dict[D, B], OrderedDict())
     trash_preamble(src)
     while True:
-        repo: B = parse_block(src)
+        repo = cast(B, parse_block(src))
         if not repo:
             break
         maintainers[repo[LineType.REPO]] = repo
