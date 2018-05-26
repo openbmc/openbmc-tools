@@ -2092,6 +2092,14 @@ def main(argv=None):
                 sys.exit()
             logintimeStart = int(round(time.time()*1000))
             mysess = login(args.host, args.user, pw, args.json)
+            if(sys.version_info < (3,0)):
+                if isinstance(mysess, basestring):
+                    print(mysess)
+                    sys.exit(1)
+            elif sys.version_info >= (3,0):
+                if isinstance(mysess, str):
+                    print(mysess)
+                    sys.exit(1)
             logintimeStop = int(round(time.time()*1000))
             
             commandTimeStart = int(round(time.time()*1000))  
