@@ -565,8 +565,8 @@ def parseESEL(args, eselRAW):
     #search terms contains the search term as the key and the return dictionary key as it's value
     searchTerms = { 'Signature Description':'signatureDescription', 'devdesc':'devdesc',
                     'Callout type': 'calloutType', 'Procedure':'procedure', 'Sensor Type': 'sensorType'}
-    
-    with open('/tmp/esel.bin', 'wb') as f:
+    eselBinPath = tempfile.gettempdir() + os.sep + 'esel.bin'
+    with open(eselBinPath, 'wb') as f:
         f.write(esel_bin)
     errlPath = ""
     #use the right errl file for the machine architecture
@@ -590,7 +590,7 @@ def parseESEL(args, eselRAW):
         return eselParts
     
     if(os.path.exists(errlPath)):
-        output= subprocess.check_output([errlPath, '-d', '--file=/tmp/esel.bin']).decode('utf-8')
+        output= subprocess.check_output([errlPath, '-d', '--file='+eselBinPath]).decode('utf-8')
 #         output = proc.communicate()[0]
         lines = output.split('\n')
         
@@ -616,7 +616,7 @@ def parseESEL(args, eselRAW):
                             eselParts[searchTerms[term]] = eselParts[searchTerms[term]] + ", " + temp
                         else:
                             eselParts[searchTerms[term]] = temp
-        os.remove('/tmp/esel.bin')
+        os.remove(eselBinPath)
     else:
         print("errl file cannot be found")
     
@@ -1216,7 +1216,7 @@ def bmcDumpRetrieve(host, args, session):
     if (args.dumpSaveLoc is not None):
         saveLoc = args.dumpSaveLoc
     else:
-        saveLoc = '/tmp'
+        saveLoc = tempfile.gettempdir()
     url ='https://'+host+'/download/dump/' + str(dumpNum)
     try:
         r = session.get(url, headers=httpHeader, stream=True, verify=False, timeout=30)
@@ -1229,7 +1229,7 @@ def bmcDumpRetrieve(host, args, session):
             else:
                 return 'Invalid save location specified'
         else:
-            filename = '/tmp/' + host+'-dump' + str(dumpNum) + '.tar.xz'
+            filename = tempfile.gettempdir()+os.sep + host+'-dump' + str(dumpNum) + '.tar.xz'
 
         with open(filename, 'wb') as f:
                     for chunk in r.iter_content(chunk_size =1024):
@@ -1371,7 +1371,7 @@ def collectServiceData(host, args, session):
     #Collect Inventory
     try:
         args.silent = True
-        myDir = '/tmp/' + host + "--" + datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
+        myDir = tempfile.gettempdir()+os.sep + host + "--" + datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
         os.makedirs(myDir)
         filelist = []
         frulist = fruPrint(host, args, session)
@@ -1478,7 +1478,7 @@ def collectServiceData(host, args, session):
         
     #create the zip file
     try:    
-        filename = myDir.split('/tmp/')[-1] + "_" + toolVersion + '_openbmc.zip'
+        filename = myDir.split(tempfile.gettempdir()+os.sep)[-1] + "_" + toolVersion + '_openbmc.zip'
         zf = zipfile.ZipFile(myDir+'/' + filename, 'w')
         for myfile in filelist:
             zf.write(myfile, os.path.basename(myfile))
