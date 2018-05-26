@@ -73,46 +73,53 @@ def connectionErrHandler(jsonFormat, errorStr, err):
         if not jsonFormat:
             return("FQPSPIN0000M: Connection timed out. Ensure you have network connectivity to the bmc")
         else:
-            errorMessageStr = ("{\n\t\"event0\":{\n" +
-            "\t\t\"CommonEventID\": \"FQPSPIN0000M\",\n"+
-            "\t\t\"sensor\": \"N/A\",\n"+
-            "\t\t\"state\": \"N/A\",\n" +
-            "\t\t\"additionalDetails\": \"N/A\",\n" +
-            "\t\t\"Message\": \"Connection timed out. Ensure you have network connectivity to the BMC\",\n" +
-            "\t\t\"LengthyDescription\": \"While trying to establish a connection with the specified BMC, the BMC failed to respond in adequate time. Verify the BMC is functioning properly, and the network connectivity to the BMC is stable.\",\n" +
-            "\t\t\"Serviceable\": \"Yes\",\n" +
-            "\t\t\"CallHomeCandidate\": \"No\",\n" +
-            "\t\t\"Severity\": \"Critical\",\n" +
-            "\t\t\"EventType\": \"Communication Failure/Timeout\",\n" +
-            "\t\t\"VMMigrationFlag\": \"Yes\",\n" +
-            "\t\t\"AffectedSubsystem\": \"Interconnect (Networking)\",\n" +
-            "\t\t\"timestamp\": \""+str(int(time.time()))+"\",\n" +
-            "\t\t\"UserAction\": \"Verify network connectivity between the two systems and the bmc is functional.\"" +
-            "\t\n}, \n" +
-            "\t\"numAlerts\": \"1\" \n}");
+            conerror = {}
+            conerror['CommonEventID'] = 'FQPSPIN0000M'
+            conerror['sensor']="N/A"
+            conerror['state']="N/A"
+            conerror['additionalDetails'] = "N/A"
+            conerror['Message']="Connection timed out. Ensure you have network connectivity to the BMC"
+            conerror['LengthyDescription'] = "While trying to establish a connection with the specified BMC, the BMC failed to respond in adequate time. Verify the BMC is functioning properly, and the network connectivity to the BMC is stable."
+            conerror['Serviceable']="Yes"
+            conerror['CallHomeCandidate']= "No"
+            conerror['Severity'] = "Critical"
+            conerror['EventType'] = "Communication Failure/Timeout"
+            conerror['VMMigrationFlag'] = "Yes"
+            conerror["AffectedSubsystem"] = "Interconnect (Networking)"
+            conerror["timestamp"] = str(int(time.time()))
+            conerror["UserAction"] = "Verify network connectivity between the two systems and the bmc is functional."
+            eventdict = {}
+            eventdict['event0'] = conerror
+            eventdict['numAlerts'] = '1'
+            
+            errorMessageStr = errorMessageStr = json.dumps(eventdict, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False)
             return(errorMessageStr)
     elif errorStr == "ConnectionError":
         if not jsonFormat:
             return("FQPSPIN0001M: " + str(err))
         else:
-            errorMessageStr = ("{\n\t\"event0\":{\n" +
-            "\t\t\"CommonEventID\": \"FQPSPIN0001M\",\n"+
-            "\t\t\"sensor\": \"N/A\",\n"+
-            "\t\t\"state\": \"N/A\",\n" +
-            "\t\t\"additionalDetails\": \"" + str(err)+"\",\n" +
-            "\t\t\"Message\": \"Connection Error. View additional details for more information\",\n" +
-            "\t\t\"LengthyDescription\": \"A connection error to the specified BMC occurred and additional details are provided. Review these details to resolve the issue.\",\n" +
-            "\t\t\"Serviceable\": \"Yes\",\n" +
-            "\t\t\"CallHomeCandidate\": \"No\",\n" +
-            "\t\t\"Severity\": \"Critical\",\n" +
-            "\t\t\"EventType\": \"Communication Failure/Timeout\",\n" +
-            "\t\t\"VMMigrationFlag\": \"Yes\",\n" +
-            "\t\t\"AffectedSubsystem\": \"Interconnect (Networking)\",\n" +
-            "\t\t\"timestamp\": \""+str(int(time.time()))+"\",\n" +
-            "\t\t\"UserAction\": \"Correct the issue highlighted in additional details and try again\"" +
-            "\t\n}, \n" +
-            "\t\"numAlerts\": \"1\" \n}");
+            conerror = {}
+            conerror['CommonEventID'] = 'FQPSPIN0001M'
+            conerror['sensor']="N/A"
+            conerror['state']="N/A"
+            conerror['additionalDetails'] = str(err)
+            conerror['Message']="Connection Error. View additional details for more information"
+            conerror['LengthyDescription'] = "A connection error to the specified BMC occurred and additional details are provided. Review these details to resolve the issue."
+            conerror['Serviceable']="Yes"
+            conerror['CallHomeCandidate']= "No"
+            conerror['Severity'] = "Critical"
+            conerror['EventType'] = "Communication Failure/Timeout"
+            conerror['VMMigrationFlag'] = "Yes"
+            conerror["AffectedSubsystem"] = "Interconnect (Networking)"
+            conerror["timestamp"] = str(int(time.time()))
+            conerror["UserAction"] = "Correct the issue highlighted in additional details and try again"
+            eventdict = {}
+            eventdict['event0'] = conerror
+            eventdict['numAlerts'] = '1'
+            
+            errorMessageStr = json.dumps(eventdict, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False)
             return(errorMessageStr)
+
     else:
         return("Unknown Error: "+ str(err))
 
@@ -245,11 +252,9 @@ def login(host, username, pw,jsonFormat):
 #             requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
         return mysess
     except(requests.exceptions.Timeout):
-        print(connectionErrHandler(jsonFormat, "Timeout", None))
-        sys.exit(1)
+        return (connectionErrHandler(jsonFormat, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
-        print(connectionErrHandler(jsonFormat, "ConnectionError", err))
-        sys.exit(1)
+        return (connectionErrHandler(jsonFormat, "ConnectionError", err))
 
    
 def logout(host, username, pw, session, jsonFormat):
