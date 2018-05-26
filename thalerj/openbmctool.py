@@ -703,7 +703,22 @@ def parseAlerts(policyTable, selEntries, args):
                     i2creadFail = True
                     i2cdevice = str(addDataPiece[i]).strip().split('=')[1]
                     i2cdevice = '/'.join(i2cdevice.split('/')[-4:])
-                    fruCallout = 'I2C'
+                    if 'fsi' in str(addDataPiece[calloutIndex]).split('=')[1]:
+                        fruCallout = 'FSI'
+                    else:
+                        fruCallout = 'I2C'
+                    calloutFound = True
+                if("CALLOUT_GPIO_NUM" in addDataPiece[i]):
+                    if not calloutFound:
+                        fruCallout = 'GPIO'
+                    calloutFound = True
+                if("CALLOUT_IIC_BUS" in addDataPiece[i]):
+                    if not calloutFound:
+                        fruCallout = "I2C"
+                    calloutFound = True
+                if("CALLOUT_IPMI_SENSOR_NUM" in addDataPiece[i]):
+                    if not calloutFound:
+                        fruCallout = "IPMI"
                     calloutFound = True
                 if("ESEL" in addDataPiece[i]):
                     esel = str(addDataPiece[i]).strip().split('=')[1]
@@ -729,6 +744,8 @@ def parseAlerts(policyTable, selEntries, args):
             if(calloutFound):
                 if fruCallout != "":
                     policyKey = messageID +"||" +  fruCallout
+                    if policyKey not in policyTable:
+                        policyKey = messageID
                 else:
                     policyKey = messageID
             else:
