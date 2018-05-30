@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
  Copyright 2017 IBM Corporation
 
@@ -73,46 +73,53 @@ def connectionErrHandler(jsonFormat, errorStr, err):
         if not jsonFormat:
             return("FQPSPIN0000M: Connection timed out. Ensure you have network connectivity to the bmc")
         else:
-            errorMessageStr = ("{\n\t\"event0\":{\n" +
-            "\t\t\"CommonEventID\": \"FQPSPIN0000M\",\n"+
-            "\t\t\"sensor\": \"N/A\",\n"+
-            "\t\t\"state\": \"N/A\",\n" +
-            "\t\t\"additionalDetails\": \"N/A\",\n" +
-            "\t\t\"Message\": \"Connection timed out. Ensure you have network connectivity to the BMC\",\n" +
-            "\t\t\"LengthyDescription\": \"While trying to establish a connection with the specified BMC, the BMC failed to respond in adequate time. Verify the BMC is functioning properly, and the network connectivity to the BMC is stable.\",\n" +
-            "\t\t\"Serviceable\": \"Yes\",\n" +
-            "\t\t\"CallHomeCandidate\": \"No\",\n" +
-            "\t\t\"Severity\": \"Critical\",\n" +
-            "\t\t\"EventType\": \"Communication Failure/Timeout\",\n" +
-            "\t\t\"VMMigrationFlag\": \"Yes\",\n" +
-            "\t\t\"AffectedSubsystem\": \"Interconnect (Networking)\",\n" +
-            "\t\t\"timestamp\": \""+str(int(time.time()))+"\",\n" +
-            "\t\t\"UserAction\": \"Verify network connectivity between the two systems and the bmc is functional.\"" +
-            "\t\n}, \n" +
-            "\t\"numAlerts\": \"1\" \n}");
+            conerror = {}
+            conerror['CommonEventID'] = 'FQPSPIN0000M'
+            conerror['sensor']="N/A"
+            conerror['state']="N/A"
+            conerror['additionalDetails'] = "N/A"
+            conerror['Message']="Connection timed out. Ensure you have network connectivity to the BMC"
+            conerror['LengthyDescription'] = "While trying to establish a connection with the specified BMC, the BMC failed to respond in adequate time. Verify the BMC is functioning properly, and the network connectivity to the BMC is stable."
+            conerror['Serviceable']="Yes"
+            conerror['CallHomeCandidate']= "No"
+            conerror['Severity'] = "Critical"
+            conerror['EventType'] = "Communication Failure/Timeout"
+            conerror['VMMigrationFlag'] = "Yes"
+            conerror["AffectedSubsystem"] = "Interconnect (Networking)"
+            conerror["timestamp"] = str(int(time.time()))
+            conerror["UserAction"] = "Verify network connectivity between the two systems and the bmc is functional."
+            eventdict = {}
+            eventdict['event0'] = conerror
+            eventdict['numAlerts'] = '1'
+            
+            errorMessageStr = errorMessageStr = json.dumps(eventdict, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False)
             return(errorMessageStr)
     elif errorStr == "ConnectionError":
         if not jsonFormat:
             return("FQPSPIN0001M: " + str(err))
         else:
-            errorMessageStr = ("{\n\t\"event0\":{\n" +
-            "\t\t\"CommonEventID\": \"FQPSPIN0001M\",\n"+
-            "\t\t\"sensor\": \"N/A\",\n"+
-            "\t\t\"state\": \"N/A\",\n" +
-            "\t\t\"additionalDetails\": \"" + str(err)+"\",\n" +
-            "\t\t\"Message\": \"Connection Error. View additional details for more information\",\n" +
-            "\t\t\"LengthyDescription\": \"A connection error to the specified BMC occurred and additional details are provided. Review these details to resolve the issue.\",\n" +
-            "\t\t\"Serviceable\": \"Yes\",\n" +
-            "\t\t\"CallHomeCandidate\": \"No\",\n" +
-            "\t\t\"Severity\": \"Critical\",\n" +
-            "\t\t\"EventType\": \"Communication Failure/Timeout\",\n" +
-            "\t\t\"VMMigrationFlag\": \"Yes\",\n" +
-            "\t\t\"AffectedSubsystem\": \"Interconnect (Networking)\",\n" +
-            "\t\t\"timestamp\": \""+str(int(time.time()))+"\",\n" +
-            "\t\t\"UserAction\": \"Correct the issue highlighted in additional details and try again\"" +
-            "\t\n}, \n" +
-            "\t\"numAlerts\": \"1\" \n}");
+            conerror = {}
+            conerror['CommonEventID'] = 'FQPSPIN0001M'
+            conerror['sensor']="N/A"
+            conerror['state']="N/A"
+            conerror['additionalDetails'] = str(err)
+            conerror['Message']="Connection Error. View additional details for more information"
+            conerror['LengthyDescription'] = "A connection error to the specified BMC occurred and additional details are provided. Review these details to resolve the issue."
+            conerror['Serviceable']="Yes"
+            conerror['CallHomeCandidate']= "No"
+            conerror['Severity'] = "Critical"
+            conerror['EventType'] = "Communication Failure/Timeout"
+            conerror['VMMigrationFlag'] = "Yes"
+            conerror["AffectedSubsystem"] = "Interconnect (Networking)"
+            conerror["timestamp"] = str(int(time.time()))
+            conerror["UserAction"] = "Correct the issue highlighted in additional details and try again"
+            eventdict = {}
+            eventdict['event0'] = conerror
+            eventdict['numAlerts'] = '1'
+            
+            errorMessageStr = json.dumps(eventdict, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False)
             return(errorMessageStr)
+
     else:
         return("Unknown Error: "+ str(err))
 
@@ -245,11 +252,9 @@ def login(host, username, pw,jsonFormat):
 #             requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
         return mysess
     except(requests.exceptions.Timeout):
-        print(connectionErrHandler(jsonFormat, "Timeout", None))
-        sys.exit(1)
+        return (connectionErrHandler(jsonFormat, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
-        print(connectionErrHandler(jsonFormat, "ConnectionError", err))
-        sys.exit(1)
+        return (connectionErrHandler(jsonFormat, "ConnectionError", err))
 
    
 def logout(host, username, pw, session, jsonFormat):
@@ -560,8 +565,8 @@ def parseESEL(args, eselRAW):
     #search terms contains the search term as the key and the return dictionary key as it's value
     searchTerms = { 'Signature Description':'signatureDescription', 'devdesc':'devdesc',
                     'Callout type': 'calloutType', 'Procedure':'procedure', 'Sensor Type': 'sensorType'}
-    
-    with open('/tmp/esel.bin', 'wb') as f:
+    eselBinPath = tempfile.gettempdir() + os.sep + 'esel.bin'
+    with open(eselBinPath, 'wb') as f:
         f.write(esel_bin)
     errlPath = ""
     #use the right errl file for the machine architecture
@@ -585,7 +590,7 @@ def parseESEL(args, eselRAW):
         return eselParts
     
     if(os.path.exists(errlPath)):
-        output= subprocess.check_output([errlPath, '-d', '--file=/tmp/esel.bin']).decode('utf-8')
+        output= subprocess.check_output([errlPath, '-d', '--file='+eselBinPath]).decode('utf-8')
 #         output = proc.communicate()[0]
         lines = output.split('\n')
         
@@ -611,7 +616,7 @@ def parseESEL(args, eselRAW):
                             eselParts[searchTerms[term]] = eselParts[searchTerms[term]] + ", " + temp
                         else:
                             eselParts[searchTerms[term]] = temp
-        os.remove('/tmp/esel.bin')
+        os.remove(eselBinPath)
     else:
         print("errl file cannot be found")
     
@@ -698,7 +703,22 @@ def parseAlerts(policyTable, selEntries, args):
                     i2creadFail = True
                     i2cdevice = str(addDataPiece[i]).strip().split('=')[1]
                     i2cdevice = '/'.join(i2cdevice.split('/')[-4:])
-                    fruCallout = 'I2C'
+                    if 'fsi' in str(addDataPiece[calloutIndex]).split('=')[1]:
+                        fruCallout = 'FSI'
+                    else:
+                        fruCallout = 'I2C'
+                    calloutFound = True
+                if("CALLOUT_GPIO_NUM" in addDataPiece[i]):
+                    if not calloutFound:
+                        fruCallout = 'GPIO'
+                    calloutFound = True
+                if("CALLOUT_IIC_BUS" in addDataPiece[i]):
+                    if not calloutFound:
+                        fruCallout = "I2C"
+                    calloutFound = True
+                if("CALLOUT_IPMI_SENSOR_NUM" in addDataPiece[i]):
+                    if not calloutFound:
+                        fruCallout = "IPMI"
                     calloutFound = True
                 if("ESEL" in addDataPiece[i]):
                     esel = str(addDataPiece[i]).strip().split('=')[1]
@@ -724,6 +744,8 @@ def parseAlerts(policyTable, selEntries, args):
             if(calloutFound):
                 if fruCallout != "":
                     policyKey = messageID +"||" +  fruCallout
+                    if policyKey not in policyTable:
+                        policyKey = messageID
                 else:
                     policyKey = messageID
             else:
@@ -1211,7 +1233,7 @@ def bmcDumpRetrieve(host, args, session):
     if (args.dumpSaveLoc is not None):
         saveLoc = args.dumpSaveLoc
     else:
-        saveLoc = '/tmp'
+        saveLoc = tempfile.gettempdir()
     url ='https://'+host+'/download/dump/' + str(dumpNum)
     try:
         r = session.get(url, headers=httpHeader, stream=True, verify=False, timeout=30)
@@ -1224,7 +1246,7 @@ def bmcDumpRetrieve(host, args, session):
             else:
                 return 'Invalid save location specified'
         else:
-            filename = '/tmp/' + host+'-dump' + str(dumpNum) + '.tar.xz'
+            filename = tempfile.gettempdir()+os.sep + host+'-dump' + str(dumpNum) + '.tar.xz'
 
         with open(filename, 'wb') as f:
                     for chunk in r.iter_content(chunk_size =1024):
@@ -1366,7 +1388,7 @@ def collectServiceData(host, args, session):
     #Collect Inventory
     try:
         args.silent = True
-        myDir = '/tmp/' + host + "--" + datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
+        myDir = tempfile.gettempdir()+os.sep + host + "--" + datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
         os.makedirs(myDir)
         filelist = []
         frulist = fruPrint(host, args, session)
@@ -1473,7 +1495,7 @@ def collectServiceData(host, args, session):
         
     #create the zip file
     try:    
-        filename = myDir.split('/tmp/')[-1] + "_" + toolVersion + '_openbmc.zip'
+        filename = myDir.split(tempfile.gettempdir()+os.sep)[-1] + "_" + toolVersion + '_openbmc.zip'
         zf = zipfile.ZipFile(myDir+'/' + filename, 'w')
         for myfile in filelist:
             zf.write(myfile, os.path.basename(myfile))
@@ -2043,7 +2065,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application  
     """ 
     global toolVersion 
-    toolVersion = "1.03"
+    toolVersion = "1.04"
     parser = createCommandParser()
     args = parser.parse_args(argv)
         
@@ -2070,6 +2092,14 @@ def main(argv=None):
                 sys.exit()
             logintimeStart = int(round(time.time()*1000))
             mysess = login(args.host, args.user, pw, args.json)
+            if(sys.version_info < (3,0)):
+                if isinstance(mysess, basestring):
+                    print(mysess)
+                    sys.exit(1)
+            elif sys.version_info >= (3,0):
+                if isinstance(mysess, str):
+                    print(mysess)
+                    sys.exit(1)
             logintimeStop = int(round(time.time()*1000))
             
             commandTimeStart = int(round(time.time()*1000))  
