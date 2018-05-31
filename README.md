@@ -15,7 +15,34 @@ undocumented, dysfunctional or utterly broken. Please help us improve!
 
 Then this repository aims to be the default destination for your otherwise
 un-homed scripts. As such we are setting the bar for submission pretty low,
-and we aim to make the process as easy as possible:
+and we aim to make the process as easy as possible.
+
+## Catalogue of scripts
+
+### Users
+
+* [`openbmc-events`](geissonator/openbmc-events/): Query error events on the target server
+* [`openbmc-sensors`](geissonator/openbmc-events/): Query sensors on the target server
+* [`openbmc-sfw`](geissonator/openbmc-events/): Manage host and BMC firmware images on the target server
+* [`openbmctool`](thalerj/): A general purpose tool for user interactions with OpenBMC
+* [`pretty-journal`](post-process/): Convert journalctl's 'pretty' output to regular output
+* [`upload_and_update`](leiyu/): Upload a tarball to TFTP server and update BMC with it
+
+### Developers
+
+* [`netboot`](amboar/obmc-scripts/netboot/): Painless netboot of BMC kernels
+* [`obmc-gerrit`](amboar/obmc-scripts/maintainers/): Automagically add reviewers to changes pushed to Gerrit
+* [`reboot`](amboar/obmc-scripts/reboot/): Endlessly reboot OpenPOWER hosts
+* [`tracing`](amboar/obmc-scripts/tracing/): Enable and clean up kernel tracepoints remotely
+* [`witherspoon-debug`](amboar/obmc-scripts/witherspoon-debug/): Deploy the debug tools tarball to Witherspoon BMCs
+
+### Maintainers
+
+* [`cla-signers`](emilyshaffer/cla-signers): Check if a contributor has signed the OpenBMC CLA
+
+### Project Administrators
+
+* [`autobump`](infra/): Update commit IDs in bitbake recipes to bring in new changes
 
 ## Sending patches
 
