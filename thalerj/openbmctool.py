@@ -456,7 +456,7 @@ def fruStatus(host, args, session):
                         frus[fruName] = {"compName": fruName, "Functional": boolToString(func), "Present":boolToString(present), "IsFru": boolToString(isFru), "selList": "None" }
                 else:
                     frus[fruName] = {"compName": fruName, "Functional": boolToString(func), "Present":boolToString(present), "IsFru": boolToString(isFru), "hasSEL": boolToString(hasSels) }
-        elif "power_supply" in fruName:
+        elif "power_supply" in fruName or "powersupply" in fruName:
             if component['Present'] ==1:
                 present = True
             isFru = True
@@ -1552,10 +1552,9 @@ def healthCheck(host, args, session):
     for key in frus:
         if frus[key]["Functional"] == "No" and frus[key]["Present"] == "Yes":
             hwStatus= "Degraded"
-            if("power_supply" in key):
-                gpuCount =0;
-                frulist = json.loads(fruList(host, args, session))
-                for comp in frulist:
+            if("power_supply" in key or "powersupply" in key):
+                gpuCount =0
+                for comp in frus:
                     if "gv100card" in comp:
                         gpuCount +=1
                 if gpuCount > 4:
