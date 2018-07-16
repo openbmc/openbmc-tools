@@ -28,6 +28,7 @@ import zipfile
 import tarfile
 import tempfile
 import hashlib
+import re
 
 def hilight(textToColor, color, bold):
     """
@@ -176,7 +177,29 @@ def boolToString(value):
     else:
         return "No"
 
+def stringToInt(text):
+    """
+        returns an integer if the string can be converted, otherwise returns the string
+        
+        @param text: the string to try to convert to an integer
+    """
+    if text.isdigit():
+        return int(text)
+    else:
+        return text
 
+def naturalSort(text):
+    """
+        provides a way to naturally sort a list
+    
+        @param text: the key to convert for sorting
+        @return list containing the broken up string parts by integers and strings
+    """
+    stringPartList = []
+    for c in re.split('(\d+)', text):
+        stringPartList.append(stringToInt(c))
+    return stringPartList
+    
 def tableDisplay(keylist, colNames, output):
     """
          Logs into the BMC and creates a session
@@ -193,8 +216,10 @@ def tableDisplay(keylist, colNames, output):
         if (i != 0): row = row + "| "
         row = row + colNames[i].ljust(colWidth[i])
     outputText += row + "\n"
-
-    for key in sorted(output.keys()):
+    
+    output_keys = list(output.keys())
+    output_keys.sort(key=naturalSort)
+    for key in output_keys:
         row = ""
         for i in range(len(output[key])):
             if (i != 0): row = row + "| "
