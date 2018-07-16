@@ -1943,8 +1943,9 @@ def createCommandParser():
     
     #fru command
     parser_inv = subparsers.add_parser("fru", help='Work with platform inventory')
-    #fru print
     inv_subparser = parser_inv.add_subparsers(title='subcommands', description='valid inventory actions', help="valid inventory actions", dest='command')
+    inv_subparser.required = True
+    #fru print
     inv_print = inv_subparser.add_parser("print", help="prints out a list of all FRUs")
     inv_print.set_defaults(func=fruPrint)
     #fru list [0....n]
@@ -1959,6 +1960,7 @@ def createCommandParser():
     #sensors command
     parser_sens = subparsers.add_parser("sensors", help="Work with platform sensors")
     sens_subparser=parser_sens.add_subparsers(title='subcommands', description='valid sensor actions', help='valid sensor actions', dest='command')
+    sens_subparser.required = True
     #sensor print
     sens_print= sens_subparser.add_parser('print', help="prints out a list of all Sensors.")
     sens_print.set_defaults(func=sensor)
@@ -1971,7 +1973,7 @@ def createCommandParser():
     #sel command
     parser_sel = subparsers.add_parser("sel", help="Work with platform alerts")
     sel_subparser = parser_sel.add_subparsers(title='subcommands', description='valid SEL actions', help = 'valid SEL actions', dest='command')
-    
+    sel_subparser.required = True
     #sel print
     sel_print = sel_subparser.add_parser("print", help="prints out a list of all sels in a condensed list")
     sel_print.add_argument('-d', '--devdebug', action='store_true', help=argparse.SUPPRESS)
@@ -2025,6 +2027,7 @@ def createCommandParser():
     #work with bmc dumps
     parser_bmcdump = subparsers.add_parser("dump", help="Work with bmc dump files")
     bmcDump_sub = parser_bmcdump.add_subparsers(title='subcommands', description='valid subcommands',help="sub-command help", dest='command')
+    bmcDump_sub.required = True
     dump_Create = bmcDump_sub.add_parser('create', help="Create a bmc dump")
     dump_Create.set_defaults(func=bmcDumpCreate)
     
@@ -2069,6 +2072,8 @@ def createCommandParser():
     #firmware_flash
     parser_fw = subparsers.add_parser("firmware", help="Work with the system firmware")
     fwflash_subproc = parser_fw.add_subparsers(title='subcommands', description='valid firmware commands', help='sub-command help', dest='command')
+    fwflash_subproc.required = True
+    
     fwflash = fwflash_subproc.add_parser('flash', help="Flash the system firmware")
     fwflash.add_argument('type', choices=['bmc', 'pnor'], help="image type to flash")
     fwflash.add_argument('-f', '--fileloc', required=True, help="The absolute path to the firmware image")
