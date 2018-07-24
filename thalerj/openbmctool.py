@@ -221,7 +221,7 @@ def tableDisplay(keylist, colNames, output):
     output_keys.sort(key=naturalSort)
     for key in output_keys:
         row = ""
-        for i in range(len(output[key])):
+        for i in range(len(keylist)):
             if (i != 0): row = row + "| "
             row = row + output[key][keylist[i]].ljust(colWidth[i])
         outputText += row + "\n"
