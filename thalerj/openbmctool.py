@@ -1919,9 +1919,119 @@ def fwFlash(host, args, session):
         
         d['imageID'] = newversionID
         return activateFWImage(host, args, session)
-    
-    
 
+def getFWInventoryAttributes(rawFWInvItem, ID):
+    """
+         gets and lists all of the firmware in the system. 
+           
+         @return: returns a dictionary containing the image attributes
+    """
+    reqActivation = rawFWInvItem["RequestedActivation"].split('.')[-1]
+    pendingActivation = ""
+    if reqActivation == "None":
+        pendingActivation = "No"
+    else:
+        pendingActivation = "Yes"
+    firmwareAttr = {ID: {
+        "Purpose": rawFWInvItem["Purpose"].split('.')[-1],
+        "Version": rawFWInvItem["Version"],
+        "RequestedActivation": pendingActivation,
+        "ID": ID}}
+        
+    if "ExtendedVersion" in rawFWInvItem:
+        firmwareAttr[ID]['ExtendedVersion'] = rawFWInvItem['ExtendedVersion'].split(',')
+    else: 
+        firmwareAttr[ID]['ExtendedVersion'] = ""
+    return firmwareAttr
+
+def parseFWdata(firmwareDict):
+    """
+         creates a dictionary with parsed firmware data 
+           
+         @return: returns a dictionary containing the image attributes
+    """
+    firmwareInfoDict = {"Functional": {}, "Activated":{}, "NeedsActivated":{}}
+    for key in firmwareDict['data']:
+        #check for valid endpoint
+        if "Purpose" in firmwareDict['data'][key]:
+            id = key.split('/')[-1]
+            if firmwareDict['data'][key]['Activation'].split('.')[-1] == "Active":
+                fwActivated = True
+            else:
+                fwActivated = False
+            if firmwareDict['data'][key]['Priority'] == 0:
+                firmwareInfoDict['Functional'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+            elif firmwareDict['data'][key]['Priority'] >= 0 and fwActivated:
+                firmwareInfoDict['Activated'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+            else:
+                firmwareInfoDict['Activated'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+    emptySections = []
+    for key in firmwareInfoDict:
+        if len(firmwareInfoDict[key])<=0:
+            emptySections.append(key)
+    for key in emptySections:
+        del firmwareInfoDict[key]
+    return firmwareInfoDict
+    
+def displayFWInvenory(firmwareInfoDict, args):
+    """
+         gets and lists all of the firmware in the system. 
+           
+         @return: returns a string containing all of the firmware information
+    """
+    output = ""
+    if not args.json:
+        for key in firmwareInfoDict:
+            for subkey in firmwareInfoDict[key]:
+                firmwareInfoDict[key][subkey]['ExtendedVersion'] = str(firmwareInfoDict[key][subkey]['ExtendedVersion'])
+        if not args.verbose:
+            output = "---Running Images---\n"               
+            colNames = ["Purpose", "Version", "ID"]
+            keylist = ["Purpose", "Version", "ID"]
+            output += tableDisplay(keylist, colNames, firmwareInfoDict["Functional"])
+            if "Activated" in firmwareInfoDict:
+                output += "\n---Available Images---\n" 
+                output += tableDisplay(keylist, colNames, firmwareInfoDict["Activated"])
+            if "NeedsActivated" in firmwareInfoDict:
+                output += "\n---Needs Activated Images---\n" 
+                output += tableDisplay(keylist, colNames, firmwareInfoDict["NeedsActivated"])
+             
+        else:
+            output = "---Running Images---\n"               
+            colNames = ["Purpose", "Version", "ID", "Pending Activation", "Extended Version"]
+            keylist = ["Purpose", "Version", "ID", "RequestedActivation", "ExtendedVersion"]
+            output += tableDisplay(keylist, colNames, firmwareInfoDict["Functional"])
+            if "Activated" in firmwareInfoDict:
+                output += "\n---Available Images---\n" 
+                output += tableDisplay(keylist, colNames, firmwareInfoDict["Activated"])
+            if "NeedsActivated" in firmwareInfoDict:
+                output += "\n---Needs Activated Images---\n" 
+                output += tableDisplay(keylist, colNames, firmwareInfoDict["NeedsActivated"])
+        return output
+    else:
+        return str(json.dumps(firmwareInfoDict, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False))
+
+def firmwareList(host, args, session):    
+    """
+         gets and lists all of the firmware in the system. 
+           
+         @return: returns a string containing all of the firmware information
+    """
+    httpHeader = {'Content-Type':'application/json'}
+    url="https://{hostname}/xyz/openbmc_project/software/enumerate".format(hostname=host)
+    try:
+        res = session.get(url, headers=httpHeader, verify=False, timeout=40)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    firmwareDict = json.loads(res.text)
+    
+    #sort the received information
+    firmwareInfoDict = parseFWdata(firmwareDict)
+    
+    #display the information
+    return displayFWInvenory(firmwareInfoDict, args)
+    
+    
 def createCommandParser():
     """
          creates the parser for the command line along with help for each command and subcommand
@@ -2086,6 +2196,13 @@ def createCommandParser():
     fwActivateStatus = fwflash_subproc.add_parser('activation_status', help="Check Status of activations")
     fwActivateStatus.set_defaults(func=activateStatus)
 
+    fwList = fwflash_subproc.add_parser('list', help="List all of the installed firmware")
+    fwList.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+    fwList.set_defaults(func=firmwareList)
+    
+    fwprint = fwflash_subproc.add_parser('print', help="List all of the installed firmware")
+    fwprint.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+    fwprint.set_defaults(func=firmwareList)
     
     return parser
 
