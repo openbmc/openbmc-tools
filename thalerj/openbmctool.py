@@ -28,6 +28,7 @@ import zipfile
 import tarfile
 import tempfile
 import hashlib
+import re
 
 def hilight(textToColor, color, bold):
     """
@@ -176,7 +177,29 @@ def boolToString(value):
     else:
         return "No"
 
+def stringToInt(text):
+    """
+        returns an integer if the string can be converted, otherwise returns the string
+        
+        @param text: the string to try to convert to an integer
+    """
+    if text.isdigit():
+        return int(text)
+    else:
+        return text
 
+def naturalSort(text):
+    """
+        provides a way to naturally sort a list
+    
+        @param text: the key to convert for sorting
+        @return list containing the broken up string parts by integers and strings
+    """
+    stringPartList = []
+    for c in re.split('(\d+)', text):
+        stringPartList.append(stringToInt(c))
+    return stringPartList
+    
 def tableDisplay(keylist, colNames, output):
     """
          Logs into the BMC and creates a session
@@ -193,10 +216,12 @@ def tableDisplay(keylist, colNames, output):
         if (i != 0): row = row + "| "
         row = row + colNames[i].ljust(colWidth[i])
     outputText += row + "\n"
-
-    for key in sorted(output.keys()):
+    
+    output_keys = list(output.keys())
+    output_keys.sort(key=naturalSort)
+    for key in output_keys:
         row = ""
-        for i in range(len(output[key])):
+        for i in range(len(keylist)):
             if (i != 0): row = row + "| "
             row = row + output[key][keylist[i]].ljust(colWidth[i])
         outputText += row + "\n"
@@ -431,7 +456,7 @@ def fruStatus(host, args, session):
                         frus[fruName] = {"compName": fruName, "Functional": boolToString(func), "Present":boolToString(present), "IsFru": boolToString(isFru), "selList": "None" }
                 else:
                     frus[fruName] = {"compName": fruName, "Functional": boolToString(func), "Present":boolToString(present), "IsFru": boolToString(isFru), "hasSEL": boolToString(hasSels) }
-        elif "power_supply" in fruName:
+        elif "power_supply" in fruName or "powersupply" in fruName:
             if component['Present'] ==1:
                 present = True
             isFru = True
@@ -1527,10 +1552,9 @@ def healthCheck(host, args, session):
     for key in frus:
         if frus[key]["Functional"] == "No" and frus[key]["Present"] == "Yes":
             hwStatus= "Degraded"
-            if("power_supply" in key):
-                gpuCount =0;
-                frulist = json.loads(fruList(host, args, session))
-                for comp in frulist:
+            if("power_supply" in key or "powersupply" in key):
+                gpuCount =0
+                for comp in frus:
                     if "gv100card" in comp:
                         gpuCount +=1
                 if gpuCount > 4:
@@ -1895,9 +1919,119 @@ def fwFlash(host, args, session):
         
         d['imageID'] = newversionID
         return activateFWImage(host, args, session)
-    
-    
 
+def getFWInventoryAttributes(rawFWInvItem, ID):
+    """
+         gets and lists all of the firmware in the system. 
+           
+         @return: returns a dictionary containing the image attributes
+    """
+    reqActivation = rawFWInvItem["RequestedActivation"].split('.')[-1]
+    pendingActivation = ""
+    if reqActivation == "None":
+        pendingActivation = "No"
+    else:
+        pendingActivation = "Yes"
+    firmwareAttr = {ID: {
+        "Purpose": rawFWInvItem["Purpose"].split('.')[-1],
+        "Version": rawFWInvItem["Version"],
+        "RequestedActivation": pendingActivation,
+        "ID": ID}}
+        
+    if "ExtendedVersion" in rawFWInvItem:
+        firmwareAttr[ID]['ExtendedVersion'] = rawFWInvItem['ExtendedVersion'].split(',')
+    else: 
+        firmwareAttr[ID]['ExtendedVersion'] = ""
+    return firmwareAttr
+
+def parseFWdata(firmwareDict):
+    """
+         creates a dictionary with parsed firmware data 
+           
+         @return: returns a dictionary containing the image attributes
+    """
+    firmwareInfoDict = {"Functional": {}, "Activated":{}, "NeedsActivated":{}}
+    for key in firmwareDict['data']:
+        #check for valid endpoint
+        if "Purpose" in firmwareDict['data'][key]:
+            id = key.split('/')[-1]
+            if firmwareDict['data'][key]['Activation'].split('.')[-1] == "Active":
+                fwActivated = True
+            else:
+                fwActivated = False
+            if firmwareDict['data'][key]['Priority'] == 0:
+                firmwareInfoDict['Functional'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+            elif firmwareDict['data'][key]['Priority'] >= 0 and fwActivated:
+                firmwareInfoDict['Activated'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+            else:
+                firmwareInfoDict['Activated'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+    emptySections = []
+    for key in firmwareInfoDict:
+        if len(firmwareInfoDict[key])<=0:
+            emptySections.append(key)
+    for key in emptySections:
+        del firmwareInfoDict[key]
+    return firmwareInfoDict
+    
+def displayFWInvenory(firmwareInfoDict, args):
+    """
+         gets and lists all of the firmware in the system. 
+           
+         @return: returns a string containing all of the firmware information
+    """
+    output = ""
+    if not args.json:
+        for key in firmwareInfoDict:
+            for subkey in firmwareInfoDict[key]:
+                firmwareInfoDict[key][subkey]['ExtendedVersion'] = str(firmwareInfoDict[key][subkey]['ExtendedVersion'])
+        if not args.verbose:
+            output = "---Running Images---\n"               
+            colNames = ["Purpose", "Version", "ID"]
+            keylist = ["Purpose", "Version", "ID"]
+            output += tableDisplay(keylist, colNames, firmwareInfoDict["Functional"])
+            if "Activated" in firmwareInfoDict:
+                output += "\n---Available Images---\n" 
+                output += tableDisplay(keylist, colNames, firmwareInfoDict["Activated"])
+            if "NeedsActivated" in firmwareInfoDict:
+                output += "\n---Needs Activated Images---\n" 
+                output += tableDisplay(keylist, colNames, firmwareInfoDict["NeedsActivated"])
+             
+        else:
+            output = "---Running Images---\n"               
+            colNames = ["Purpose", "Version", "ID", "Pending Activation", "Extended Version"]
+            keylist = ["Purpose", "Version", "ID", "RequestedActivation", "ExtendedVersion"]
+            output += tableDisplay(keylist, colNames, firmwareInfoDict["Functional"])
+            if "Activated" in firmwareInfoDict:
+                output += "\n---Available Images---\n" 
+                output += tableDisplay(keylist, colNames, firmwareInfoDict["Activated"])
+            if "NeedsActivated" in firmwareInfoDict:
+                output += "\n---Needs Activated Images---\n" 
+                output += tableDisplay(keylist, colNames, firmwareInfoDict["NeedsActivated"])
+        return output
+    else:
+        return str(json.dumps(firmwareInfoDict, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False))
+
+def firmwareList(host, args, session):    
+    """
+         gets and lists all of the firmware in the system. 
+           
+         @return: returns a string containing all of the firmware information
+    """
+    httpHeader = {'Content-Type':'application/json'}
+    url="https://{hostname}/xyz/openbmc_project/software/enumerate".format(hostname=host)
+    try:
+        res = session.get(url, headers=httpHeader, verify=False, timeout=40)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    firmwareDict = json.loads(res.text)
+    
+    #sort the received information
+    firmwareInfoDict = parseFWdata(firmwareDict)
+    
+    #display the information
+    return displayFWInvenory(firmwareInfoDict, args)
+    
+    
 def createCommandParser():
     """
          creates the parser for the command line along with help for each command and subcommand
@@ -1919,8 +2053,9 @@ def createCommandParser():
     
     #fru command
     parser_inv = subparsers.add_parser("fru", help='Work with platform inventory')
-    #fru print
     inv_subparser = parser_inv.add_subparsers(title='subcommands', description='valid inventory actions', help="valid inventory actions", dest='command')
+    inv_subparser.required = True
+    #fru print
     inv_print = inv_subparser.add_parser("print", help="prints out a list of all FRUs")
     inv_print.set_defaults(func=fruPrint)
     #fru list [0....n]
@@ -1935,6 +2070,7 @@ def createCommandParser():
     #sensors command
     parser_sens = subparsers.add_parser("sensors", help="Work with platform sensors")
     sens_subparser=parser_sens.add_subparsers(title='subcommands', description='valid sensor actions', help='valid sensor actions', dest='command')
+    sens_subparser.required = True
     #sensor print
     sens_print= sens_subparser.add_parser('print', help="prints out a list of all Sensors.")
     sens_print.set_defaults(func=sensor)
@@ -1947,7 +2083,7 @@ def createCommandParser():
     #sel command
     parser_sel = subparsers.add_parser("sel", help="Work with platform alerts")
     sel_subparser = parser_sel.add_subparsers(title='subcommands', description='valid SEL actions', help = 'valid SEL actions', dest='command')
-    
+    sel_subparser.required = True
     #sel print
     sel_print = sel_subparser.add_parser("print", help="prints out a list of all sels in a condensed list")
     sel_print.add_argument('-d', '--devdebug', action='store_true', help=argparse.SUPPRESS)
@@ -2001,6 +2137,7 @@ def createCommandParser():
     #work with bmc dumps
     parser_bmcdump = subparsers.add_parser("dump", help="Work with bmc dump files")
     bmcDump_sub = parser_bmcdump.add_subparsers(title='subcommands', description='valid subcommands',help="sub-command help", dest='command')
+    bmcDump_sub.required = True
     dump_Create = bmcDump_sub.add_parser('create', help="Create a bmc dump")
     dump_Create.set_defaults(func=bmcDumpCreate)
     
@@ -2045,6 +2182,8 @@ def createCommandParser():
     #firmware_flash
     parser_fw = subparsers.add_parser("firmware", help="Work with the system firmware")
     fwflash_subproc = parser_fw.add_subparsers(title='subcommands', description='valid firmware commands', help='sub-command help', dest='command')
+    fwflash_subproc.required = True
+    
     fwflash = fwflash_subproc.add_parser('flash', help="Flash the system firmware")
     fwflash.add_argument('type', choices=['bmc', 'pnor'], help="image type to flash")
     fwflash.add_argument('-f', '--fileloc', required=True, help="The absolute path to the firmware image")
@@ -2057,6 +2196,13 @@ def createCommandParser():
     fwActivateStatus = fwflash_subproc.add_parser('activation_status', help="Check Status of activations")
     fwActivateStatus.set_defaults(func=activateStatus)
 
+    fwList = fwflash_subproc.add_parser('list', help="List all of the installed firmware")
+    fwList.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+    fwList.set_defaults(func=firmwareList)
+    
+    fwprint = fwflash_subproc.add_parser('print', help="List all of the installed firmware")
+    fwprint.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+    fwprint.set_defaults(func=firmwareList)
     
     return parser
 
@@ -2065,7 +2211,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application  
     """ 
     global toolVersion 
-    toolVersion = "1.04"
+    toolVersion = "1.06"
     parser = createCommandParser()
     args = parser.parse_args(argv)
         
