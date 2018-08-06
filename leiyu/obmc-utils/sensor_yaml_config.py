@@ -3,6 +3,17 @@
 import yaml
 import argparse
 
+from typing import NamedTuple
+
+class RptSensor(NamedTuple):
+    name: str
+    entityId: int
+    typeId: int
+    evtType: int
+    sensorId: int
+    fru: int
+    targetPath: str
+
 entityIds = {
     'dimm': 32,
     'core': 208,
@@ -61,6 +72,26 @@ def getEntityInstance(id):
     print("EntityId:", id, "InstanceId:", instanceId)
     return instanceId
 
+def loadRpt(rptFile):
+    sensors = []
+    with open(rptFile) as f:
+        next(f)
+        next(f)
+        for line in f:
+            fields = line.strip().split('|')
+            fields = list(map(str.strip, fields))
+            sensor = RptSensor(
+                    fields[0],
+                    int(fields[2], 16) if fields[2] else None,
+                    int(fields[3], 16) if fields[3] else None,
+                    int(fields[4], 16) if fields[4] else None,
+                    int(fields[5], 16) if fields[5] else None,
+                    int(fields[7], 16) if fields[7] else None,
+                    fields[9])
+            #print(sensor)
+            sensors.append(sensor)
+    return sensors
+
 def main():
     parser = argparse.ArgumentParser(
         description='Yaml tool for updating ipmi sensor yaml config')
@@ -80,11 +111,16 @@ def main():
         parser.print_help()
         exit(1)
 
-# TODO: read rtp and generate the whole config yaml
-#    if args['rpt']:
-#        pass
-
     y = openYaml(args['input'])
+
+    sensorIds = list(y.keys())
+    if args['rpt']:
+        rptSensors = loadRpt(args['rpt'])
+        for s in rptSensors:
+            if s.sensorId is not None and s.sensorId not in sensorIds:
+                print("Sensor ID:", s.sensorId, " not in yaml, path", s.targetPath);
+        # TODO: add new items in yaml with missing sensors
+        return
 
     if args['entity']:
         #Fix entities
