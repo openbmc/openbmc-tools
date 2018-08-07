@@ -20,6 +20,7 @@ entityIds = {
     'dimm': 32,
     'core': 208,
     'cpu': 3,
+    'occ': 210,
     'gpu': 216,
     'gpu_mem': 217,
     'tpm': 3,
@@ -35,7 +36,6 @@ entityIds = {
     'current': 10,
     'temperature/pcie': 35,
     'temperature/ambient': 64,
-    'occ': 210,
     'control/volatile': 33,
 }
 
@@ -47,12 +47,72 @@ extraIds = {
 }
 
 
+sampleDimmTemp = {
+    'bExp': 0,
+    'entityID': 32,
+    'entityInstance': 2,
+    'interfaces': {
+        'xyz.openbmc_project.Sensor.Value': {
+            'Value': {
+                'Offsets': {
+                    255: {
+                        'type': 'int64_t'
+                    }
+                }
+            }
+        }
+    },
+    'multiplierM': 1,
+    'mutability': 'Mutability::Write|Mutability::Read',
+    'offsetB': -127,
+    'path': '/xyz/openbmc_project/sensors/temperature/dimm0_temp',
+    'rExp': 0,
+    'readingType': 'readingData',
+    'scale': -3,
+    'sensorNamePattern': 'nameLeaf',
+    'sensorReadingType': 1,
+    'sensorType': 1,
+    'serviceInterface': 'org.freedesktop.DBus.Properties',
+    'unit': 'xyz.openbmc_project.Sensor.Value.Unit.DegreesC'
+}
+sampleCoreTemp = {
+    'bExp': 0,
+    'entityID': 208,
+    'entityInstance': 2,
+    'interfaces': {
+        'xyz.openbmc_project.Sensor.Value': {
+            'Value': {
+                'Offsets': {
+                    255: {
+                        'type': 'int64_t'
+                    }
+                }
+            }
+        }
+    },
+    'multiplierM': 1,
+    'mutability': 'Mutability::Write|Mutability::Read',
+    'offsetB': -127,
+    'path': '/xyz/openbmc_project/sensors/temperature/p0_core0_temp',
+    'rExp': 0,
+    'readingType': 'readingData',
+    'scale': -3,
+    'sensorNamePattern': 'nameLeaf',
+    'sensorReadingType': 1,
+    'sensorType': 1,
+    'serviceInterface': 'org.freedesktop.DBus.Properties',
+    'unit': 'xyz.openbmc_project.Sensor.Value.Unit.DegreesC'
+}
+
+
 def openYaml(f):
     return yaml.load(open(f))
 
 
 def saveYaml(y, f):
-    yaml.dump(y, open(f, "w"))
+    noaliasDumper = yaml.dumper.SafeDumper
+    noaliasDumper.ignore_aliases = lambda self, data: True
+    yaml.dump(y, open(f, "w"), default_flow_style=False, Dumper=noaliasDumper)
 
 
 def getEntityId(p, i):
@@ -102,6 +162,39 @@ def loadRpt(rptFile):
     return sensors
 
 
+def getDimmTempPath(p):
+    # Convert path like: /sys-0/node-0/motherboard-0/dimmconn-0/dimm-0
+    # to: /xyz/openbmc_project/sensors/temperature/dimm0_temp
+    import re
+    dimmconn = re.search(r'dimmconn-\d+', p).group()
+    dimmId = re.search(r'\d+', dimmconn).group()
+    return '/xyz/openbmc_project/sensors/temperature/dimm{}_temp'.format(dimmId)
+
+
+def getCoreTempPath(p):
+    # Convert path like: /sys-0/node-0/motherboard-0/proc_socket-0/module-0/p9_proc_s/eq0/ex0/core0
+    # to: /xyz/openbmc_project/sensors/temperature/p0_core0_temp
+    import re
+    splitted = p.split('/')
+    socket = re.search(r'\d+', splitted[4]).group()
+    core = re.search(r'\d+', splitted[9]).group()
+    return '/xyz/openbmc_project/sensors/temperature/p{}_core{}_temp'.format(socket, core)
+
+
+def getDimmTempConfig(s):
+    r = sampleDimmTemp.copy()
+    r['entityInstance'] = getEntityInstance(r['entityID'])
+    r['path'] = getDimmTempPath(s.targetPath)
+    return r
+
+
+def getCoreTempConfig(s):
+    r = sampleCoreTemp.copy()
+    r['entityInstance'] = getEntityInstance(r['entityID'])
+    r['path'] = getCoreTempPath(s.targetPath)
+    return r
+
+
 def main():
     parser = argparse.ArgumentParser(
         description='Yaml tool for updating ipmi sensor yaml config')
@@ -143,6 +236,23 @@ def main():
             y[i]['entityInstance'] = getEntityInstance(entityId)
             print(y[i]['path'], "id:", entityId,
                   "instance:", y[i]['entityInstance'])
+
+    sensorIds = list(y.keys())
+    if args['rpt']:
+        rptSensors = loadRpt(args['rpt'])
+        for s in rptSensors:
+            if s.sensorId is not None and s.sensorId not in sensorIds:
+                print("Sensor ID", s.sensorId, "not in yaml:",
+                      s.name, ", path:", s.targetPath)
+                if 'temp' in s.name.lower():
+                    if 'dimm' in s.targetPath.lower():
+                        y[s.sensorId] = getDimmTempConfig(s)
+                        print('Added sensor id:', s.sensorId,
+                              ', path:', y[s.sensorId]['path'])
+                    if 'core' in s.targetPath.lower():
+                        y[s.sensorId] = getCoreTempConfig(s)
+                        print('Added sensor id:', s.sensorId,
+                              ', path:', y[s.sensorId]['path'])
 
     saveYaml(y, args['output'])
 
