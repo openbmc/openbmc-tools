@@ -20,3 +20,7 @@ A tool to help write IPMI sensor yaml config.
    ```
    sensor_yaml_config.py -i <input.yaml> -o <output.yaml> -e -r <machine.rpt>
    ```
+   * To generate a sensor map from example yaml config, which could be used for future:
+   ```
+   sensor_yaml_config.py -i <sample.yaml> -o <sensor_map.yaml> -g
+   ```
