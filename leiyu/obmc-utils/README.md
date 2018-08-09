@@ -24,3 +24,7 @@ A tool to help write IPMI sensor yaml config.
    ```
    sensor_yaml_config.py -i <sample.yaml> -o <sensor_map.yaml> -g
    ```
+   * To generate a DCMI sensor json config, which is used by phosphor-ipmi-config:
+   ```
+   sensor_yaml_config.py -i <input.yaml> -o <output.json> -d
+   ```
