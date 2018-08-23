@@ -72,6 +72,34 @@ sampleCoreTemp = {
     'serviceInterface': 'org.freedesktop.DBus.Properties',
     'unit': 'xyz.openbmc_project.Sensor.Value.Unit.DegreesC'
 }
+samplePower = {
+    'bExp': 0,
+    'entityID': 10,
+    'entityInstance': 13,
+    'interfaces': {
+        'xyz.openbmc_project.Sensor.Value': {
+            'Value': {
+                'Offsets': {
+                    255: {
+                        'type': 'int64_t'
+                    }
+                }
+            }
+        }
+    },
+    'multiplierM': 2,
+    'offsetB': 0,
+    'path': '/xyz/openbmc_project/sensors/power/p0_power',
+    'rExp': 0,
+    'readingType': 'readingData',
+    'scale': -6,
+    'sensorNamePattern': 'nameLeaf',
+    'sensorReadingType': 1,
+    'sensorType': 8,
+    'serviceInterface': 'org.freedesktop.DBus.Properties',
+    'unit': 'xyz.openbmc_project.Sensor.Value.Unit.Watts'
+}
+
 sampleDcmiSensor = {
     "instance": 1,
     "dbus": "/xyz/openbmc_project/sensors/temperature/p0_core0_temp",
@@ -173,6 +201,51 @@ def getCoreTempPath(name, p):
         return '/xyz/openbmc_project/sensors/temperature/core{}_temp'.format(core)
 
 
+def getPowerPath(name):
+    # Convert name like Proc0_Power
+    # to: /xyz/openbmc_project/sensors/power/p0_power
+    import re
+    r = re.search(r'\d+', name)
+    if r:
+        index = r.group()
+    else:
+        # Handle cases like IO_A_Power, Storage_Power_A
+        r = re.search(r'_[A|B|C|D]', name).group()[-1]
+        index = str(ord(r) - ord('A'))
+    prefix = 'p'
+    m = None
+    if 'memory_proc' in name.lower():
+        prefix = None
+        m = 'centaur'
+    elif 'pcie_proc' in name.lower():
+        m = 'pcie'
+    elif 'io' in name.lower():
+        m = 'io'
+    elif 'fan' in name.lower():
+        m = 'fan'
+    elif 'storage' in name.lower():
+        m = 'disk'
+    elif 'total' in name.lower():
+        prefix = None
+        m = 'total'
+    elif 'proc' in name.lower():
+        # Default
+        pass
+
+    ret = '/xyz/openbmc_project/sensors/power/'
+    if prefix:
+        ret = ret + prefix + index
+    if m:
+        if prefix:
+            ret = ret + '_' + m
+        else:
+            ret = ret + m
+    if prefix is None:
+        ret = ret + index
+    ret = ret + '_power'
+    return ret
+
+
 def getDimmTempConfig(s):
     r = sampleDimmTemp.copy()
     r['entityInstance'] = getEntityInstance(r['entityID'])
@@ -192,6 +265,13 @@ def getCoreTempConfig(s):
     r = sampleCoreTemp.copy()
     r['entityInstance'] = getEntityInstance(r['entityID'])
     r['path'] = getCoreTempPath(s.name, s.targetPath)
+    return r
+
+
+def getPowerConfig(s):
+    r = samplePower.copy()
+    r['entityInstance'] = getEntityInstance(r['entityID'])
+    r['path'] = getPowerPath(s.name)
     return r
 
 
@@ -276,21 +356,24 @@ def main():
             if s.sensorId is not None and s.sensorId not in sensorIds:
                 print("Sensor ID", s.sensorId, "not in yaml:",
                       s.name, ", path:", s.targetPath)
+                isAdded = False
                 if 'temp' in s.name.lower():
                     if 'dimm' in s.targetPath.lower():
                         y[s.sensorId] = getDimmTempConfig(s)
-                        print('Added sensor id:', s.sensorId,
-                              ', path:', y[s.sensorId]['path'])
+                        isAdded = True
                     elif 'core' in s.targetPath.lower():
                         y[s.sensorId] = getCoreTempConfig(s)
-                        print('Added sensor id:', s.sensorId,
-                              ', path:', y[s.sensorId]['path'])
+                        isAdded = True
                     elif 'centaur' in s.name.lower() or 'membuf' in s.name.lower():
                         y[s.sensorId] = getMembufTempConfig(s)
-                        print('Added sensor id:', s.sensorId,
-                              ', path:', y[s.sensorId]['path'])
-                    else:
-                        unhandledSensors.append(s)
+                        isAdded = True
+                elif s.name.lower().endswith('_power'):
+                    y[s.sensorId] = getPowerConfig(s)
+                    isAdded = True
+
+                if isAdded:
+                    print('Added sensor id:', s.sensorId,
+                          ', path:', y[s.sensorId]['path'])
                 else:
                     unhandledSensors.append(s)
 
