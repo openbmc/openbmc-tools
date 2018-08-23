@@ -11,6 +11,10 @@
 - !!python/tuple [xyz.openbmc_project.Object.Enable]
 : {entityID: 33, sensorNamePattern: nameLeaf}
 ? !!python/tuple
+- /system/chassis/motherboard/cpu
+- !!python/tuple [xyz.openbmc_project.Inventory.Item, xyz.openbmc_project.State.Decorator.OperationalStatus]
+: {entityID: 3, sensorNamePattern: nameLeaf}
+? !!python/tuple
 - /system/chassis/motherboard/cpu0
 - !!python/tuple [xyz.openbmc_project.Inventory.Item, xyz.openbmc_project.State.Decorator.OperationalStatus]
 : {entityID: 3, sensorNamePattern: nameLeaf}
