@@ -97,6 +97,11 @@ def getEntityIdAndNamePattern(p, intfs, m):
     key = (p, intfs)
     match = m.get(key, None)
     if match is None:
+        # Workaround for P8's occ sensors, where the path look like
+        # /org/open_power/control/occ_3_0050
+        if '/org/open_power/control/occ' in p \
+           and 'org.open_power.OCC.Status' in intfs:
+            return (210, 'nameLeaf')
         raise Exception('Unable to find sensor', key, 'from map')
     return (m[key]['entityID'], m[key]['sensorNamePattern'])
 
@@ -143,14 +148,29 @@ def getDimmTempPath(p):
     return '/xyz/openbmc_project/sensors/temperature/dimm{}_temp'.format(dimmId)
 
 
-def getCoreTempPath(p):
-    # Convert path like: /sys-0/node-0/motherboard-0/proc_socket-0/module-0/p9_proc_s/eq0/ex0/core0
+def getMembufTempPath(name):
+    # Convert names like MEMBUF0_Temp or CENTAUR0_Temp
+    # to: /xyz/openbmc_project/sensors/temperature/membuf0_temp
+    # to: /xyz/openbmc_project/sensors/temperature/centaur0_temp
+    return '/xyz/openbmc_project/sensors/temperature/{}'.format(name.lower())
+
+
+def getCoreTempPath(name, p):
+    # For different rpts:
+    # Convert path like:
+    #   /sys-0/node-0/motherboard-0/proc_socket-0/module-0/p9_proc_s/eq0/ex0/core0 (for P9)
     # to: /xyz/openbmc_project/sensors/temperature/p0_core0_temp
+    # or name like: CORE0_Temp (for P8)
+    # to: /xyz/openbmc_project/sensors/temperature/core0_temp (for P8)
     import re
-    splitted = p.split('/')
-    socket = re.search(r'\d+', splitted[4]).group()
-    core = re.search(r'\d+', splitted[9]).group()
-    return '/xyz/openbmc_project/sensors/temperature/p{}_core{}_temp'.format(socket, core)
+    if 'p9_proc' in p:
+        splitted = p.split('/')
+        socket = re.search(r'\d+', splitted[4]).group()
+        core = re.search(r'\d+', splitted[9]).group()
+        return '/xyz/openbmc_project/sensors/temperature/p{}_core{}_temp'.format(socket, core)
+    else:
+        core = re.search(r'\d+', name).group()
+        return '/xyz/openbmc_project/sensors/temperature/core{}_temp'.format(core)
 
 
 def getDimmTempConfig(s):
@@ -160,10 +180,18 @@ def getDimmTempConfig(s):
     return r
 
 
+def getMembufTempConfig(s):
+    r = sampleDimmTemp.copy()
+    r['entityID'] = 0xD1
+    r['entityInstance'] = getEntityInstance(r['entityID'])
+    r['path'] = getMembufTempPath(s.name)
+    return r
+
+
 def getCoreTempConfig(s):
     r = sampleCoreTemp.copy()
     r['entityInstance'] = getEntityInstance(r['entityID'])
-    r['path'] = getCoreTempPath(s.targetPath)
+    r['path'] = getCoreTempPath(s.name, s.targetPath)
     return r
 
 
@@ -242,6 +270,7 @@ def main():
 
     sensorIds = list(y.keys())
     if args['rpt']:
+        unhandledSensors = []
         rptSensors = loadRpt(args['rpt'])
         for s in rptSensors:
             if s.sensorId is not None and s.sensorId not in sensorIds:
@@ -252,10 +281,22 @@ def main():
                         y[s.sensorId] = getDimmTempConfig(s)
                         print('Added sensor id:', s.sensorId,
                               ', path:', y[s.sensorId]['path'])
-                    if 'core' in s.targetPath.lower():
+                    elif 'core' in s.targetPath.lower():
                         y[s.sensorId] = getCoreTempConfig(s)
                         print('Added sensor id:', s.sensorId,
                               ', path:', y[s.sensorId]['path'])
+                    elif 'centaur' in s.name.lower() or 'membuf' in s.name.lower():
+                        y[s.sensorId] = getMembufTempConfig(s)
+                        print('Added sensor id:', s.sensorId,
+                              ', path:', y[s.sensorId]['path'])
+                    else:
+                        unhandledSensors.append(s)
+                else:
+                    unhandledSensors.append(s)
+
+        print('Unhandled sensors:')
+        for s in unhandledSensors:
+            print(s)
 
     if args['generate']:
         m = {}
