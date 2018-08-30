@@ -43,6 +43,7 @@ and we aim to make the process as easy as possible.
 ### Project Administrators
 
 * [`autobump`](infra/): Update commit IDs in bitbake recipes to bring in new changes
+* [`openbmc-autobump.py`](infra/): Update commit IDs in bitbake recipes to bring in new changes
 
 ## Sending patches
 
