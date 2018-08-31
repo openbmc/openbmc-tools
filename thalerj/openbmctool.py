@@ -758,12 +758,17 @@ def parseAlerts(policyTable, selEntries, args):
                     fruCallout = str(addDataPiece[calloutIndex]).split('=')[1]
                 if("CALLOUT_DEVICE_PATH" in addDataPiece[i]):
                     i2creadFail = True
-                    i2cdevice = str(addDataPiece[i]).strip().split('=')[1]
-                    i2cdevice = '/'.join(i2cdevice.split('/')[-4:])
-                    if 'fsi' in str(addDataPiece[calloutIndex]).split('=')[1]:
-                        fruCallout = 'FSI'
-                    else:
-                        fruCallout = 'I2C'
+
+                    fruCallout = str(addDataPiece[calloutIndex]).split('=')[1]
+
+                    # Fall back to "I2C"/"FSI" if dev path isn't in policy table
+                    if (messageID + '||' + fruCallout) not in policyTable:
+                        i2cdevice = str(addDataPiece[i]).strip().split('=')[1]
+                        i2cdevice = '/'.join(i2cdevice.split('/')[-4:])
+                        if 'fsi' in str(addDataPiece[calloutIndex]).split('=')[1]:
+                            fruCallout = 'FSI'
+                        else:
+                            fruCallout = 'I2C'
                     calloutFound = True
                 if("CALLOUT_GPIO_NUM" in addDataPiece[i]):
                     if not calloutFound:
