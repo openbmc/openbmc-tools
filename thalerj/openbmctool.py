@@ -2031,7 +2031,34 @@ def firmwareList(host, args, session):
     #display the information
     return displayFWInvenory(firmwareInfoDict, args)
     
-    
+ 
+def restLogging(host, args, session):
+    """
+         Called by the logging function. Turns REST API logging on/off.
+           
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the logging sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption 
+    """
+
+    url="https://"+host+"/xyz/openbmc_project/logging/rest_api_logs/attr/Enabled"
+    httpHeader = {'Content-Type':'application/json'}
+
+    if(args.rest_logging == 'on'):
+        data = '{"data": 1}'
+    elif(args.rest_logging == 'off'):
+        data = '{"data": 0}'
+    else:
+        return "Invalid logging rest_api command"
+
+    try:
+        res = session.put(url, headers=httpHeader, data=data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    return res.text
+
+
 def createCommandParser():
     """
          creates the parser for the command line along with help for each command and subcommand
@@ -2204,6 +2231,15 @@ def createCommandParser():
     fwprint.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
     fwprint.set_defaults(func=firmwareList)
     
+    #logging
+    parser_logging = subparsers.add_parser("logging", help="logging controls")
+    logging_sub = parser_logging.add_subparsers(title='subcommands', description='valid subcommands',help="sub-command help", dest='command')
+    
+    #turn rest api logging on/off
+    parser_rest_logging = logging_sub.add_parser("rest_api", help="turn rest api logging on/off")
+    parser_rest_logging.add_argument('rest_logging', choices=['on', 'off'], help='The control option for rest logging: on, off')
+    parser_rest_logging.set_defaults(func=restLogging)
+    
     return parser
 
 def main(argv=None):
@@ -2261,7 +2297,8 @@ def main(argv=None):
         else:
             print("usage: openbmctool.py [-h] -H HOST -U USER [-A | -P PW] [-j]\n" +
                       "\t[-t POLICYTABLELOC] [-V]\n" +
-                      "\t{fru,sensors,sel,chassis,collect_service_data,health_check,dump,bmc,mc,gardclear,firmware}\n" +
+                      "\t{fru,sensors,sel,chassis,collect_service_data, \
+                          health_check,dump,bmc,mc,gardclear,firmware,logging}\n" +
                       "\t...\n" +
                       "openbmctool.py: error: the following arguments are required: -H/--host, -U/--user")
             sys.exit()  
