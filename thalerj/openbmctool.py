@@ -2059,6 +2059,53 @@ def restLogging(host, args, session):
     return res.text
 
 
+def remoteLogging(host, args, session):
+    """
+         Called by the logging function. View config information for/disable remote logging (rsyslog).
+           
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the logging sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption 
+    """
+
+    url="https://"+host+"/xyz/openbmc_project/logging/config/remote"
+    httpHeader = {'Content-Type':'application/json'}
+
+    try:
+        if(args.remote_logging == 'view'):
+            res = session.get(url, headers=httpHeader, verify=False, timeout=30)
+        elif(args.remote_logging == 'disable'):
+            res = session.put(url + '/attr/Port', headers=httpHeader, json = {"data": 0}, verify=False, timeout=30)
+            res = session.put(url + '/attr/Address', headers=httpHeader, json = {"data": ""}, verify=False, timeout=30)
+        else:
+            return "Invalid logging remote_logging command"
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    return res.text
+
+
+def remoteLoggingConfig(host, args, session):
+    """
+         Called by the logging function. Configures remote logging (rsyslog).
+           
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the logging sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption 
+    """
+
+    url="https://"+host+"/xyz/openbmc_project/logging/config/remote"
+    httpHeader = {'Content-Type':'application/json'}
+
+    try:
+        res = session.put(url + '/attr/Port', headers=httpHeader, json = {"data": args.port}, verify=False, timeout=30)
+        res = session.put(url + '/attr/Address', headers=httpHeader, json = {"data": args.address}, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    return res.text
+
+
 def createCommandParser():
     """
          creates the parser for the command line along with help for each command and subcommand
@@ -2239,6 +2286,17 @@ def createCommandParser():
     parser_rest_logging = logging_sub.add_parser("rest_api", help="turn rest api logging on/off")
     parser_rest_logging.add_argument('rest_logging', choices=['on', 'off'], help='The control option for rest logging: on, off')
     parser_rest_logging.set_defaults(func=restLogging)
+
+    #remote logging
+    parser_remote_logging = logging_sub.add_parser("remote_logging", help="Remote logging (rsyslog) commands")
+    parser_remote_logging.add_argument('remote_logging', choices=['view', 'disable'], help='Remote logging (rsyslog) commands')
+    parser_remote_logging.set_defaults(func=remoteLogging)
+
+    #configure remote logging
+    parser_remote_logging_config = logging_sub.add_parser("remote_logging_config", help="Configure remote logging (rsyslog)")
+    parser_remote_logging_config.add_argument("-a", "--address", required=True, help="Set IP address of rsyslog server")
+    parser_remote_logging_config.add_argument("-p", "--port", required=True, type=int, help="Set Port of rsyslog server")
+    parser_remote_logging_config.set_defaults(func=remoteLoggingConfig)
     
     return parser
 
