@@ -648,6 +648,37 @@ def parseESEL(args, eselRAW):
     return eselParts                
 
 
+def getESELSeverity(esel):
+    """
+        Finds the severity type in an eSEL from the User Header section.
+        @param esel - the eSEL data
+        @return severity - e.g. 'Critical'
+    """
+
+    # everything but 1 and 2 are Critical
+    # '1': 'recovered',
+    # '2': 'predictive',
+    # '4': 'unrecoverable',
+    # '5': 'critical',
+    # '6': 'diagnostic',
+    # '7': 'symptom'
+    severities = {
+        '1': 'Informational',
+        '2': 'Warning'
+    }
+
+    try:
+        headerPosition = esel.index('55 48') # 'UH'
+        # The severity is the last byte in the 8 byte section (a byte is '  bb')
+        severity = esel[headerPosition:headerPosition+32].split(' ')[-1]
+        type = severity[0]
+    except ValueError:
+        print("Could not find severity value in UH section in eSEL")
+        type = 'x';
+
+    return severities.get(type, 'Critical')
+
+
 def sortSELs(events):
     """
          sorts the sels by timestamp, then log entry number
@@ -698,6 +729,7 @@ def parseAlerts(policyTable, selEntries, args):
     esel = ""
     eselParts = {}
     i2cdevice= ""
+    eselSeverity = None
     
     'prepare and sort the event entries'
     for key in selEntries:
@@ -726,12 +758,17 @@ def parseAlerts(policyTable, selEntries, args):
                     fruCallout = str(addDataPiece[calloutIndex]).split('=')[1]
                 if("CALLOUT_DEVICE_PATH" in addDataPiece[i]):
                     i2creadFail = True
-                    i2cdevice = str(addDataPiece[i]).strip().split('=')[1]
-                    i2cdevice = '/'.join(i2cdevice.split('/')[-4:])
-                    if 'fsi' in str(addDataPiece[calloutIndex]).split('=')[1]:
-                        fruCallout = 'FSI'
-                    else:
-                        fruCallout = 'I2C'
+
+                    fruCallout = str(addDataPiece[calloutIndex]).split('=')[1]
+
+                    # Fall back to "I2C"/"FSI" if dev path isn't in policy table
+                    if (messageID + '||' + fruCallout) not in policyTable:
+                        i2cdevice = str(addDataPiece[i]).strip().split('=')[1]
+                        i2cdevice = '/'.join(i2cdevice.split('/')[-4:])
+                        if 'fsi' in str(addDataPiece[calloutIndex]).split('=')[1]:
+                            fruCallout = 'FSI'
+                        else:
+                            fruCallout = 'I2C'
                     calloutFound = True
                 if("CALLOUT_GPIO_NUM" in addDataPiece[i]):
                     if not calloutFound:
@@ -747,6 +784,7 @@ def parseAlerts(policyTable, selEntries, args):
                     calloutFound = True
                 if("ESEL" in addDataPiece[i]):
                     esel = str(addDataPiece[i]).strip().split('=')[1]
+                    eselSeverity = getESELSeverity(esel)
                     if args.devdebug:
                         eselParts = parseESEL(args, esel)
                     hasEsel=True
@@ -769,6 +807,15 @@ def parseAlerts(policyTable, selEntries, args):
             if(calloutFound):
                 if fruCallout != "":
                     policyKey = messageID +"||" +  fruCallout
+
+                    # Also use the severity for hostboot errors
+                    if eselSeverity and messageID == 'org.open_power.Host.Error.Event':
+                        policyKey += '||' + eselSeverity
+
+                        # if not in the table, fall back to the original key
+                        if policyKey not in policyTable:
+                            policyKey = policyKey.replace('||'+eselSeverity, '')
+
                     if policyKey not in policyTable:
                         policyKey = messageID
                 else:
@@ -2211,7 +2258,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application  
     """ 
     global toolVersion 
-    toolVersion = "1.06"
+    toolVersion = "1.07"
     parser = createCommandParser()
     args = parser.parse_args(argv)
         
