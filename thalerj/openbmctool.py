@@ -2153,6 +2153,62 @@ def remoteLoggingConfig(host, args, session):
     return res.text
 
 
+def localUsers(host, args, session):
+    """
+        Enables and disables local BMC users.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the logging sub command
+        @param session: the active session to use
+    """
+
+    httpHeader = {'Content-Type':'application/json'}
+    url="https://{hostname}/xyz/openbmc_project/user/enumerate".format(hostname=host)
+    try:
+        res = session.get(url, headers=httpHeader, verify=False, timeout=40)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    usersDict = json.loads(res.text)
+
+    if not usersDict['data']:
+        return "No users found"
+
+    output = ""
+    for user in usersDict['data']:
+        name = user.split('/')[-1]
+        url = "https://{hostname}{user}/attr/UserEnabled".format(hostname=host, user=user)
+
+        if args.local_users == "queryenabled":
+            try:
+                res = session.get(url, headers=httpHeader,verify=False, timeout=30)
+            except(requests.exceptions.Timeout):
+                return(connectionErrHandler(args.json, "Timeout", None))
+
+            result = json.loads(res.text)
+            output += ("User: {name}  Enabled: {result}\n").format(name=name, result=result['data'])
+
+        elif args.local_users in ["enableall", "disableall"]:
+            action = ""
+            if args.local_users == "enableall":
+                data = '{"data": true}'
+                action = "Enabling"
+            else:
+                data = '{"data": false}'
+                action = "Disabling"
+
+            output += "{action} {name}\n".format(action=action, name=name)
+
+            try:
+                resp = session.put(url, headers=httpHeader, data=data, verify=False, timeout=30)
+            except(requests.exceptions.Timeout):
+                return connectionErrHandler(args.json, "Timeout", None)
+            except(requests.exceptions.ConnectionError) as err:
+                return connectionErrHandler(args.json, "ConnectionError", err)
+        else:
+            return "Invalid local users argument"
+
+    return output
+
 def createCommandParser():
     """
          creates the parser for the command line along with help for each command and subcommand
@@ -2345,6 +2401,12 @@ def createCommandParser():
     parser_remote_logging_config.add_argument("-p", "--port", required=True, type=int, help="Set Port of rsyslog server")
     parser_remote_logging_config.set_defaults(func=remoteLoggingConfig)
     
+    # local users
+    parser_users = subparsers.add_parser("local_users", help="Work with local users")
+    parser_users.add_argument('local_users', choices=['disableall','enableall', 'queryenabled'], help="Disable, enable or query local user accounts")
+    parser_users.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+    parser_users.set_defaults(func=localUsers)
+
     return parser
 
 def main(argv=None):
@@ -2352,7 +2414,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application  
     """ 
     global toolVersion 
-    toolVersion = "1.07"
+    toolVersion = "1.08"
     parser = createCommandParser()
     args = parser.parse_args(argv)
         
