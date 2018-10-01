@@ -2152,6 +2152,7 @@ def remoteLoggingConfig(host, args, session):
         return(connectionErrHandler(args.json, "Timeout", None))
     return res.text
 
+
 def certificateUpdate(host, args, session):
     """
          Called by certificate management function. update server/client/authority certificates
@@ -2207,6 +2208,67 @@ def certificateDelete(host, args, session):
         return "Failed to delete the certificate"
     else:
        print("Delete complete.")
+
+
+def enableLDAP(host, args, session):
+    """
+         Called by the ldap function. Configures LDAP.
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will
+            be provided in json format for programmatic consumption
+    """
+
+    url='https://'+host+'/xyz/openbmc_project/user/ldap/action/CreateConfig'
+    httpHeader = {'Content-Type':'application/json'}
+    scope = {
+             'sub' : 'xyz.openbmc_project.User.Ldap.Create.SearchScope.sub',
+             'one' : 'xyz.openbmc_project.User.Ldap.Create.SearchScope.one',
+             'base': 'xyz.openbmc_project.User.Ldap.Create.SearchScope.base'
+            }
+
+    serverType = {
+            'ActiveDirectory' : 'xyz.openbmc_project.User.Ldap.Create.Type.ActiveDirectory',
+            'OpenLDAP' : 'xyz.openbmc_project.User.Ldap.Create.Type.OpenLdap'
+            }
+
+    data = {"data": [args.uri, args.bindDN, args.baseDN, args.bindPassword, scope[args.scope], serverType[args.serverType]]}
+
+    try:
+        res = session.post(url, headers=httpHeader, json=data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return res.text
+
+
+def disableLDAP(host, args, session):
+    """
+         Called by the ldap function. Deletes the LDAP Configuration.
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output
+            will be provided in json format for programmatic consumption
+    """
+
+    url='https://'+host+'/xyz/openbmc_project/user/ldap/config/action/delete'
+    httpHeader = {'Content-Type':'application/json'}
+    data = {"data": []}
+
+    try:
+        res = session.post(url, headers=httpHeader, json=data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return res.text
 
 
 def localUsers(host, args, session):
@@ -2482,6 +2544,26 @@ def createCommandParser():
     parser_users.add_argument('local_users', choices=['disableall','enableall', 'queryenabled'], help="Disable, enable or query local user accounts")
     parser_users.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
     parser_users.set_defaults(func=localUsers)
+
+    #LDAP
+    parser_ldap = subparsers.add_parser("ldap", help="LDAP controls")
+    ldap_sub = parser_ldap.add_subparsers(title='subcommands', description='valid subcommands',help="sub-command help", dest='command')
+
+    #configure and enable LDAP
+    parser_ldap_config = ldap_sub.add_parser("enable", help="Configure and enables the LDAP")
+    parser_ldap_config.add_argument("-a", "--uri", required=True, help="Set LDAP server URI")
+    parser_ldap_config.add_argument("-B", "--bindDN", required=True, help="Set the bind DN of the LDAP server")
+    parser_ldap_config.add_argument("-b", "--baseDN", required=True, help="Set the base DN of the LDAP server")
+    parser_ldap_config.add_argument("-p", "--bindPassword", required=True, help="Set the bind password of the LDAP server")
+    parser_ldap_config.add_argument("-S", "--scope", choices=['sub','one', 'base'],
+            help='Specifies the search scope:subtree, one level or base object.')
+    parser_ldap_config.add_argument("-t", "--serverType", choices=['ActiveDirectory','OpenLDAP'],
+            help='Specifies the configured server is ActiveDirectory(AD) or OpenLdap')
+    parser_ldap_config.set_defaults(func=enableLDAP)
+
+    # disable LDAP
+    parser_disable_ldap = ldap_sub.add_parser("disable", help="disables the LDAP")
+    parser_disable_ldap.set_defaults(func=disableLDAP)
 
     return parser
 
