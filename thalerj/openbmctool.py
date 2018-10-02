@@ -2152,6 +2152,56 @@ def remoteLoggingConfig(host, args, session):
         return(connectionErrHandler(args.json, "Timeout", None))
     return res.text
 
+def certificateUpdate(host, args, session):
+    """
+         Called by certificate management function. update server/client certificates
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the certificate update sub command
+         @param session: the active session to use
+    """
+
+    httpHeader = {'Content-Type': 'application/octet-stream'}
+    url = "https://" + host + "/xyz/openbmc_project/certs/" + args.type.lower() + "/" + args.service.lower()
+    data = open(args.fileloc, 'rb').read()
+    print("Updating certificate")
+    try:
+        resp = session.put(url, headers=httpHeader, data=data, verify=False)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if resp.status_code != 200:
+        print(resp.text)
+        return "Failed to update the certificate"
+    else:
+       print("Update complete.")
+
+
+def certificateDelete(host, args, session):
+    """
+         Called by certificate management function. delete certificate
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the certificate delete sub command
+         @param session: the active session to use
+    """
+
+    httpHeader = {'Content-Type': 'multipart/form-data'}
+    url = "https://" + host + "/xyz/openbmc_project/certs/" + args.type.lower() + "/" + args.service.lower()
+    print("Deleting certificate")
+    try:
+        resp = session.delete(url, headers=httpHeader)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if resp.status_code != 200:
+        print(resp.text)
+        return "Failed to delete the certificate"
+    else:
+       print("Delete complete.")
+
 
 def createCommandParser():
     """
@@ -2344,6 +2394,21 @@ def createCommandParser():
     parser_remote_logging_config.add_argument("-a", "--address", required=True, help="Set IP address of rsyslog server")
     parser_remote_logging_config.add_argument("-p", "--port", required=True, type=int, help="Set Port of rsyslog server")
     parser_remote_logging_config.set_defaults(func=remoteLoggingConfig)
+
+    #certificate management
+    parser_cert = subparsers.add_parser("certificate", help="Certificate management")
+    certMgmt_subproc = parser_cert.add_subparsers(title='subcommands', description='valid certificate commands', help='sub-command help', dest='command')
+
+    certUpdate = certMgmt_subproc.add_parser('update', help="Update the certificate")
+    certUpdate.add_argument('type', choices=['server', 'client'], help="certificate type to update")
+    certUpdate.add_argument('service', help="Service to update")
+    certUpdate.add_argument('-f', '--fileloc', required=True, help="The absolute path to the certificate file")
+    certUpdate.set_defaults(func=certificateUpdate)
+
+    certDelete = certMgmt_subproc.add_parser('delete', help="Delete the certificate")
+    certDelete.add_argument('type', choices=['server', 'client'], help="certificate type to delete")
+    certDelete.add_argument('service', help="Service to delete the certificate")
+    certDelete.set_defaults(func=certificateDelete)
     
     return parser
 
