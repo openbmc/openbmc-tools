@@ -2211,6 +2211,89 @@ def disableLDAP(host, args, session):
 
     return res.text
 
+def createPrivilegeMapping(host, args, session):
+    """
+         Called by the ldap function. Creates the group and the privilege mapping.
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+    """
+
+    url = 'https://'+host+'/xyz/openbmc_project/user/ldap/action/Create'
+    httpHeader = {'Content-Type':'application/json'}
+
+    data = {"data": [args.groupName,args.privilege]}
+
+    try:
+        res = session.post(url, headers=httpHeader, json = data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    return res.text
+
+def listPrivilegeMapping(host, args, session):
+    """
+         Called by the ldap function. Lists the group and the privilege mapping.
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+    """
+    url = 'https://'+host+'/xyz/openbmc_project/user/ldap/enumerate'
+    httpHeader = {'Content-Type': 'application/json'}
+    data = {"data": []}
+
+    try:
+        res = session.get(url, headers=httpHeader, json = data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    return res.text
+
+def deletePrivilegeMapping(host, args, session):
+    """
+         Called by the ldap function. Deletes the mapping associated with the group.
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+    """
+    (ldapNameSpaceObjects) = listPrivilegeMapping(host, args, session)
+    ldapNameSpaceObjects = json.loads(ldapNameSpaceObjects)["data"]
+    path = ''
+
+    # not interested in the config objet
+    ldapNameSpaceObjects.pop('/xyz/openbmc_project/user/ldap/config', None)
+
+    # search for the object having the mapping for the given group
+    for key,value in ldapNameSpaceObjects.items():
+        if value['GroupName'] == args.group_name:
+            path = key
+
+    if path == '':
+        return "No privilege mapping found for this group."
+
+    # delete the object
+    url = 'https://'+host+path+'/action/delete'
+    httpHeader = {'Content-Type': 'application/json'}
+    data = {"data": []}
+
+    try:
+        res = session.post(url, headers=httpHeader, json = data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    return res.text
 
 def localUsers(host, args, session):
     """
@@ -2490,6 +2573,25 @@ def createCommandParser():
     # disable LDAP
     parser_disable_ldap = ldap_sub.add_parser("disable", help="disables the LDAP")
     parser_disable_ldap.set_defaults(func=disableLDAP)
+
+    #create group privilege mapping
+    parser_ldap_mapper = ldap_sub.add_parser("privilege-mapper", help="LDAP group privilege controls")
+    parser_ldap_mapper_sub = parser_ldap_mapper.add_subparsers(title='subcommands', description='valid subcommands',
+            help="sub-command help", dest='command')
+
+    parser_ldap_mapper_create = parser_ldap_mapper_sub.add_parser("create", help="Create mapping of ldap group and privilege")
+    parser_ldap_mapper_create.add_argument("-g","--groupName",required=True,help="Group Name")
+    parser_ldap_mapper_create.add_argument("-p","--privilege",choices=['priv-admin','priv-user'],required=True,help="Privilege")
+    parser_ldap_mapper_create.set_defaults(func=createPrivilegeMapping)
+
+    #list group privilege mapping
+    parser_ldap_mapper_list = parser_ldap_mapper_sub.add_parser("list",help="List privilege mapping")
+    parser_ldap_mapper_list.set_defaults(func=listPrivilegeMapping)
+
+    #delete group privilege mapping
+    parser_ldap_mapper_delete = parser_ldap_mapper_sub.add_parser("delete",help="Delete privilege mapping")
+    parser_ldap_mapper_delete.add_argument("-g","--group_name",required=True,help="Group Name")
+    parser_ldap_mapper_delete.set_defaults(func=deletePrivilegeMapping)
 
     return parser
 
