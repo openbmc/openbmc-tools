@@ -2175,6 +2175,11 @@ def localUsers(host, args, session):
 
     output = ""
     for user in usersDict['data']:
+
+        # Skip LDAP and another non-local users
+        if 'UserEnabled' not in usersDict['data'][user]:
+            continue
+
         name = user.split('/')[-1]
         url = "https://{hostname}{user}/attr/UserEnabled".format(hostname=host, user=user)
 
