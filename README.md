@@ -46,15 +46,13 @@ and we aim to make the process as easy as possible.
 
 ## Sending patches
 
-However you want to send patches, we will probably cope:
+Please use gerrit for all patches to this repository:
 
-* Pull-requests [on github](https://github.com/openbmc/openbmc-tools)
-* Patches [sent to the mailing list](https://lists.ozlabs.org/listinfo/openbmc)
-* Through [Gerrit](https://gerrit.openbmc-project.xyz/)
+* [Gerrit](https://gerrit.openbmc-project.xyz/) Repository
 
-Do note that you will need to be party to the [OpenBMC
-CLA](https://github.com/openbmc/docs/blob/master/contributing.md#submitting-changes-via-gerrit-server)
-before your contributions can be accepted.
+Do note that you will need to be party to the OpenBMC CLA before your
+contributions can be accepted. See [Gerrit Setup and CLA][1]
+for more information.
 
 ## What we will do once we have your patches
 
@@ -79,3 +77,5 @@ There's no standard way to install the scripts housed in the here, so adding
 parts of the repository to your PATH might be a bit of a dice-roll. We may also
 move or remove scripts from time to time as part of housekeeping. It's probably
 best to copy things out if you need stability.
+
+[1]: https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#submitting-changes-via-gerrit-server
