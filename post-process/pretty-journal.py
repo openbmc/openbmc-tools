@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 r"""
-BMC FFDC will at times include the journal in json format 
+BMC FFDC will at times include the journal in json format
 (journalctl -o json-pretty ).  This is a quick and dirty script which
 will convert that json output into the standard journalctl output
 """
@@ -38,4 +38,4 @@ if __name__ == '__main__':
 	    except:
 		print "Unable to parse msg: " + str(e)
 		continue
-        
+
