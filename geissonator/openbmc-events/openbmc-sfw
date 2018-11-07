@@ -161,7 +161,7 @@ def do_list_sfw(args):
         if (e == '/xyz/openbmc_project/software/functional'):
             continue
         info = s.get_image(e)
-        if (((info['Purpose'] == 'xyz.openbmc_project.Software.Version.VersionPurpose.BMC') and 
+        if (((info['Purpose'] == 'xyz.openbmc_project.Software.Version.VersionPurpose.BMC') and
              (args.bmc or not args.host)) or \
            ((info['Purpose'] == 'xyz.openbmc_project.Software.Version.VersionPurpose.Host') and
             (args.host or not args.bmc))):

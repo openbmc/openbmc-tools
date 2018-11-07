@@ -13,7 +13,7 @@ password = "quux"
     [foo.console]
     host = "1.2.3.4"
     port = 5678
-    
+
     [foo.u-boot]
     commands = [
         "setenv bootfile fitImage",

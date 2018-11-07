@@ -43,7 +43,7 @@ class BMC:
             raise Exception("Failed to get event " + event + ": \n" + r.text)
 
         return j['data']
-    
+
     def clear_event(self,event):
         r = self.session.delete(self.url + event)
         j = r.json()
@@ -73,7 +73,7 @@ class BMC:
         dumps.sort(key=lambda x: int(x.split("/")[-1]))
 
         return dumps
-    
+
     def create_dump(self):
         r = self.session.post(self.url + 'xyz/openbmc_project/dump/action/CreateDump',
                               headers={'Content-Type': 'application/json'},
@@ -81,7 +81,7 @@ class BMC:
         j = r.json()
         if j['status'] != 'ok':
             raise Exception("Failed to create dump: \n" + r.text)
-        
+
     def get_dump(self,dump):
         r = self.session.get(self.url + "/download/dump/" + dump,
                              verify=False)
@@ -92,7 +92,7 @@ class BMC:
         r = self.session.delete(self.url + dump)
         j = r.json()
         if j['status'] != 'ok':
-            raise Exception("Failed to clear dump " + dump + ": \n" + r.text)        
+            raise Exception("Failed to clear dump " + dump + ": \n" + r.text)
 
 def do_list_events(args):
     s = BMC(server=args.server)
@@ -124,7 +124,7 @@ def do_list_dumps(args):
 def do_create_dump(args):
     s = BMC(server=args.server)
     s.create_dump()
-    
+
 def do_get_dump(args):
     s = BMC(server=args.server)
     s.get_dump(args.dump)

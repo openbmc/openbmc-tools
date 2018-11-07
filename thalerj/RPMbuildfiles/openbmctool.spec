@@ -12,7 +12,7 @@ Source0: %{name}-%{version}-%{release}.tgz
 Prefix: /opt
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
-Requires: python34 
+Requires: python34
 Requires: python34-requests
 
 #%if 0%{?_unitdir:1}
@@ -26,7 +26,7 @@ Requires: python34-requests
 
 %description
 This package is to be applied to any linux machine that will be used to manage or interact with the IBM OpenBMC.
-It provides key functionality to easily work with the IBM OpenBMC RESTful API, making BMC management easy. 
+It provides key functionality to easily work with the IBM OpenBMC RESTful API, making BMC management easy.
 
 #%build
 #%{__make}
