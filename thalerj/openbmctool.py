@@ -2079,6 +2079,32 @@ def firmwareList(host, args, session):
     return displayFWInvenory(firmwareInfoDict, args)
     
  
+def deleteFWVersion(host, args, session):
+    """
+         deletes a firmware version on the BMC
+
+         @param host: string, the hostname or IP address of the BMC
+         @param args: contains additional arguments used by the fwflash sub command
+         @param session: the active session to use
+         @param fwID: the unique ID of the fw version to delete
+    """
+    fwID = args.versionID
+
+    print("Deleting version: "+fwID)
+    url="https://"+host+"/xyz/openbmc_project/software/"+ fwID + "/action/Delete"
+    httpHeader = {'Content-Type':'application/json'}
+    data = "{\"data\": [] }"
+
+    try:
+        res = session.post(url, headers=httpHeader, data=data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    if res.status_code == 200:
+        return ('The firmware version has been deleted')
+    else:
+        return ('Unable to delete the specified firmware version')
+
+
 def restLogging(host, args, session):
     """
          Called by the logging function. Turns REST API logging on/off.
@@ -2385,6 +2411,10 @@ def createCommandParser():
     fwprint = fwflash_subproc.add_parser('print', help="List all of the installed firmware")
     fwprint.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
     fwprint.set_defaults(func=firmwareList)
+
+    fwDelete = fwflash_subproc.add_parser('delete', help="Delete an existing firmware version")
+    fwDelete.add_argument('versionID', help="The version ID to delete from the firmware list. Ex: 63c95399")
+    fwDelete.set_defaults(func=deleteFWVersion)
     
     #logging
     parser_logging = subparsers.add_parser("logging", help="logging controls")
@@ -2419,7 +2449,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application  
     """ 
     global toolVersion 
-    toolVersion = "1.08"
+    toolVersion = "1.09"
     parser = createCommandParser()
     args = parser.parse_args(argv)
         
