@@ -29,6 +29,7 @@ import tarfile
 import tempfile
 import hashlib
 import re
+import uuid
 
 def hilight(textToColor, color, bold):
     """
@@ -590,7 +591,8 @@ def parseESEL(args, eselRAW):
     #search terms contains the search term as the key and the return dictionary key as it's value
     searchTerms = { 'Signature Description':'signatureDescription', 'devdesc':'devdesc',
                     'Callout type': 'calloutType', 'Procedure':'procedure', 'Sensor Type': 'sensorType'}
-    eselBinPath = tempfile.gettempdir() + os.sep + 'esel.bin'
+    uniqueID = str(uuid.uuid4())
+    eselBinPath = tempfile.gettempdir() + os.sep + uniqueID + 'esel.bin'
     with open(eselBinPath, 'wb') as f:
         f.write(esel_bin)
     errlPath = ""
