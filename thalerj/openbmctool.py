@@ -2424,7 +2424,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application  
     """ 
     global toolVersion 
-    toolVersion = "1.08"
+    toolVersion = "1.10"
     parser = createCommandParser()
     args = parser.parse_args(argv)
         
