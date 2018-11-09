@@ -631,12 +631,15 @@ def parseESEL(args, eselRAW):
                         if lines[i+1].find(':') != -1:
                             if (len(lines[i+1].split(':')[0][1:].strip())==0):
                                 while(len(lines[i][:lines[i].find(':')].strip())>2):
+                                    #has multiple lines, process and update line counter
                                     if((i+1) <= len(lines)):
                                         i+=1
                                     else:
                                         i=i-1
                                         break
-                                    temp = temp + lines[i][lines[i].find(':'):].strip()[:-1].strip()[:-1].strip()
+                                    #Append the content from the next line removing the pretty display characters
+                                    #Finds the first colon then starts 2 characters after, then removes all whitespace
+                                    temp = temp + lines[i][lines[i].find(':')+2:].strip()[:-1].strip()[:-1].strip()
                         if(searchTerms[term] in eselParts):
                             eselParts[searchTerms[term]] = eselParts[searchTerms[term]] + ", " + temp
                         else:
