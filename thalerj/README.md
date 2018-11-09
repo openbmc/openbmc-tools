@@ -125,3 +125,104 @@ openbmctool <connection options> certificate delete authority ldap
 ```
 Deleting the root certificate can cause an LDAP service outage. Please refer to
 the LDAP documentation before using this command.
+
+## BMC LDAP Configuration
+
+In BMC, LDAP is used for remote authentication. BMC doesn't support remote user-management functionality.
+
+BMC supports secure/non-secure LDAP configuration.
+
+### Create LDAP Configuration
+
+#### NonSecure
+```
+openbmctool.py <connection options> ldap enable --uri="ldap://<ldap server IP/hostname>" --bindDN=<bindDN> --baseDN=<basDN> --bindPassword=<bindPassword> --scope="sub/one/base" --serverType="OpenLDAP/ActiveDirectory"
+
+```
+NOTE: configuring FQDN (fully qualified domain name/ hostname) in the "uri"
+parameter requires that DNS server be configured on the BMC.
+
+NOTE: Currently, openbmctool doesn't support configuring the DNS server on the
+BMC.
+
+#### Secure
+```
+openbmctool.py <connection options> ldap enable --uri="ldaps://<ldap server IP/hostname>" --bindDN=<bindDN> --baseDN=<basDN> --bindPassword=<bindPassword> --scope="sub/one/base" --serverType="OpenLDAP/ActiveDirectory"
+
+```
+NOTE:
+a) It is quite common to encounter the following error when running the
+openbmctool.py command string shown above:
+
+xyz.openbmc_project.Common.Error.NoCACertificate
+
+This error means that the BMC client needs to verify that the LDAP server's
+certificate has been signed by a known CA. The service action would be for the
+admin to upload the CA certificate to the BMC.
+
+To upload the CA certificate to the BMC, refer to the "Update LDAP root
+certificate" section of this document.
+
+b) openbmctool doesn't support individual LDAP config property update,
+   To update a single property user need to recreate the LDAP config with the
+   changed values.
+
+### Delete/Erase LDAP Configuration
+```
+openbmctool.py <connection options> ldap disable
+
+```
+NOTE: Make sure that root user is enabled before running the above command
+otherwise BMC would not be accessible.
+
+To enable root user, refer to the "To re-enable all local user accounts"
+section of this document.
+
+Currently openbmctool doesn't have support for specific user enablement.
+
+### Add privilege mapping
+
+```
+openbmctool.py <connection options> ldap privilege-mapper create --groupName=<groupName> --privilege="priv-admin/priv-user"
+```
+
+### Delete privilege mapping
+
+```
+openbmctool.py <connection options> ldap privilege-mapper delete --groupName=<groupName>
+```
+
+### List privilege mapping
+
+```
+openbmctool.py <connection options> ldap privilege-mapper list
+```
+
+The normal workflow for LDAP configuration would be as shown below
+
+- Configure the DNS server.
+- Configure LDAP.
+   a) Configure CA certificate if secure LDAP server is being configured.
+   b) Create LDAP Configuration with local user.
+- Configure user privilege.
+
+NOTE:
+
+a) If a user tries to login with LDAP credentials and has not added the
+privilege mapping for the LDAP credentials then the user will get the following
+http error code and message.
+
+403, 'LDAP group privilege mapping does not exist'.
+
+Action: Add the privilege (refer to the section "Add privilege mapping")
+
+
+b) The following message may mean that the user lacks the required privileges
+on the BMC:
+"Insufficient Privilege"
+
+Action: Add the privilege (refer to the section "Add privilege mapping") with
+privilege=priv-admin
+
+c) Once LDAP is set up, openbmctool connection options work with both LDAP
+and local users.
