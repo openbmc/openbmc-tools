@@ -2354,6 +2354,30 @@ def deletePrivilegeMapping(host, args, session):
         return connectionErrHandler(args.json, "ConnectionError", err)
     return res.text
 
+def viewLDAPConfig(host, args, session):
+    """
+         Called by the ldap function. Prints out all LDAP's configured properties
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+         @return returns total LDAP's configured properties.
+    """
+    url="https://"+host+"/xyz/openbmc_project/user/ldap/enumerate"
+    httpHeader = {'Content-Type':'application/json'}
+    try:
+        res = session.get(url, headers=httpHeader, verify=False, timeout=40)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    except(requests.exceptions.RequestException) as err:
+        return connectionErrHandler(args.json, "RequestException", err)
+    return res.text
+
+
 def localUsers(host, args, session):
     """
         Enables and disables local BMC users.
@@ -2647,6 +2671,9 @@ def createCommandParser():
     # disable LDAP
     parser_disable_ldap = ldap_sub.add_parser("disable", help="disables the LDAP")
     parser_disable_ldap.set_defaults(func=disableLDAP)
+    # view-config
+    parser_ldap_config = ldap_sub.add_parser("view-config", help="prints out a list of all LDAP's configured properties")
+    parser_ldap_config.set_defaults(func=viewLDAPConfig)
 
     #create group privilege mapping
     parser_ldap_mapper = ldap_sub.add_parser("privilege-mapper", help="LDAP group privilege controls")
