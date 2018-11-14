@@ -11,14 +11,16 @@ import re
 import time
 from argparse import ArgumentParser
 
+
 def jpretty_to_python(buf):
     entries = []
 
     for entry in re.findall(
             '^{$(.+?)^}$', buf, re.DOTALL | re.MULTILINE):
-        entries += [ json.loads('{{{}}}'.format(entry)) ]
+        entries += [json.loads('{{{}}}'.format(entry))]
 
     return entries
+
 
 if __name__ == '__main__':
     parser = ArgumentParser()
@@ -32,10 +34,10 @@ if __name__ == '__main__':
         entries = sorted(entries, key=lambda k: k['__REALTIME_TIMESTAMP'])
 
         for e in entries:
-            e['ts'] = time.ctime(float(e['__REALTIME_TIMESTAMP'])/1000000).rstrip()
-	    try:
-            	print '{ts} {_HOSTNAME} {SYSLOG_IDENTIFIER}: {MESSAGE}'.format(**e)
-	    except:
-		print "Unable to parse msg: " + str(e)
-		continue
-
+            e['ts'] = time.ctime(
+                float(e['__REALTIME_TIMESTAMP']) / 1000000).rstrip()
+            try:
+                print ('{ts} {_HOSTNAME} {SYSLOG_IDENTIFIER}: {MESSAGE}'.format(**e))
+            except:
+                print ("Unable to parse msg: " + str(e))
+                continue
