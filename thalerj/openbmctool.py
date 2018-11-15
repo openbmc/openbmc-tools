@@ -2275,6 +2275,162 @@ def disableLDAP(host, args, session):
 
     return res.text
 
+
+def enableDHCP(host, args, session):
+
+    """
+        Called by the network function. Enables DHCP.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://"+host+"/xyz/openbmc_project/network/eth0/attr/DHCPEnabled"
+    httpHeader = {'Content-Type': 'application/json'}
+    try:
+        res = session.get(url, headers=httpHeader, verify=False, timeout=40)
+
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return res.text
+
+
+def disableDHCP(host, args, session):
+    """
+        Called by the network function. Disables DHCP.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://"+host+"/xyz/openbmc_project/network/eth1/attr/DHCPEnabled"
+    httpHeader = {'Content-Type': 'application/json'}
+    data = "{\"data\": 0 }"
+    try:
+        res = session.put(url, headers=httpHeader, data=data, verify=False,
+                          timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return res.text
+
+
+def getHostname(host, args, session):
+
+    """
+        Called by the network function. Enables DHCP.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://"+host+"/xyz/openbmc_project/network/config/attr/HostName"
+    httpHeader = {'Content-Type': 'application/json'}
+
+    try:
+        res = session.get(url, headers=httpHeader, verify=False, timeout=40)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return json.loads(res.text)['data']
+
+
+def setHostname(host, args, session):
+    """
+        Called by the network function. Disables DHCP.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://"+host+"/xyz/openbmc_project/network/config/attr/HostName"
+    httpHeader = {'Content-Type': 'application/json'}
+
+    data = {"data": args.HostName}
+
+    try:
+        res = session.put(url, headers=httpHeader, json=data, verify=False,
+                          timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return json.loads(res.text)['status']
+
+
+def getDomainName(host, args, session):
+
+    """
+        Called by the network function. Enables DHCP.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://"+host+"/xyz/openbmc_project/network/eth0/attr/DomainName"
+    httpHeader = {'Content-Type': 'application/json'}
+
+    try:
+        res = session.get(url, headers=httpHeader, verify=False, timeout=40)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return json.loads(res.text)['data']
+
+
+
+def setDomainName(host, args, session):
+    """
+        Called by the network function. Disables DHCP.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://"+host+"/xyz/openbmc_project/network/eth0/attr/DomainName"
+    httpHeader = {'Content-Type': 'application/json'}
+
+    data = {"data": [args.DomainName]}
+
+    try:
+        res = session.put(url, headers=httpHeader, json=data, verify=False,
+                          timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return json.loads(res.text)['status']
+
+
 def createPrivilegeMapping(host, args, session):
     """
          Called by the ldap function. Creates the group and the privilege mapping.
@@ -2702,6 +2858,43 @@ def createCommandParser():
     parser_ldap_mapper_delete = parser_ldap_mapper_sub.add_parser("delete",help="Delete privilege mapping")
     parser_ldap_mapper_delete.add_argument("-g","--group_name",required=True,help="Group Name")
     parser_ldap_mapper_delete.set_defaults(func=deletePrivilegeMapping)
+
+    # network
+    parser_nw = subparsers.add_parser("network", help="network controls")
+    nw_sub = parser_nw.add_subparsers(title='subcommands',
+                                      description='valid subcommands',
+                                      help="sub-command help",
+                                      dest='command')
+
+    # enable DHCP
+    parser_enable_dhcp = nw_sub.add_parser("enableDHCP",
+                                           help="enables the DHCP")
+    parser_enable_dhcp.set_defaults(func=enableDHCP)
+
+    # disable DHCP
+    parser_disable_dhcp = nw_sub.add_parser("disableDHCP",
+                                            help="disables the DHCP")
+    parser_disable_dhcp.set_defaults(func=disableDHCP)
+
+    # get HostName
+    parser_gethostname = nw_sub.add_parser("getHostName",
+                                           help="prints out HostName")
+    parser_gethostname.set_defaults(func=getHostname)
+
+    # set HostName
+    parser_sethostname = nw_sub.add_parser("setHostName", help="sets HostName")
+    parser_sethostname.add_argument("-H", "--HostName",required=True, help="A HostName for the BMC")
+    parser_sethostname.set_defaults(func=setHostname)
+
+    # get domaindame
+    parser_getdomainname = nw_sub.add_parser("getDomainName",
+                                           help="prints out DomainName")
+    parser_getdomainname.set_defaults(func=getDomainName)
+
+    # set domaindame
+    parser_setdomainname = nw_sub.add_parser("setDomainName", help="sets DomainName")
+    parser_setdomainname.add_argument("-D", "--DomainName",required=True, help="A DomainName for the BMC")
+    parser_setdomainname.set_defaults(func=setDomainName)
 
     return parser
 
