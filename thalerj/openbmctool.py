@@ -2704,6 +2704,69 @@ def setNTP(host, args, session):
     return res.text
 
 
+def setIP(host, args, session):
+    """
+         Called by the ldap function. Configures IP address.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://" + host + "/xyz/openbmc_project/network/" + args.Interface\
+        + "/action/IP"
+    httpHeader = {'Content-Type': 'application/json'}
+    protocol = {
+             'ipv4': 'xyz.openbmc_project.Network.IP.Protocol.IPv4',
+             'ipv6': 'xyz.openbmc_project.Network.IP.Protocol.IPv6'
+            }
+
+    data = {"data": [protocol[args.type], args.address, int(args.prefixLength),
+        args.gateway]}
+
+    try:
+        res = session.post(url, headers=httpHeader, json=data, verify=False,
+                           timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if res.status_code == 404:
+        return "The specified Interface" + "(" + args.Interface + ")" +\
+            " doesn't exist"
+
+    return res.text
+
+
+def getIP(host, args, session):
+    """
+         Called by the ldap function. Prints out IP address on given interface.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://" + host+"/xyz/openbmc_project/network/" + args.Interface +\
+        "/enumerate"
+    httpHeader = {'Content-Type': 'application/json'}
+    try:
+        res = session.get(url, headers=httpHeader, verify=False, timeout=40)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if res.status_code == 404:
+        return "The specified Interface" + "(" + args.Interface + ")" +\
+            " doesn't exist"
+
+    return res.text
+
+
 def createPrivilegeMapping(host, args, session):
     """
          Called by the ldap function. Creates the group and the privilege mapping.
@@ -3265,6 +3328,31 @@ def createCommandParser():
                                choices=['eth0', 'eth1'],
                                help="Name of the ethernet interface")
     parser_setNTP.set_defaults(func=setNTP)
+
+    # configure IP
+    parser_ip_config = nw_sub.add_parser("setIP", help="Sets IP address to"
+                                         "given interface")
+    parser_ip_config.add_argument("-a", "--address", required=True,
+                                  help="IP address of given interface")
+    parser_ip_config.add_argument("-gw", "--gateway", required=True,
+                                  help="The gateway for given interface")
+    parser_ip_config.add_argument("-l", "--prefixLength", required=True,
+                                  help="The prefixLength of IP address")
+    parser_ip_config.add_argument("-p", "--type", choices=['ipv4', 'ipv6'],
+                                  help="The protocol type of the given"
+                                  "IP address")
+    parser_ip_config.add_argument("-I", "--Interface", required=True,
+                                  choices=['eth0', 'eth1'],
+                                  help="Name of the ethernet interface")
+    parser_ip_config.set_defaults(func=setIP)
+
+    # getIP
+    parser_getIP = nw_sub.add_parser("getIP", help="prints out IP address"
+                                     "of given interface")
+    parser_getIP.add_argument("-I", "--Interface", required=True,
+                              choices=['eth0', 'eth1'],
+                              help="Name of the ethernet interface")
+    parser_getIP.set_defaults(func=getIP)
 
     return parser
 
