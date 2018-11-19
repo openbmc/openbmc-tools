@@ -2710,7 +2710,7 @@ def setNTP(host, args, session):
 
 def addIP(host, args, session):
     """
-         Called by the ldap function. Configures IP address on given interface
+        Called by the network function. Configures IP address on given interface
 
         @param host: string, the hostname or IP address of the bmc
         @param args: contains additional arguments used by the ldap subcommand
@@ -2746,7 +2746,7 @@ def addIP(host, args, session):
 
 def getIP(host, args, session):
     """
-         Called by the ldap function. Prints out IP address of given interface
+        Called by the network function. Prints out IP address of given interface
 
         @param host: string, the hostname or IP address of the bmc
         @param args: contains additional arguments used by the ldap subcommand
@@ -2773,12 +2773,12 @@ def getIP(host, args, session):
 
 def deleteIP(host, args, session):
     """
-         Called by the ldap function. Deletes the IP address from given Interface
+        Called by the network function. Deletes the IP address from given Interface
 
-         @param host: string, the hostname or IP address of the bmc
-         @param args: contains additional arguments used by the ldap subcommand
-         @param session: the active session to use
-         @param args.json: boolean, if this flag is set to true, the output
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+        @param session: the active session to use
+        @param args.json: boolean, if this flag is set to true, the output
             will be provided in json format for programmatic consumption
     """
 
@@ -2813,6 +2813,171 @@ def deleteIP(host, args, session):
         else:
             continue
     return "No object found for given address on given Interface"
+
+
+def addVLAN(host, args, session):
+    """
+        Called by the network function. Creates VLAN on given interface.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://" + host+"/xyz/openbmc_project/network/action/VLAN"
+    httpHeader = {'Content-Type': 'application/json'}
+
+    data = {"data": [args.Interface,args.Identifier]}
+
+    try:
+        res = session.post(url, headers=httpHeader, json=data, verify=False,
+                           timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if res.status_code == 400:
+        return "The specified Interface" + "(" + args.Interface + ")" +\
+            " doesn't exist"
+
+    return res.text
+
+
+def deleteVLAN(host, args, session):
+    """
+        Called by the network function. Creates VLAN on given interface.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://" + host+"/xyz/openbmc_project/network/"+args.Interface+"_"\
+    +args.Identifier+"/action/delete"
+    httpHeader = {'Content-Type':'application/json'}
+    data = {"data": []}
+
+    try:
+        res = session.post(url, headers=httpHeader, json=data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if res.status_code == 404:
+        return "The specified VLAN"+"("+args.Interface+"_"+args.Identifier\
+            +")" +" doesn't exist"
+
+    return res.text
+
+
+def viewDHCPConfig(host, args, session):
+    """
+        Called by the network function. Shows DHCP configured Properties.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url="https://"+host+"/xyz/openbmc_project/network/config/dhcp"
+    httpHeader = {'Content-Type':'application/json'}
+
+    try:
+        res = session.get(url, headers=httpHeader, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return res.text
+
+
+def configureDHCP(host, args, session):
+    """
+        Called by the network function. Configures/updates DHCP Properties.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    httpHeader = {'Content-Type': 'application/json'}
+
+    try:
+        url="https://"+host+"/xyz/openbmc_project/network/config/dhcp"
+        if(args.DNSEnabled == 'True'):
+            data = '{"data": 1}'
+        elif(args.DNSEnabled == 'False'):
+            data = '{"data": 0}'
+        else:
+            return "Invalid data(data ="+args.DNSEnabled+")"
+        res = session.put(url + '/attr/DNSEnabled', headers=httpHeader,
+                          data=data, verify=False, timeout=30)
+        if(args.HostNameEnabled == 'True'):
+            data = '{"data": 1}'
+        elif(args.HostNameEnabled == 'False'):
+            data = '{"data": 0}'
+        else:
+            return "Invalid data(data ="+args.HostNameEnabled+")"
+        res = session.put(url + '/attr/HostNameEnabled', headers=httpHeader,
+                          data=data, verify=False, timeout=30)
+        if(args.NTPEnabled == 'True'):
+            data = '{"data": 1}'
+        elif(args.NTPEnabled == 'False'):
+            data = '{"data": 0}'
+        else:
+            return "Invalid data(data ="+args.NTPEnabled+")"
+        res = session.put(url + '/attr/NTPEnabled', headers=httpHeader,
+                          data=data, verify=False, timeout=30)
+        if(args.SendHostNameEnabled == 'True'):
+            data = '{"data": 1}'
+        elif(args.SendHostNameEnabled == 'False'):
+            data = '{"data": 0}'
+        else:
+            return "Invalid data(data ="+args.SendHostNameEnabled+")"
+        res = session.put(url + '/attr/SendHostNameEnabled', headers=httpHeader,
+                          data=data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return res.text
+
+
+def nwReset(host, args, session):
+
+    """
+        Called by the network function. Resets networks setting to factory defaults.
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the ldap subcommand
+                args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+        @param session: the active session to use
+    """
+
+    url = "https://"+host+"/xyz/openbmc_project/network/action/Reset"
+    httpHeader = {'Content-Type': 'application/json'}
+    data = '{"data":[] }'
+    try:
+        res = session.post(url, headers=httpHeader, data=data, verify=False,
+                          timeout=30)
+
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return res.text
 
 
 def createPrivilegeMapping(host, args, session):
@@ -3429,6 +3594,58 @@ def createCommandParser():
                               choices=['eth0', 'eth1'],
                               help="Name of the ethernet interface")
     parser_rmIP.set_defaults(func=deleteIP)
+
+    # configure VLAN
+    parser_create_vlan = nw_sub.add_parser("addVLAN", help="enables VLAN "
+                                           "on given interface with given "
+                                           "VLAN Identifier")
+    parser_create_vlan.add_argument("-I", "--Interface", required=True,
+                                  choices=['eth0', 'eth1'],
+                                  help="Name of the ethernet interface")
+    parser_create_vlan.add_argument("-n", "--Identifier", required=True,
+                                  help="VLAN Identifier")
+    parser_create_vlan.set_defaults(func=addVLAN)
+
+    # delete VLAN
+    parser_delete_vlan = nw_sub.add_parser("deleteVLAN", help="disables VLAN "
+                                           "on given interface with given "
+                                           "VLAN Identifier")
+    parser_delete_vlan.add_argument("-I", "--Interface", required=True,
+                                  choices=['eth0', 'eth1'],
+                                  help="Name of the ethernet interface")
+    parser_delete_vlan.add_argument("-n", "--Identifier", required=True,
+                                  help="VLAN Identifier")
+    parser_delete_vlan.set_defaults(func=deleteVLAN)
+
+    # viewDHCPConfig
+    parser_viewDHCPConfig = nw_sub.add_parser("viewDHCPConfig",
+                                              help="Shows DHCP configured "
+                                              "Properties")
+    parser_viewDHCPConfig.set_defaults(func=viewDHCPConfig)
+
+    # configureDHCP
+    parser_configDHCP = nw_sub.add_parser("configureDHCP",
+                                          help="Configures/updates DHCP "
+                                          "Properties")
+    parser_configDHCP.add_argument("-d", "--DNSEnabled", required=True,
+                                   choices=['True', 'False'],
+                                   help="Sets DNSEnabled property")
+    parser_configDHCP.add_argument("-n", "--HostNameEnabled", required=True,
+                                   choices=['True', 'False'],
+                                   help="Sets HostNameEnabled property")
+    parser_configDHCP.add_argument("-t", "--NTPEnabled", required=True,
+                                   choices=['True', 'False'],
+                                   help="Sets NTPEnabled property")
+    parser_configDHCP.add_argument("-s", "--SendHostNameEnabled", required=True,
+                                   choices=['True', 'False'],
+                                   help="Sets SendHostNameEnabled property")
+    parser_configDHCP.set_defaults(func=configureDHCP)
+
+    # network factory reset
+    parser_nw_reset = nw_sub.add_parser("nwReset",
+                                        help="Resets networks setting to "
+                                        "factory defaults")
+    parser_nw_reset.set_defaults(func=nwReset)
 
     return parser
 
