@@ -2360,6 +2360,33 @@ def deletePrivilegeMapping(host, args, session):
         return connectionErrHandler(args.json, "ConnectionError", err)
     return res.text
 
+
+def deleteAllPrivilegeMapping(host, args, session):
+    """
+         Called by the ldap function. Deletes all privilege mapping and group defined.
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+    """
+    (ldapNameSpaceObjects) = listPrivilegeMapping(host, args, session)
+    ldapNameSpaceObjects = json.loads(ldapNameSpaceObjects)["data"]
+    path = ''
+
+    # search for the object having the mapping for the given group
+    for key,value in ldapNameSpaceObjects.items():
+        value = str(value)
+        sub_index = value.find('GroupName')
+        if sub_index != -1:
+            path = key
+            # delete the object
+            url = 'https://'+host+path+'/action/delete'
+            httpHeader = {'Content-Type': 'application/json'}
+            data = {"data": []}
+            res = session.post(url, headers=httpHeader, json = data, verify=False, timeout=30)
+
+
 def viewLDAPConfig(host, args, session):
     """
          Called by the ldap function. Prints out LDAP's configured properties
@@ -2703,6 +2730,10 @@ def createCommandParser():
     parser_ldap_mapper_delete = parser_ldap_mapper_sub.add_parser("delete",help="Delete privilege mapping")
     parser_ldap_mapper_delete.add_argument("-g","--groupName",required=True,help="Group Name")
     parser_ldap_mapper_delete.set_defaults(func=deletePrivilegeMapping)
+
+    #deleteAll group privilege mapping
+    parser_ldap_mapper_delete = parser_ldap_mapper_sub.add_parser("deleteall",help="Delete All privilege mapping")
+    parser_ldap_mapper_delete.set_defaults(func=deleteAllPrivilegeMapping)
 
     return parser
 
