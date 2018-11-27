@@ -2360,6 +2360,36 @@ def deletePrivilegeMapping(host, args, session):
         return connectionErrHandler(args.json, "ConnectionError", err)
     return res.text
 
+def deleteAllPrivilegeMapping(host, args, session):
+    """
+         Called by the ldap function. Deletes all the privilege mapping and group defined.
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output
+                will be provided in json format for programmatic consumption
+    """
+    ldapNameSpaceObjects = listPrivilegeMapping(host, args, session)
+    ldapNameSpaceObjects = json.loads(ldapNameSpaceObjects)["data"]
+    path = ''
+
+    # Remove the config object.
+    ldapNameSpaceObjects.pop('/xyz/openbmc_project/user/ldap/config', None)
+    httpHeader = {'Content-Type': 'application/json'}
+    data = {"data": []}
+
+    try:
+        # search for GroupName property and delete if it is available.
+        for path in ldapNameSpaceObjects.keys():
+            # delete the object
+            url = 'https://'+host+path+'/action/delete'
+            res = session.post(url, headers=httpHeader, json = data, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    return res.text
+
 def viewLDAPConfig(host, args, session):
     """
          Called by the ldap function. Prints out LDAP's configured properties
@@ -2729,6 +2759,10 @@ def createCommandParser():
     parser_ldap_mapper_delete = parser_ldap_mapper_sub.add_parser("delete",help="Delete privilege mapping")
     parser_ldap_mapper_delete.add_argument("-g","--groupName",required=True,help="Group Name")
     parser_ldap_mapper_delete.set_defaults(func=deletePrivilegeMapping)
+
+    #deleteAll group privilege mapping
+    parser_ldap_mapper_delete = parser_ldap_mapper_sub.add_parser("purge",help="Delete All privilege mapping")
+    parser_ldap_mapper_delete.set_defaults(func=deleteAllPrivilegeMapping)
 
     # set local user password
     parser_set_password = subparsers.add_parser("set_password",
