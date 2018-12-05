@@ -1,0 +1,9 @@
+Code-Review+1: Steven Sombar <ssombar@us.ibm.com>
+Code-Review+1: Gunnar Mills <gmills@us.ibm.com>
+Code-Review+2: Andrew Geissler <geissonator@yahoo.com>
+Verified+1: Andrew Geissler <geissonator@yahoo.com>
+Submitted-by: Andrew Geissler <geissonator@yahoo.com>
+Submitted-at: Wed, 05 Dec 2018 16:11:12 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/15650
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
