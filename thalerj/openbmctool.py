@@ -467,8 +467,8 @@ def fruStatus(host, args, session):
                 if hasSels:
                     loglist = []
                     faults = frulist[key+"/fault"]['endpoints']
-                    for key in faults:
-                        loglist.append(faults[key].split('/')[-1])
+                    for item in faults:
+                        loglist.append(item.split('/')[-1])
                     frus[fruName] = {"compName": fruName, "Functional": "No", "Present":boolToString(present), "IsFru": boolToString(isFru), "selList": ', '.join(loglist).strip() }
                 else:
                     frus[fruName] = {"compName": fruName, "Functional": "Yes", "Present":boolToString(present), "IsFru": boolToString(isFru), "selList": "None" }
