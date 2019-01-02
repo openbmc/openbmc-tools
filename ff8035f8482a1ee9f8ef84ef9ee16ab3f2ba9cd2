@@ -1,0 +1,9 @@
+Code-Review+1: Adriana Kobylak <anoo@linux.ibm.com>
+Code-Review+1: Matt Spinler <spinler@us.ibm.com>
+Verified+1: Andrew Geissler <geissonator@yahoo.com>
+Code-Review+2: Andrew Geissler <geissonator@yahoo.com>
+Submitted-by: Andrew Geissler <geissonator@yahoo.com>
+Submitted-at: Wed, 02 Jan 2019 17:15:44 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/16574
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
