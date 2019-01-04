@@ -1061,7 +1061,7 @@ def selClear(host, args, session):
          @param session: the active session to use
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
     """
-    url="https://"+host+"/xyz/openbmc_project/logging/action/deleteAll"
+    url="https://"+host+"/xyz/openbmc_project/logging/action/DeleteAll"
     httpHeader = {'Content-Type':'application/json'}
     data = "{\"data\": [] }"
 
