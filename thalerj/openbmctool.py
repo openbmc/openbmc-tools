@@ -33,6 +33,7 @@ import uuid
 
 jsonHeader = {'Content-Type' : 'application/json'}
 xAuthHeader = {}
+baseTimeout = 60
 
 def hilight(textToColor, color, bold):
     """
@@ -237,7 +238,7 @@ def checkFWactivation(host, args, session):
     """
     url="https://"+host+"/xyz/openbmc_project/software/enumerate"
     try:
-        resp = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+        resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         print(connectionErrHandler(args.json, "Timeout", None))
         return(True)
@@ -265,14 +266,13 @@ def login(host, username, pw,jsonFormat):
         print("Attempting login...")
     mysess = requests.session()
     try:
-        r = mysess.post('https://'+host+'/login', headers=jsonHeader, json = {"data": [username, pw]}, verify=False, timeout=30)
+        r = mysess.post('https://'+host+'/login', headers=jsonHeader, json = {"data": [username, pw]}, verify=False, timeout=baseTimeout)
 
         cookie = r.headers['Set-Cookie']
         match = re.search('SESSION=(\w+);', cookie)
         if match:
             xAuthHeader['X-Auth-Token'] = match.group(1)
             jsonHeader.update(xAuthHeader)
-
         loginMessage = json.loads(r.text)
         if (loginMessage['status'] != "ok"):
             print(loginMessage["data"]["description"].encode('utf-8'))
@@ -299,7 +299,7 @@ def logout(host, username, pw, session, jsonFormat):
          @param jsonFormat: boolean, flag that will only allow relevant data from user command to be display. This function becomes silent when set to true.
     """
     try:
-        r = session.post('https://'+host+'/logout', headers=jsonHeader,json = {"data": [username, pw]}, verify=False, timeout=10)
+        r = session.post('https://'+host+'/logout', headers=jsonHeader,json = {"data": [username, pw]}, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         print(connectionErrHandler(jsonFormat, "Timeout", None))
 
@@ -328,7 +328,7 @@ def fru(host, args, session):
 
     url="https://"+host+"/xyz/openbmc_project/inventory/enumerate"
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
 
@@ -372,7 +372,7 @@ def fruPrint(host, args, session):
     """
     url="https://"+host+"/xyz/openbmc_project/inventory/enumerate"
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
 
@@ -387,7 +387,7 @@ def fruPrint(host, args, session):
             return res.json()
     url="https://"+host+"/xyz/openbmc_project/software/enumerate"
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
 #     print(res.text)
@@ -507,14 +507,14 @@ def sensor(host, args, session):
     """
     url="https://"+host+"/xyz/openbmc_project/sensors/enumerate"
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
 
     #Get OCC status
     url="https://"+host+"/org/open_power/control/enumerate"
     try:
-        occres = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+        occres = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     if not args.json:
@@ -582,7 +582,7 @@ def sel(host, args, session):
 
     url="https://"+host+"/xyz/openbmc_project/logging/entry/enumerate"
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=60)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     return res.text
@@ -1074,7 +1074,7 @@ def selClear(host, args, session):
     data = "{\"data\": [] }"
 
     try:
-        res = session.post(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+        res = session.post(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     if res.status_code == 200:
@@ -1087,7 +1087,7 @@ def selClear(host, args, session):
                 logNum = key.split('/')[-1]
                 url = "https://"+ host+ "/xyz/openbmc_project/logging/entry/"+logNum+"/action/Delete"
                 try:
-                    session.post(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+                    session.post(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
                 except(requests.exceptions.Timeout):
                     return connectionErrHandler(args.json, "Timeout", None)
                     sys.exit(1)
@@ -1108,7 +1108,7 @@ def selSetResolved(host, args, session):
     url="https://"+host+"/xyz/openbmc_project/logging/entry/" + str(args.selNum) + "/attr/Resolved"
     data = "{\"data\": 1 }"
     try:
-        res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+        res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     if res.status_code == 200:
@@ -1179,7 +1179,7 @@ def chassisPower(host, args, session):
         url="https://"+host+"/xyz/openbmc_project/state/host0/attr/RequestedHostTransition"
         data = '{"data":"xyz.openbmc_project.State.Host.Transition.On"}'
         try:
-            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return(connectionErrHandler(args.json, "Timeout", None))
         return res.text
@@ -1190,7 +1190,7 @@ def chassisPower(host, args, session):
         url="https://"+host+"/xyz/openbmc_project/state/host0/attr/RequestedHostTransition"
         data = '{"data":"xyz.openbmc_project.State.Host.Transition.Off"}'
         try:
-            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return(connectionErrHandler(args.json, "Timeout", None))
         return res.text
@@ -1201,26 +1201,26 @@ def chassisPower(host, args, session):
         url="https://"+host+"/xyz/openbmc_project/state/chassis0/attr/RequestedPowerTransition"
         data = '{"data":"xyz.openbmc_project.State.Chassis.Transition.Off"}'
         try:
-            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return(connectionErrHandler(args.json, "Timeout", None))
         return res.text
     elif(args.powcmd == 'status'):
         url="https://"+host+"/xyz/openbmc_project/state/chassis0/attr/CurrentPowerState"
         try:
-            res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+            res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return(connectionErrHandler(args.json, "Timeout", None))
         chassisState = json.loads(res.text)['data'].split('.')[-1]
         url="https://"+host+"/xyz/openbmc_project/state/host0/attr/CurrentHostState"
         try:
-            res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+            res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return(connectionErrHandler(args.json, "Timeout", None))
         hostState = json.loads(res.text)['data'].split('.')[-1]
         url="https://"+host+"/xyz/openbmc_project/state/bmc0/attr/CurrentBMCState"
         try:
-            res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+            res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return(connectionErrHandler(args.json, "Timeout", None))
         bmcState = json.loads(res.text)['data'].split('.')[-1]
@@ -1247,7 +1247,7 @@ def chassisIdent(host, args, session):
         url="https://"+host+"/xyz/openbmc_project/led/groups/enclosure_identify/attr/Asserted"
         data = '{"data":true}'
         try:
-            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return(connectionErrHandler(args.json, "Timeout", None))
         return res.text
@@ -1256,14 +1256,14 @@ def chassisIdent(host, args, session):
         url="https://"+host+"/xyz/openbmc_project/led/groups/enclosure_identify/attr/Asserted"
         data = '{"data":false}'
         try:
-            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+            res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return(connectionErrHandler(args.json, "Timeout", None))
         return res.text
     elif(args.identcmd == 'status'):
         url="https://"+host+"/xyz/openbmc_project/led/groups/enclosure_identify"
         try:
-            res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+            res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return(connectionErrHandler(args.json, "Timeout", None))
         status = json.loads(res.text)['data']
@@ -1311,7 +1311,7 @@ def bmcDumpRetrieve(host, args, session):
         saveLoc = tempfile.gettempdir()
     url ='https://'+host+'/download/dump/' + str(dumpNum)
     try:
-        r = session.get(url, headers=jsonHeader, stream=True, verify=False, timeout=30)
+        r = session.get(url, headers=jsonHeader, stream=True, verify=False, timeout=baseTimeout)
         if (args.dumpSaveLoc is not None):
             if os.path.exists(saveLoc):
                 if saveLoc[-1] != os.path.sep:
@@ -1346,7 +1346,7 @@ def bmcDumpList(host, args, session):
     """
     url ='https://'+host+'/xyz/openbmc_project/dump/list'
     try:
-        r = session.get(url, headers=jsonHeader, verify=False, timeout=60)
+        r = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         dumpList = r.json()
         return dumpList
     except(requests.exceptions.Timeout):
@@ -1375,7 +1375,7 @@ def bmcDumpDelete(host, args, session):
         for dumpNum in dumpList:
             url ='https://'+host+'/xyz/openbmc_project/dump/entry/'+str(dumpNum)+'/action/Delete'
             try:
-                r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=30)
+                r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
                 if r.status_code == 200:
                     successList.append(str(dumpNum))
                 else:
@@ -1425,7 +1425,7 @@ def bmcDumpCreate(host, args, session):
     """
     url = 'https://'+host+'/xyz/openbmc_project/dump/action/CreateDump'
     try:
-        r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=30)
+        r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
         if(r.status_code == 200 and not args.json):
             return ('Dump successfully created')
         elif(args.json):
@@ -1486,7 +1486,7 @@ def collectServiceData(host, args, session):
     #Collect all of the LEDs status
     try:
         url="https://"+host+"/xyz/openbmc_project/led/enumerate"
-        leds = session.get(url, headers=jsonHeader, verify=False, timeout=20)
+        leds = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         with open(myDir +'/ledStatus.txt', 'w') as f:
             f.write(leds.text)
         print("System LED status collected and stored in "+myDir +"/ledStatus.txt")
@@ -1654,7 +1654,7 @@ def healthCheck(host, args, session):
             for logNum in logNums2Clr:
                     url = "https://"+ host+ "/xyz/openbmc_project/logging/entry/"+logNum+"/action/Delete"
                     try:
-                        session.post(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+                        session.post(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
                     except(requests.exceptions.Timeout):
                         deleteFailed = True
                     except(requests.exceptions.ConnectionError) as err:
@@ -1696,13 +1696,13 @@ def bmcReset(host, args, session):
         print("\nAttempting to reboot the BMC...:")
         url="https://"+host+"/xyz/openbmc_project/state/bmc0/attr/RequestedBMCTransition"
         data = '{"data":"xyz.openbmc_project.State.BMC.Transition.Reboot"}'
-        res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=20)
+        res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
         return res.text
     elif(args.type =="cold"):
         print("\nAttempting to reboot the BMC...:")
         url="https://"+host+"/xyz/openbmc_project/state/bmc0/attr/RequestedBMCTransition"
         data = '{"data":"xyz.openbmc_project.State.BMC.Transition.Reboot"}'
-        res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=20)
+        res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
         return res.text
     else:
         return "invalid command"
@@ -1719,7 +1719,7 @@ def gardClear(host, args, session):
     data = '{"data":[]}'
     try:
 
-        res = session.post(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+        res = session.post(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
         if res.status_code == 404:
             return "Command not supported by this firmware version"
         else:
@@ -1743,7 +1743,7 @@ def activateFWImage(host, args, session):
     #determine the existing versions
     url="https://"+host+"/xyz/openbmc_project/software/enumerate"
     try:
-        resp = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+        resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return connectionErrHandler(args.json, "Timeout", None)
     except(requests.exceptions.ConnectionError) as err:
@@ -1769,8 +1769,8 @@ def activateFWImage(host, args, session):
     data = "{\"data\": 0}"
     data1 = "{\"data\": 1 }"
     try:
-        resp = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
-        resp1 = session.put(url1, headers=jsonHeader, data=data1, verify=False, timeout=30)
+        resp = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
+        resp1 = session.put(url1, headers=jsonHeader, data=data1, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return connectionErrHandler(args.json, "Timeout", None)
     except(requests.exceptions.ConnectionError) as err:
@@ -1875,7 +1875,7 @@ def fwFlash(host, args, session):
     #determine the existing images on the bmc
     url="https://"+host+"/xyz/openbmc_project/software/enumerate"
     try:
-        resp = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+        resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return connectionErrHandler(args.json, "Timeout", None)
     except(requests.exceptions.ConnectionError) as err:
@@ -1913,7 +1913,7 @@ def fwFlash(host, args, session):
         for i in range(0, 5):
             url="https://"+host+"/xyz/openbmc_project/software/enumerate"
             try:
-                resp = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+                resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
             except(requests.exceptions.Timeout):
                 return connectionErrHandler(args.json, "Timeout", None)
             except(requests.exceptions.ConnectionError) as err:
@@ -1930,7 +1930,7 @@ def fwFlash(host, args, session):
         url="https://"+host+"/xyz/openbmc_project/software/"+ newversionID + "/attr/RequestedActivation"
         data = '{"data":"xyz.openbmc_project.Software.Activation.RequestedActivations.Active"}'
         try:
-            resp = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+            resp = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
         except(requests.exceptions.Timeout):
             return connectionErrHandler(args.json, "Timeout", None)
         except(requests.exceptions.ConnectionError) as err:
@@ -1942,7 +1942,7 @@ def fwFlash(host, args, session):
             url="https://"+host+"/xyz/openbmc_project/software/"+ newversionID
             data = '{"data":"xyz.openbmc_project.Software.Activation.RequestedActivations.Active"}'
             try:
-                resp = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+                resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
             except(requests.exceptions.Timeout):
                 return connectionErrHandler(args.json, "Timeout", None)
             except(requests.exceptions.ConnectionError) as err:
@@ -2061,7 +2061,7 @@ def firmwareList(host, args, session):
     """
     url="https://{hostname}/xyz/openbmc_project/software/enumerate".format(hostname=host)
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     firmwareDict = json.loads(res.text)
@@ -2089,7 +2089,7 @@ def deleteFWVersion(host, args, session):
     data = "{\"data\": [] }"
 
     try:
-        res = session.post(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+        res = session.post(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     if res.status_code == 200:
@@ -2117,7 +2117,7 @@ def restLogging(host, args, session):
         return "Invalid logging rest_api command"
 
     try:
-        res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+        res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     return res.text
@@ -2137,10 +2137,10 @@ def remoteLogging(host, args, session):
 
     try:
         if(args.remote_logging == 'view'):
-            res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+            res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         elif(args.remote_logging == 'disable'):
-            res = session.put(url + '/attr/Port', headers=jsonHeader, json = {"data": 0}, verify=False, timeout=30)
-            res = session.put(url + '/attr/Address', headers=jsonHeader, json = {"data": ""}, verify=False, timeout=30)
+            res = session.put(url + '/attr/Port', headers=jsonHeader, json = {"data": 0}, verify=False, timeout=baseTimeout)
+            res = session.put(url + '/attr/Address', headers=jsonHeader, json = {"data": ""}, verify=False, timeout=baseTimeout)
         else:
             return "Invalid logging remote_logging command"
     except(requests.exceptions.Timeout):
@@ -2161,8 +2161,8 @@ def remoteLoggingConfig(host, args, session):
     url="https://"+host+"/xyz/openbmc_project/logging/config/remote"
 
     try:
-        res = session.put(url + '/attr/Port', headers=jsonHeader, json = {"data": args.port}, verify=False, timeout=30)
-        res = session.put(url + '/attr/Address', headers=jsonHeader, json = {"data": args.address}, verify=False, timeout=30)
+        res = session.put(url + '/attr/Port', headers=jsonHeader, json = {"data": args.port}, verify=False, timeout=baseTimeout)
+        res = session.put(url + '/attr/Address', headers=jsonHeader, json = {"data": args.address}, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     return res.text
@@ -2253,7 +2253,7 @@ def enableLDAP(host, args, session):
     data = {"data": [args.uri, args.bindDN, args.baseDN, args.bindPassword, scope[args.scope], serverType[args.serverType]]}
 
     try:
-        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=30)
+        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2277,7 +2277,7 @@ def disableLDAP(host, args, session):
     data = {"data": []}
 
     try:
-        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=30)
+        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2303,7 +2303,7 @@ def enableDHCP(host, args, session):
     data = "{\"data\": 1 }"
     try:
         res = session.put(url, headers=jsonHeader, data=data, verify=False,
-                          timeout=30)
+                          timeout=baseTimeout)
 
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
@@ -2332,7 +2332,7 @@ def disableDHCP(host, args, session):
     data = "{\"data\": 0 }"
     try:
         res = session.put(url, headers=jsonHeader, data=data, verify=False,
-                          timeout=30)
+                          timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2358,7 +2358,7 @@ def getHostname(host, args, session):
     url = "https://"+host+"/xyz/openbmc_project/network/config/attr/HostName"
 
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2384,7 +2384,7 @@ def setHostname(host, args, session):
 
     try:
         res = session.put(url, headers=jsonHeader, json=data, verify=False,
-                          timeout=30)
+                          timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2409,7 +2409,7 @@ def getDomainName(host, args, session):
     "/attr/DomainName"
 
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2439,7 +2439,7 @@ def setDomainName(host, args, session):
 
     try:
         res = session.put(url, headers=jsonHeader, json=data, verify=False,
-                          timeout=30)
+                          timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2467,7 +2467,7 @@ def getMACAddress(host, args, session):
     "/attr/MACAddress"
 
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2497,7 +2497,7 @@ def setMACAddress(host, args, session):
 
     try:
         res = session.put(url, headers=jsonHeader, json=data, verify=False,
-                          timeout=30)
+                          timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2524,7 +2524,7 @@ def getDefaultGateway(host, args, session):
     url = "https://"+host+"/xyz/openbmc_project/network/config/attr/DefaultGateway"
 
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2552,7 +2552,7 @@ def setDefaultGateway(host, args, session):
 
     try:
         res = session.put(url, headers=jsonHeader, json=data, verify=False,
-                          timeout=30)
+                          timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2576,7 +2576,7 @@ def viewNWConfig(host, args, session):
     """
     url = "https://"+host+"/xyz/openbmc_project/network/enumerate"
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2604,7 +2604,7 @@ def getDNS(host, args, session):
         + "/attr/Nameservers"
 
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2634,7 +2634,7 @@ def setDNS(host, args, session):
 
     try:
         res = session.put(url, headers=jsonHeader, json=data, verify=False,
-                          timeout=30)
+                          timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2662,7 +2662,7 @@ def getNTP(host, args, session):
         + "/attr/NTPServers"
 
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2692,7 +2692,7 @@ def setNTP(host, args, session):
 
     try:
         res = session.put(url, headers=jsonHeader, json=data, verify=False,
-                          timeout=30)
+                          timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2727,7 +2727,7 @@ def addIP(host, args, session):
 
     try:
         res = session.post(url, headers=jsonHeader, json=data, verify=False,
-                           timeout=30)
+                           timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2753,7 +2753,7 @@ def getIP(host, args, session):
     url = "https://" + host+"/xyz/openbmc_project/network/" + args.Interface +\
         "/enumerate"
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2780,7 +2780,7 @@ def deleteIP(host, args, session):
         "/enumerate"
     data = {"data": []}
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2797,7 +2797,7 @@ def deleteIP(host, args, session):
             url = "https://"+host+obj+"/action/delete"
             try:
                 res = session.post(url, headers=jsonHeader, json=data,
-                                   verify=False, timeout=30)
+                                   verify=False, timeout=baseTimeout)
             except(requests.exceptions.Timeout):
                 return(connectionErrHandler(args.json, "Timeout", None))
             except(requests.exceptions.ConnectionError) as err:
@@ -2825,7 +2825,7 @@ def addVLAN(host, args, session):
 
     try:
         res = session.post(url, headers=jsonHeader, json=data, verify=False,
-                           timeout=30)
+                           timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2852,7 +2852,7 @@ def deleteVLAN(host, args, session):
     data = {"data": []}
 
     try:
-        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=30)
+        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2878,7 +2878,7 @@ def viewDHCPConfig(host, args, session):
     url="https://"+host+"/xyz/openbmc_project/network/config/dhcp"
 
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2906,25 +2906,25 @@ def configureDHCP(host, args, session):
         else:
             data = '{"data": 0}'
         res = session.put(url + '/attr/DNSEnabled', headers=jsonHeader,
-                          data=data, verify=False, timeout=30)
+                          data=data, verify=False, timeout=baseTimeout)
         if(args.HostNameEnabled == True):
             data = '{"data": 1}'
         else:
             data = '{"data": 0}'
         res = session.put(url + '/attr/HostNameEnabled', headers=jsonHeader,
-                          data=data, verify=False, timeout=30)
+                          data=data, verify=False, timeout=baseTimeout)
         if(args.NTPEnabled == True):
             data = '{"data": 1}'
         else:
             data = '{"data": 0}'
         res = session.put(url + '/attr/NTPEnabled', headers=jsonHeader,
-                          data=data, verify=False, timeout=30)
+                          data=data, verify=False, timeout=baseTimeout)
         if(args.SendHostNameEnabled == True):
             data = '{"data": 1}'
         else:
             data = '{"data": 0}'
         res = session.put(url + '/attr/SendHostNameEnabled', headers=jsonHeader,
-                          data=data, verify=False, timeout=30)
+                          data=data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2949,7 +2949,7 @@ def nwReset(host, args, session):
     data = '{"data":[] }'
     try:
         res = session.post(url, headers=jsonHeader, data=data, verify=False,
-                          timeout=30)
+                          timeout=baseTimeout)
 
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
@@ -2975,7 +2975,7 @@ def createPrivilegeMapping(host, args, session):
     data = {"data": [args.groupName,args.privilege]}
 
     try:
-        res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=30)
+        res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2996,7 +2996,7 @@ def listPrivilegeMapping(host, args, session):
     data = {"data": []}
 
     try:
-        res = session.get(url, headers=jsonHeader, json = data, verify=False, timeout=30)
+        res = session.get(url, headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -3034,7 +3034,7 @@ def deletePrivilegeMapping(host, args, session):
     data = {"data": []}
 
     try:
-        res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=30)
+        res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -3063,7 +3063,7 @@ def deleteAllPrivilegeMapping(host, args, session):
         for path in ldapNameSpaceObjects.keys():
             # delete the object
             url = 'https://'+host+path+'/action/delete'
-            res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=30)
+            res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -3083,7 +3083,7 @@ def viewLDAPConfig(host, args, session):
     """
     url = "https://"+host+"/xyz/openbmc_project/user/ldap/config"
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -3113,7 +3113,7 @@ def localUsers(host, args, session):
 
     url="https://{hostname}/xyz/openbmc_project/user/enumerate".format(hostname=host)
     try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     usersDict = json.loads(res.text)
@@ -3133,7 +3133,7 @@ def localUsers(host, args, session):
 
         if args.local_users == "queryenabled":
             try:
-                res = session.get(url, headers=jsonHeader,verify=False, timeout=30)
+                res = session.get(url, headers=jsonHeader,verify=False, timeout=baseTimeout)
             except(requests.exceptions.Timeout):
                 return(connectionErrHandler(args.json, "Timeout", None))
 
@@ -3152,7 +3152,7 @@ def localUsers(host, args, session):
             output += "{action} {name}\n".format(action=action, name=name)
 
             try:
-                resp = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=30)
+                resp = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
             except(requests.exceptions.Timeout):
                 return connectionErrHandler(args.json, "Timeout", None)
             except(requests.exceptions.ConnectionError) as err:
@@ -3178,7 +3178,7 @@ def setPassword(host, args, session):
     try:
         res = session.post(url, headers=jsonHeader,
                            json={"data": [args.password]}, verify=False,
-                           timeout=30)
+                           timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
