@@ -1437,7 +1437,382 @@ def bmcDumpCreate(host, args, session):
         return connectionErrHandler(args.json, "ConnectionError", err)
 
 
+def csdDumpInitiate(host, args, session):
+    """
+        Starts the process of getting the current list of dumps then initiates the creation of one.
 
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    errorInfo = ""
+    dumpcount = 0
+    try:
+        d = vars(args)
+        d['json'] = True
+    except Exception as e:
+        errorInfo += "Failed to set the json flag to True \n Exception: {eInfo}\n".format(eInfo=e)
+
+    try:
+        for i in range(3):
+            dumpInfo = bmcDumpList(host, args, session)
+            if 'data' in dumpInfo:
+                dumpcount = len(dumpInfo['data'])
+                break
+            else:
+                errorInfo+= "Dump List Message returned: " + json.dumps(dumpInfo,indent=0, separators=(',', ':')).replace('\n','') +"\n"
+    except Exception as e:
+        errorInfo+= "Failed to collect the list of dumps.\nException: {eInfo}\n".format(eInfo=e)
+
+    #Create a user initiated dump
+    try:
+        for i in range(3):
+            dumpcreated = bmcDumpCreate(host, args, session)
+            if 'message' in dumpcreated:
+                if 'ok' in dumpcreated['message'].lower():
+                    break
+                else:
+                    errorInfo+= "Dump create message returned: " + json.dumps(dumpInfo,indent=0, separators=(',', ':')).replace('\n','') +"\n"
+            else:
+                errorInfo+= "Dump create message returned: " + json.dumps(dumpInfo,indent=0, separators=(',', ':')).replace('\n','') +"\n"
+    except Exception as e:
+        errorInfo+= "Dump create exception encountered: {eInfo}\n".format(eInfo=e)
+
+    output = {}
+    output['errors'] = errorInfo
+    output['dumpcount'] = dumpcount
+    return output
+
+def csdInventory(host, args,session, fileDir):
+    """
+        Collects the BMC inventory, retrying if necessary
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+         @param fileDir: string representation of the path to use for putting files created
+    """
+    errorInfo = "===========Inventory =============\n"
+    output={}
+    inventoryCollected = False
+    try:
+        for i in range(3):
+            frulist = fruPrint(host, args, session)
+            if 'Hardware' in frulist:
+                inventoryCollected = True
+                break
+            else:
+                errorInfo += json.dumps(frulist, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
+    except Exception as e:
+        errorInfo += "Inventory collection exception: {eInfo}\n".format(eInfo=e)
+    if inventoryCollected:
+        try:
+            with open(fileDir +os.sep+'inventory.txt', 'w') as f:
+                f.write(json.dumps(frulist, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n')
+            print("Inventory collected and stored in " + fileDir + os.sep + "inventory.txt")
+            output['fileLoc'] = fileDir+os.sep+'inventory.txt'
+        except Exception as e:
+            print("Failed to write inventory to file.")
+            errorInfo += "Error writing inventory to the file. Exception: {eInfo}\n".format(eInfo=e)
+
+    output['errors'] = errorInfo
+
+    return output
+
+def csdSensors(host, args,session, fileDir):
+    """
+        Collects the BMC sensor readings, retrying if necessary
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+         @param fileDir: string representation of the path to use for putting files created
+    """
+    errorInfo = "===========Sensors =============\n"
+    sensorsCollected = False
+    output={}
+    try:
+        d = vars(args)
+        d['json'] = False
+    except Exception as e:
+        errorInfo += "Failed to set the json flag to False \n Exception: {eInfo}\n".format(eInfo=e)
+
+    try:
+        for i in range(3):
+            sensorReadings = sensor(host, args, session)
+            if 'OCC0' in sensorReadings:
+                sensorsCollected = True
+                break
+            else:
+                errorInfo += sensorReadings
+    except Exception as e:
+        errorInfo += "Sensor reading collection exception: {eInfo}\n".format(eInfo=e)
+    if sensorsCollected:
+        try:
+            with open(fileDir +os.sep+'sensorReadings.txt', 'w') as f:
+                f.write(sensorReadings)
+            print("Sensor readings collected and stored in " + fileDir + os.sep+ "sensorReadings.txt")
+            output['fileLoc'] = fileDir+os.sep+'sensorReadings.txt'
+        except Exception as e:
+            print("Failed to write sensor readings to file system.")
+            errorInfo += "Error writing sensor readings to the file. Exception: {eInfo}\n".format(eInfo=e)
+
+    output['errors'] = errorInfo
+    return output
+
+def csdLEDs(host,args, session, fileDir):
+    """
+        Collects the BMC LED status, retrying if necessary
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+         @param fileDir: string representation of the path to use for putting files created
+    """
+    errorInfo = "===========LEDs =============\n"
+    ledsCollected = False
+    output={}
+    try:
+        d = vars(args)
+        d['json'] = True
+    except Exception as e:
+        errorInfo += "Failed to set the json flag to False \n Exception: {eInfo}\n".format(eInfo=e)
+    try:
+        url="https://"+host+"/xyz/openbmc_project/led/enumerate"
+        httpHeader = {'Content-Type':'application/json'}
+        for i in range(3):
+            try:
+                ledRes = session.get(url, headers=jsonHeader, verify=False, timeout=60)
+                if ledRes.status_code == 200:
+                    ledsCollected = True
+                    leds = ledRes.json()['data']
+                    break
+                else:
+                    errorInfo += ledRes.text
+            except(requests.exceptions.Timeout):
+                errorInfo+=json.dumps( connectionErrHandler(args.json, "Timeout", None), sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
+            except(requests.exceptions.ConnectionError) as err:
+                errorInfo += json.dumps(connectionErrHandler(args.json, "ConnectionError", err), sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
+    except Exception as e:
+        errorInfo += "LED status collection exception: {eInfo}\n".format(eInfo=e)
+
+    if ledsCollected:
+        try:
+            with open(fileDir +os.sep+'ledStatus.txt', 'w') as f:
+                f.write(json.dumps(leds, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n')
+            print("LED status collected and stored in " + fileDir + os.sep+ "ledStatus.txt")
+            output['fileLoc'] = fileDir+os.sep+'ledStatus.txt'
+        except Exception as e:
+            print("Failed to write LED status to file system.")
+            errorInfo += "Error writing LED status to the file. Exception: {eInfo}\n".format(eInfo=e)
+
+    output['errors'] = errorInfo
+    return output
+
+def csdSelShortList(host, args, session, fileDir):
+    """
+        Collects the BMC log entries, retrying if necessary
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+         @param fileDir: string representation of the path to use for putting files created
+    """
+    errorInfo = "===========SEL Short List =============\n"
+    selsCollected = False
+    output={}
+    try:
+        d = vars(args)
+        d['json'] = False
+    except Exception as e:
+        errorInfo += "Failed to set the json flag to False \n Exception: {eInfo}\n".format(eInfo=e)
+
+    try:
+        for i in range(3):
+            sels = selPrint(host,args,session)
+            if '----Active Alerts----' in sels or 'No log entries found' in sels or '----Historical Alerts----' in sels:
+                selsCollected = True
+                break
+            else:
+                errorInfo += sels + '\n'
+    except Exception as e:
+        errorInfo += "SEL short list collection exception: {eInfo}\n".format(eInfo=e)
+
+    if selsCollected:
+        try:
+            with open(fileDir +os.sep+'SELshortlist.txt', 'w') as f:
+                f.write(sels)
+            print("SEL short list collected and stored in " + fileDir + os.sep+ "SELshortlist.txt")
+            output['fileLoc'] = fileDir+os.sep+'SELshortlist.txt'
+        except Exception as e:
+            print("Failed to write SEL short list to file system.")
+            errorInfo += "Error writing SEL short list to the file. Exception: {eInfo}\n".format(eInfo=e)
+
+    output['errors'] = errorInfo
+    return output
+
+def csdParsedSels(host, args, session, fileDir):
+    """
+        Collects the BMC log entries, retrying if necessary
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+         @param fileDir: string representation of the path to use for putting files created
+    """
+    errorInfo = "===========SEL Parsed List =============\n"
+    selsCollected = False
+    output={}
+    try:
+        d = vars(args)
+        d['json'] = True
+        d['fullEsel'] = True
+    except Exception as e:
+        errorInfo += "Failed to set the json flag to True \n Exception: {eInfo}\n".format(eInfo=e)
+
+    try:
+        for i in range(3):
+            parsedfullsels = json.loads(selPrint(host,args,session))
+            if 'numAlerts' in parsedfullsels:
+                selsCollected = True
+                break
+            else:
+                errorInfo += parsedfullsels + '\n'
+    except Exception as e:
+        errorInfo += "Parsed full SELs collection exception: {eInfo}\n".format(eInfo=e)
+
+    if selsCollected:
+        try:
+            sortedSELs = sortSELs(parsedfullsels)
+            with open(fileDir +os.sep+'parsedSELs.txt', 'w') as f:
+                for log in sortedSELs[0]:
+                    esel = ""
+                    parsedfullsels[sortedSELs[1][str(log)]]['timestamp'] = datetime.datetime.fromtimestamp(int(parsedfullsels[sortedSELs[1][str(log)]]['timestamp']/1000)).strftime("%Y-%m-%d %H:%M:%S")
+                    if ('raweSEL' in parsedfullsels[sortedSELs[1][str(log)]] and args.devdebug):
+                        esel = parsedfullsels[sortedSELs[1][str(log)]]['raweSEL']
+                        del parsedfullsels[sortedSELs[1][str(log)]]['raweSEL']
+                    f.write(json.dumps(parsedfullsels[sortedSELs[1][str(log)]],sort_keys=True, indent=4, separators=(',', ': ')))
+                    if(args.devdebug and esel != ""):
+                        f.write(parseESEL(args, esel))
+            print("Parsed SELs collected and stored in " + fileDir + os.sep+ "parsedSELs.txt")
+            output['fileLoc'] = fileDir+os.sep+'parsedSELs.txt'
+        except Exception as e:
+            print("Failed to write fully parsed SELs to file system.")
+            errorInfo += "Error writing fully parsed SELs to the file. Exception: {eInfo}\n".format(eInfo=e)
+
+    output['errors'] = errorInfo
+    return output
+
+def csdFullEnumeration(host, args, session, fileDir):
+    """
+        Collects a full enumeration of /xyz/openbmc_project/, retrying if necessary
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+         @param fileDir: string representation of the path to use for putting files created
+    """
+    errorInfo = "===========BMC Full Enumeration =============\n"
+    bmcFullCollected = False
+    output={}
+    try:
+        d = vars(args)
+        d['json'] = True
+    except Exception as e:
+        errorInfo += "Failed to set the json flag to False \n Exception: {eInfo}\n".format(eInfo=e)
+    try:
+        print("Attempting to get a full BMC enumeration")
+        url="https://"+host+"/xyz/openbmc_project/enumerate"
+        httpHeader = {'Content-Type':'application/json'}
+        for i in range(3):
+            try:
+                bmcRes = session.get(url, headers=jsonHeader, verify=False, timeout=180)
+                if bmcRes.status_code == 200:
+                    bmcFullCollected = True
+                    fullEnumeration = bmcRes.json()
+                    break
+                else:
+                    errorInfo += bmcRes.text
+            except(requests.exceptions.Timeout):
+                errorInfo+=json.dumps( connectionErrHandler(args.json, "Timeout", None), sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
+            except(requests.exceptions.ConnectionError) as err:
+                errorInfo += json.dumps(connectionErrHandler(args.json, "ConnectionError", err), sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
+    except Exception as e:
+        errorInfo += "RAW BMC data collection exception: {eInfo}\n".format(eInfo=e)
+
+    if bmcFullCollected:
+        try:
+            with open(fileDir +os.sep+'bmcFullRaw.txt', 'w') as f:
+                f.write(json.dumps(fullEnumeration, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n')
+            print("RAW BMC data collected and saved into " + fileDir + os.sep+ "bmcFullRaw.txt")
+            output['fileLoc'] = fileDir+os.sep+'bmcFullRaw.txt'
+        except Exception as e:
+            print("Failed to write RAW BMC data  to file system.")
+            errorInfo += "Error writing RAW BMC data collection to the file. Exception: {eInfo}\n".format(eInfo=e)
+
+    output['errors'] = errorInfo
+    return output
+
+def csdCollectAllDumps(host, args, session, fileDir):
+    """
+        Collects all of the bmc dump files and stores them in fileDir
+
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the collectServiceData sub command
+        @param session: the active session to use
+        @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+        @param fileDir: string representation of the path to use for putting files created
+    """
+
+    errorInfo = "===========BMC Dump Collection =============\n"
+    dumpListCollected = False
+    output={}
+    dumpList = {}
+    try:
+        d = vars(args)
+        d['json'] = True
+        d['dumpSaveLoc'] = fileDir
+    except Exception as e:
+        errorInfo += "Failed to set the json flag to True, or failed to set the dumpSave Location \n Exception: {eInfo}\n".format(eInfo=e)
+
+    print('Collecting bmc dump files')
+
+    try:
+        for i in range(3):
+            dumpResp = bmcDumpList(host, args, session)
+            if 'message' in dumpResp:
+                if 'ok' in dumpResp['message'].lower():
+                    dumpList = dumpResp['data']
+                    dumpListCollected = True
+                    break
+                else:
+                    errorInfo += "Status was not OK when retrieving the list of dumps available. \n Response: \n{resp}\n".format(resp=dumpResp)
+            else:
+                errorInfo += "Invalid response received from the BMC while retrieving the list of dumps available.\n {resp}\n".format(resp=dumpResp)
+    except Exception as e:
+        errorInfo += "BMC dump list exception: {eInfo}\n".format(eInfo=e)
+
+    if dumpListCollected:
+        output['fileList'] = []
+        for dump in dumpList:
+            try:
+                if '/xyz/openbmc_project/dump/internal/manager' not in dump:
+                    d['dumpNum'] = int(dump.strip().split('/')[-1])
+                    print('retrieving dump file ' + str(d['dumpNum']))
+                    filename = bmcDumpRetrieve(host, args, session).split('Saved as ')[-1]
+                    output['fileList'].append(filename)
+            except Exception as e:
+                print("Unable to collect dump: {dumpInfo}".format(dumpInfo=dump))
+                errorInfo += "Exception collecting a bmc dump {dumpInfo}\n {eInfo}\n".format(dumpInfo=dump, eInfo=e)
+    output['errors'] = errorInfo
+    return output
 
 def collectServiceData(host, args, session):
     """
@@ -1450,97 +1825,62 @@ def collectServiceData(host, args, session):
     """
 
     global toolVersion
-    #create a bmc dump
-    dumpcount = len(json.loads(bmcDumpList(host, args, session))['data'])
-    try:
-        dumpcreated = bmcDumpCreate(host, args, session)
-    except Exception as e:
-        print('failed to create a bmc dump')
+    filelist = []
+    errorInfo = ""
 
-
-    #Collect Inventory
+    #get current number of bmc dumps and create a new bmc dump
+    dumpInitdata = csdDumpInitiate(host, args, session)
+    dumpcount = dumpInitdata['dumpcount']
+    errorInfo += dumpInitdata['errors']
+    #create the directory to put files
     try:
         args.silent = True
         myDir = tempfile.gettempdir()+os.sep + host + "--" + datetime.datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
         os.makedirs(myDir)
-        filelist = []
-        frulist = fruPrint(host, args, session)
-        with open(myDir +'/inventory.txt', 'w') as f:
-            f.write(frulist)
-        print("Inventory collected and stored in " + myDir + "/inventory.txt")
-        filelist.append(myDir+'/inventory.txt')
-    except Exception as e:
-        print("Failed to collect inventory")
 
+    except Exception as e:
+        print('Unable to create the temporary directory for data collection. Ensure sufficient privileges to create temporary directory. Aborting.')
+        return("Python exception: {eInfo}".format(eInfo = e))
+
+    #Collect Inventory
+    inventoryData = csdInventory(host, args, session, myDir)
+    if 'fileLoc' in inventoryData:
+        filelist.append(inventoryData['fileLoc'])
+    errorInfo += inventoryData['errors']
     #Read all the sensor and OCC status
-    try:
-        sensorReadings = sensor(host, args, session)
-        with open(myDir +'/sensorReadings.txt', 'w') as f:
-            f.write(sensorReadings)
-        print("Sensor readings collected and stored in " +myDir + "/sensorReadings.txt")
-        filelist.append(myDir+'/sensorReadings.txt')
-    except Exception as e:
-        print("Failed to collect sensor readings")
-
+    sensorData = csdSensors(host,args,session,myDir)
+    if 'fileLoc' in sensorData:
+        filelist.append(sensorData['fileLoc'])
+    errorInfo += sensorData['errors']
     #Collect all of the LEDs status
-    try:
-        url="https://"+host+"/xyz/openbmc_project/led/enumerate"
-        leds = session.get(url, headers=jsonHeader, verify=False, timeout=20)
-        with open(myDir +'/ledStatus.txt', 'w') as f:
-            f.write(leds.text)
-        print("System LED status collected and stored in "+myDir +"/ledStatus.txt")
-        filelist.append(myDir+'/ledStatus.txt')
-    except Exception as e:
-        print("Failed to collect LED status")
+    ledStatus = csdLEDs(host, args, session, myDir)
+    if 'fileLoc' in ledStatus:
+        filelist.append(ledStatus['fileLoc'])
+    errorInfo += ledStatus['errors']
 
     #Collect the bmc logs
-    try:
-        sels = selPrint(host,args,session)
-        with open(myDir +'/SELshortlist.txt', 'w') as f:
-            f.write(str(sels))
-        print("sel short list collected and stored in "+myDir +"/SELshortlist.txt")
-        filelist.append(myDir+'/SELshortlist.txt')
-        time.sleep(2)
+    selShort = csdSelShortList(host, args, session, myDir)
+    if 'fileLoc' in selShort:
+        filelist.append(selShort['fileLoc'])
+    errorInfo += selShort['errors']
 
-        d = vars(args)
-        d['json'] = True
-        d['fullSel'] = True
-        parsedfullsels = json.loads(selPrint(host, args, session))
-        d['fullEsel'] = True
-        sortedSELs = sortSELs(parsedfullsels)
-        with open(myDir +'/parsedSELs.txt', 'w') as f:
-            for log in sortedSELs[0]:
-                esel = ""
-                parsedfullsels[sortedSELs[1][str(log)]]['timestamp'] = datetime.datetime.fromtimestamp(int(parsedfullsels[sortedSELs[1][str(log)]]['timestamp']/1000)).strftime("%Y-%m-%d %H:%M:%S")
-                if ('raweSEL' in parsedfullsels[sortedSELs[1][str(log)]] and args.devdebug):
-                    esel = parsedfullsels[sortedSELs[1][str(log)]]['raweSEL']
-                    del parsedfullsels[sortedSELs[1][str(log)]]['raweSEL']
-                f.write(json.dumps(parsedfullsels[sortedSELs[1][str(log)]],sort_keys=True, indent=4, separators=(',', ': ')))
-                if(args.devdebug and esel != ""):
-                    f.write(parseESEL(args, esel))
-        print("fully parsed sels collected and stored in "+myDir +"/parsedSELs.txt")
-        filelist.append(myDir+'/parsedSELs.txt')
-    except Exception as e:
-        print("Failed to collect system event logs")
-        print(e)
+    parsedSELs = csdParsedSels(host, args, session, myDir)
+    if 'fileLoc' in parsedSELs:
+        filelist.append(parsedSELs['fileLoc'])
+    errorInfo += parsedSELs['errors']
 
     #collect RAW bmc enumeration
-    try:
-        url="https://"+host+"/xyz/openbmc_project/enumerate"
-        print("Attempting to get a full BMC enumeration")
-        fullDump = session.get(url, headers=jsonHeader, verify=False, timeout=120)
-        with open(myDir +'/bmcFullRaw.txt', 'w') as f:
-            f.write(fullDump.text)
-        print("RAW BMC data collected and saved into "+myDir +"/bmcFullRaw.txt")
-        filelist.append(myDir+'/bmcFullRaw.txt')
-    except Exception as e:
-        print("Failed to collect bmc full enumeration")
+    bmcRaw = csdFullEnumeration(host, args, session, myDir)
+    if 'fileLoc' in bmcRaw:
+        filelist.append(bmcRaw['fileLoc'])
+    errorInfo += bmcRaw['errors']
 
-    #collect the dump files
+    #wait for new dump to finish being created
     waitingForNewDump = True
     count = 0;
+    print("Waiting for new BMC dump to finish being created.")
     while(waitingForNewDump):
-        dumpList = json.loads(bmcDumpList(host, args, session))['data']
+        dumpList = bmcDumpList(host, args, session)['data']
         if len(dumpList) > dumpcount:
             waitingForNewDump = False
             break;
@@ -1550,31 +1890,33 @@ def collectServiceData(host, args, session):
         else:
             time.sleep(2)
         count += 1
+
+    #collect all of the dump files
+    getBMCDumps = csdCollectAllDumps(host, args, session, myDir)
+    if 'fileList' in getBMCDumps:
+        filelist+= getBMCDumps['fileList']
+    errorInfo += getBMCDumps['errors']
+
+    #write the runtime errors to a file
     try:
-        print('Collecting bmc dump files')
-        d['dumpSaveLoc'] = myDir
-        dumpList = json.loads(bmcDumpList(host, args, session))['data']
-        for dump in dumpList:
-            if '/xyz/openbmc_project/dump/internal/manager' not in dump:
-                d['dumpNum'] = int(dump.strip().split('/')[-1])
-                print('retrieving dump file ' + str(d['dumpNum']))
-                filename = bmcDumpRetrieve(host, args, session).split('Saved as ')[-1]
-                filelist.append(filename)
-                time.sleep(2)
+        with open(myDir +os.sep+'openbmctoolRuntimeErrors.txt', 'w') as f:
+            f.write(errorInfo)
+        print("OpenBMC tool runtime errors collected and stored in " + myDir + os.sep+ "openbmctoolRuntimeErrors.txt")
+        filelist.append(myDir+os.sep+'openbmctoolRuntimeErrors.txt')
     except Exception as e:
-        print("Failed to collect bmc dump files")
-        print(e)
+        print("Failed to write OpenBMC tool runtime errors to file system.")
 
     #create the zip file
     try:
         filename = myDir.split(tempfile.gettempdir()+os.sep)[-1] + "_" + toolVersion + '_openbmc.zip'
-        zf = zipfile.ZipFile(myDir+'/' + filename, 'w')
+        zf = zipfile.ZipFile(myDir+os.sep + filename, 'w')
         for myfile in filelist:
             zf.write(myfile, os.path.basename(myfile))
         zf.close()
+        print("Zip file with all collected data created and stored in: {fileInfo}".format(fileInfo=myDir+os.sep+filename))
     except Exception as e:
         print("Failed to create zip file with collected information")
-    return "data collection complete"
+    return "data collection finished"
 
 
 def healthCheck(host, args, session):
