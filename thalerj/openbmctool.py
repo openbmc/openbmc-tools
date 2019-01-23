@@ -65,7 +65,6 @@ def hilight(textToColor, color, bold):
             attr.append('0')
         return '\x1b[%sm%s\x1b[0m' % (';'.join(attr),textToColor)
 
-
 def connectionErrHandler(jsonFormat, errorStr, err):
     """
          Error handler various connection errors to bmcs
@@ -96,7 +95,6 @@ def connectionErrHandler(jsonFormat, errorStr, err):
             eventdict = {}
             eventdict['event0'] = conerror
             eventdict['numAlerts'] = '1'
-
             errorMessageStr = errorMessageStr = json.dumps(eventdict, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False)
             return(errorMessageStr)
     elif errorStr == "ConnectionError":
@@ -121,7 +119,6 @@ def connectionErrHandler(jsonFormat, errorStr, err):
             eventdict = {}
             eventdict['event0'] = conerror
             eventdict['numAlerts'] = '1'
-
             errorMessageStr = json.dumps(eventdict, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False)
             return(errorMessageStr)
 
@@ -247,7 +244,7 @@ def checkFWactivation(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         print( connectionErrHandler(args.json, "ConnectionError", err))
         return True
-    fwInfo = json.loads(resp.text)['data']
+    fwInfo = resp.json()['data']
     for key in fwInfo:
         if 'Activation' in fwInfo[key]:
             if 'Activating' in fwInfo[key]['Activation'] or 'Activating' in fwInfo[key]['RequestedActivation']:
@@ -379,17 +376,28 @@ def fruPrint(host, args, session):
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
 
-
+    frulist={}
 #     print(res.text)
-    frulist = res.text
+    if res.status_code==200:
+        frulist['Hardware'] = res.json()['data']
+    else:
+        if not args.json:
+            return "Error retrieving the system inventory. BMC message: {msg}".format(msg=res.json()['message'])
+        else:
+            return res.json()
     url="https://"+host+"/xyz/openbmc_project/software/enumerate"
     try:
         res = session.get(url, headers=jsonHeader, verify=False, timeout=40)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
 #     print(res.text)
-    frulist = frulist +"\n" + res.text
-
+    if res.status_code==200:
+        frulist['Software'] = res.json()['data']
+    else:
+        if not args.json():
+            return "Error retrieving the system inventory. BMC message: {msg}".format(msg=res.json()['message'])
+        else:
+            return res.json()
     return frulist
 
 
@@ -424,7 +432,7 @@ def fruStatus(host, args, session):
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
 #     print(res.text)
-    frulist = json.loads(res.text)['data']
+    frulist = res.json()['data']
     frus = {}
     for key in frulist:
         component = frulist[key]
@@ -438,7 +446,6 @@ def fruStatus(host, args, session):
             fruName = keyPieces[-2] + '-' + keyPieces[-1]
         if 'Functional' in component:
             if('Present' in component):
-
                 if 'FieldReplaceable' in component:
                     if component['FieldReplaceable'] == 1:
                         isFru = True
@@ -512,7 +519,7 @@ def sensor(host, args, session):
         return(connectionErrHandler(args.json, "Timeout", None))
     if not args.json:
         colNames = ['sensor', 'type', 'units', 'value', 'target']
-        sensors = json.loads(res.text)["data"]
+        sensors = res.json()["data"]
         output = {}
         for key in sensors:
             senDict = {}
@@ -540,7 +547,7 @@ def sensor(host, args, session):
                 senDict['target'] = 'N/A'
             output[senDict['sensorName']] = senDict
 
-        occstatus = json.loads(occres.text)["data"]
+        occstatus = occres.json()["data"]
         if '/org/open_power/control/occ0' in occstatus:
             occ0 = occstatus["/org/open_power/control/occ0"]['OccActive']
             if occ0 == 1:
@@ -1339,9 +1346,9 @@ def bmcDumpList(host, args, session):
     """
     url ='https://'+host+'/xyz/openbmc_project/dump/list'
     try:
-        r = session.get(url, headers=jsonHeader, verify=False, timeout=20)
-        dumpList = json.loads(r.text)
-        return r.text
+        r = session.get(url, headers=jsonHeader, verify=False, timeout=60)
+        dumpList = r.json()
+        return dumpList
     except(requests.exceptions.Timeout):
         return connectionErrHandler(args.json, "Timeout", None)
 
@@ -1396,7 +1403,7 @@ def bmcDumpDeleteAll(host, args, session):
     dumpResp = bmcDumpList(host, args, session)
     if 'FQPSPIN0000M' in dumpResp or 'FQPSPIN0001M'in dumpResp:
         return dumpResp
-    dumpList = json.loads(dumpResp)['data']
+    dumpList = dumpResp['data']
     d = vars(args)
     dumpNums = []
     for dump in dumpList:
@@ -1421,6 +1428,8 @@ def bmcDumpCreate(host, args, session):
         r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=30)
         if(r.status_code == 200 and not args.json):
             return ('Dump successfully created')
+        elif(args.json):
+            return r.json()
         else:
             return ('Failed to create dump')
     except(requests.exceptions.Timeout):
