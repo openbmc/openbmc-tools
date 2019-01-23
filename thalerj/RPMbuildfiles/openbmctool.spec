@@ -4,7 +4,7 @@ Summary: IBM OpenBMC tool
 Name: openbmctool
 Version: %{_version}
 Release: %{_release}
-License: BSD
+License: Apache 2.0
 Group: System Environment/Base
 BuildArch: noarch
 URL: http://www.ibm.com/
