@@ -1,242 +1,239 @@
-  17137664: /usr
-   7491584: /usr/lib
-   3973120: /usr/bin
-   3543040: /lib
-   3440640: /usr/sbin
-   2199552: /usr/share
-   2117632: /usr/lib/python2.7
-   1622016: /lib/systemd
-   1593344: /usr/bin/gdb
-   1089536: /bin
-    978944: /usr/lib/python2.7/lib-dynload
-    675840: /usr/share/www
-    569344: /lib/systemd/libsystemd-shared-237.so
-    499712: /usr/lib/libpython2.7.so.1.0
-    483328: /lib/libc-2.27.so
-    430080: /usr/share/keymaps
-    430080: /usr/lib/libcrypto.so.1.0.2
-    430080: /usr/lib/libgio-2.0.so.0.5400.3
-    430080: /usr/lib/libxml2.so.2.9.7
-    430080: /usr/lib/ipmid-providers
-    425984: /usr/bin/bmcweb
-    397312: /lib/systemd/systemd
-    393216: /usr/share/consolefonts
-    360448: /usr/share/keymaps/i386
-    348160: /bin/bash.bash
-    348160: /usr/share/mime
-    323584: /usr/lib/libstdc++.so.6.0.24
-    323584: /lib/libm-2.27.so
-    311296: /usr/lib/libglib-2.0.so.0.5400.3
-    282624: /usr/share/keymaps/i386/qwerty
+  18915328: /usr
+  10256384: /usr/lib
+   5255168: /usr/sbin
+   3538944: /lib
+   2076672: /usr/lib/python2.7
+   1990656: /usr/bin
+   1626112: /lib/systemd
+   1384448: /usr/share
+    937984: /usr/lib/python2.7/lib-dynload
+    913408: /bin
+    761856: /usr/lib/libcrypto.so.1.1
+    679936: /usr/share/www
+    638976: /usr/lib/ipmid-providers
+    598016: /lib/systemd/libsystemd-shared-239.so
+    536576: /usr/lib/libgnutls.so.30.22.0
+    516096: /usr/lib/libpython2.7.so.1.0
+    483328: /lib/libc-2.28.so
+    479232: /usr/bin/bmcweb
+    434176: /usr/lib/libgio-2.0.so.0.5800.0
+    425984: /usr/lib/libxml2.so.2.9.8
+    360448: /usr/share/www/redfish
+    360448: /usr/share/www/redfish/v1
+    360448: /usr/lib/libunistring.so.2.1.0
+    352256: /bin/bash.bash
+    352256: /usr/share/mime
+    348160: /usr/sbin/entity-manager
+    348160: /lib/systemd/systemd
+    331776: /usr/lib/libgcrypt.so.20.2.4
+    323584: /usr/lib/libstdc++.so.6.0.25
+    319488: /usr/lib/libglib-2.0.so.0.5800.0
+    311296: /lib/libm-2.28.so
+    278528: /bin/busybox.nosuid
     278528: /usr/lib/python2.7/site-packages
-    274432: /bin/busybox.nosuid
-    274432: /usr/sbin/entity-manager
-    270336: /usr/share/www/index.html.gz
-    253952: /usr/share/www/redfish
-    253952: /usr/share/www/redfish/v1
-    237568: /usr/sbin/ipmitool
-    217088: /usr/share/cracklib
-    208896: /usr/sbin/rsyslogd
+    270336: /usr/lib/locale
+    270336: /usr/lib/locale/locale-archive
+    266240: /usr/bin/ipmitool
+    225280: /usr/share/www/app.bundle.js.gz
+    221184: /usr/lib/ipmid-providers/libipmi20.so.0.0.0
+    217088: /usr/sbin/rsyslogd
+    212992: /usr/share/cracklib
+    208896: /lib/libsystemd.so.0.23.0
     204800: /usr/lib/libkrb5.so.3.3
-    200704: /lib/libsystemd.so.0.21.0
-    188416: /usr/sbin/fru-device
-    184320: /usr/lib/ipmid-providers/libipmi20.so.0.0.0
+    192512: /usr/share/www/redfish/v1/schema
+    192512: /usr/sbin/fru-device
+    188416: /usr/lib/libuserlayer.so.0.0.0
+    184320: /lib/systemd/systemd-udevd
     180224: /usr/lib/python2.7/lib-dynload/unicodedata.so
+    180224: /usr/sbin/fansensor
     176128: /sbin
-    176128: /bin/udevadm
-    176128: /usr/bin/openssl
-    176128: /usr/lib/libuserlayer.so.0.0.0
-    176128: /lib/systemd/systemd-udevd
-    172032: /lib/systemd/systemd-networkd
+    176128: /lib/systemd/systemd-networkd
+    172032: /usr/sbin/phosphor-inventory
     167936: /usr/share/mime/application
-    163840: /usr/bin/fansensor
-    163840: /usr/lib/xtables
-    155648: /usr/bin/cpusensor
-    155648: /usr/lib/libphosphor_dbus.so.0.0.0
-    151552: /usr/bin/adcsensor
-    147456: /usr/bin/hwmontempsensor
-    147456: /usr/sbin/phosphor-inventory
+    167936: /usr/sbin/cpusensor
+    163840: /usr/lib/libgmp.so.10.3.2
+    163840: /usr/sbin/exitairtempsensor
+    163840: /usr/sbin/phosphor-network-manager
+    159744: /usr/share/www/redfish/v1/JsonSchemas
+    159744: /usr/sbin/hwmontempsensor
+    159744: /usr/sbin/adcsensor
+    151552: /usr/lib/libphosphor_dbus.so.0.0.0
+    151552: /usr/lib/xtables
+    151552: /usr/sbin/ipmbsensor
+    143360: /usr/bin/cpu_log
     139264: /usr/bin/rsync
-    139264: /usr/sbin/phosphor-network-manager
-    131072: /usr/share/www/redfish/v1/schema
-    131072: /usr/lib/locale
-    131072: /usr/lib/locale/en_US
-    122880: /lib/libext2fs.so.2.4
-    118784: /usr/share/www/redfish/v1/JsonSchemas
+    139264: /usr/sbin/phosphor-user-manager
+    135168: /usr/sbin/phosphor-settings-manager
+    135168: /usr/sbin/phosphor-image-updater
+    135168: /usr/sbin/ipmievd
+    131072: /usr/lib/libssl.so.1.1
+    131072: /usr/sbin/phosphor-srvcfg-manager
+    126976: /usr/lib/libnetsnmp.so.35.0.0
+    126976: /lib/libext2fs.so.2.4
+    122880: /usr/lib/libhogweed.so.4.4
     118784: /usr/share/cracklib/cracklib-small
-    118784: /usr/lib/libnetsnmp.so.30.0.3
-    118784: /usr/sbin/phosphor-user-manager
+    118784: /usr/lib/ipmid-providers/libfwupdcmds.so.0.1.0
+    114688: /usr/sbin/phosphor-log-manager
     114688: /lib/libmount.so.1.1.0
     114688: /lib/systemd/systemd-resolved
-    110592: /usr/bin/cpu_log
-    110592: /usr/share/www/node_modules
-    110592: /usr/share/www/node_modules/bootstrap
-    110592: /usr/share/www/node_modules/bootstrap/dist
-    110592: /usr/share/www/node_modules/bootstrap/dist/fonts
-    110592: /usr/sbin/phosphor-settings-manager
-    110592: /lib/libblkid.so.1.1.0
-    106496: /usr/sbin/phosphor-image-updater
-    102400: /usr/lib/libgobject-2.0.so.0.5400.3
-    102400: /usr/lib/locale/en_US/LC_COLLATE
-     98304: /usr/lib/libssl.so.1.0.2
-     94208: /usr/lib/libldap_r-2.4.so.2.10.8
+    110592: /usr/sbin/phosphor-dump-manager
+    106496: /usr/sbin/swampd
+    106496: /lib/libblkid.so.1.1.0
+    102400: /usr/lib/libgobject-2.0.so.0.5800.0
+    102400: /usr/lib/ipmid-providers/libzinteloemcmds.so.0.1.0
+    102400: /usr/sbin/gpiodaemon
+     98304: /usr/lib/libvncserver.so.0.9.12
+     98304: /usr/sbin/phosphor-host-state-manager
+     94208: /usr/lib/libldap_r-2.4.so.2.10.9
+     94208: /usr/lib/libnettle.so.6.4
+     94208: /usr/sbin/phosphor-chassis-state-manager
      94208: /usr/sbin/dropbearmulti
-     94208: /usr/sbin/swampd
+     94208: /usr/sbin/phosphor-dbus-monitor
+     94208: /usr/sbin/mapperx
      90112: /usr/share/cracklib/pw_dict.pwd
-     90112: /usr/lib/libdbus-1.so.3.19.4
      90112: /usr/lib/libreadline.so.7.0
-     90112: /usr/lib/libldap-2.4.so.2.10.8
-     90112: /usr/sbin/phosphor-dump-manager
-     90112: /usr/sbin/phosphor-log-manager
+     90112: /usr/lib/libldap-2.4.so.2.10.9
+     90112: /usr/lib/libdbus-1.so.3.19.8
+     90112: /usr/sbin/phosphor-network-snmpconf
+     86016: /usr/bin/power-control
      86016: /usr/lib/libgssapi_krb5.so.2.2
-     81920: /lib/udev
-     77824: /usr/lib/python2.7/lib-dynload/_codecs_jp.so
-     77824: /usr/sbin/phosphor-host-state-manager
-     73728: /usr/lib/libpcre.so.1.2.9
+     86016: /usr/lib/libjpeg.so.62.3.0
+     86016: /lib/udev
+     77824: /usr/bin/buttons
+     77824: /usr/sbin/phosphor-ldap-mapper
+     77824: /usr/sbin/phosphor-ldap-conf
+     77824: /usr/sbin/phosphor-version-software-manager
+     73728: /usr/lib/libpcre.so.1.2.10
+     73728: /usr/lib/libpng16.so.16.35.0
      73728: /usr/lib/python2.7/lib-dynload/_codecs_cn.so
-     73728: /usr/sbin/mapperx
+     73728: /usr/lib/python2.7/lib-dynload/_codecs_jp.so
      69632: /usr/lib/libk5crypto.so.3.1
      69632: /usr/lib/python2.7/site-packages/gtk-2.0
-     69632: /usr/sbin/phosphor-chassis-state-manager
-     69632: /usr/sbin/phosphor-dbus-monitor
+     69632: /usr/sbin/phosphor-certificate-manager
      69632: /lib/security
-     65536: /usr/bin/dbus-broker
      65536: /usr/lib/libavahi-core.so.7.0.2
-     65536: /usr/lib/python2.7/site-packages/gtk-2.0/gio
-     65536: /usr/lib/python2.7/lib-dynload/pyexpat.so
-     65536: /usr/lib/ipmid-providers/liboemcmds.so.0.1.0
-     65536: /usr/lib/ipmid-providers/libsensorcommands.so.0.1.0
-     65536: /usr/sbin/phosphor-network-snmpconf
-     61440: /bin/systemctl
+     65536: /usr/lib/python2.7/xml
+     65536: /usr/sbin/phosphor-dump-monitor
+     61440: /usr/bin/dbus-broker
      61440: /usr/bin/dbus-daemon
-     61440: /usr/lib/liblzma.so.5.2.3
+     61440: /usr/lib/liblzma.so.5.2.4
      61440: /usr/lib/rsyslog
-     61440: /usr/lib/python2.7/xml
-     61440: /lib/ld-2.27.so
+     61440: /usr/lib/python2.7/site-packages/gtk-2.0/gio
+     61440: /usr/lib/python2.7/lib-dynload/pyexpat.so
+     61440: /usr/lib/python2.7/lib-dynload/_codecs_kr.so
+     61440: /usr/lib/ipmid-providers/libmtmcmds.so.0.1.0
+     61440: /usr/sbin/netipmid
+     61440: /usr/sbin/phosphor-download-manager
+     61440: /lib/ld-2.28.so
+     57344: /bin/systemctl
      57344: /usr/lib/libopenbmc_intf.so.1
      57344: /usr/lib/python2.7/site-packages/dbus
      57344: /usr/lib/python2.7/site-packages/gtk-2.0/gio/_gio.so
-     57344: /usr/lib/python2.7/lib-dynload/_codecs_kr.so
-     53248: /etc
-     53248: /usr/lib/libexpat.so.1.6.7
-     53248: /usr/lib/python2.7/lib-dynload/_codecs_tw.so
-     53248: /usr/sbin/phosphor-ldap-mapper
-     53248: /usr/sbin/nslcd
-     53248: /usr/sbin/phosphor-version-software-manager
-     49152: /usr/bin/power-control
+     57344: /usr/lib/python2.7/lib-dynload/_codecs_tw.so
+     53248: /usr/lib/libexpat.so.1.6.8
+     53248: /usr/sbin/ipmbbridged
+     49152: /etc
      49152: /usr/share/mime/text
      49152: /usr/lib/python2.7/encodings
-     49152: /usr/sbin/netipmid
-     49152: /usr/sbin/phosphor-ldap-conf
+     49152: /usr/sbin/nslcd
      49152: /usr/sbin/nscd
      45056: /bin/kmod
-     45056: /usr/bin/buttons
-     45056: /usr/bin/loadkeys
-     45056: /usr/share/keymaps/sun
-     45056: /usr/lib/python2.7/site-packages/gobject
-     45056: /usr/lib/python2.7/lib-dynload/_io.so
-     45056: /usr/sbin/phosphor-dump-monitor
-     40960: /usr/lib/libnl-3.so.200.26.0
+     45056: /usr/share/www/app.css.gz
+     45056: /usr/lib/ipmid-providers/libsmbiosmdrv2.so.0.1.0
+     40960: /usr/bin/sel-logger
+     40960: /usr/lib/libgpg-error.so.0.24.3
      40960: /usr/lib/python2.7/email
-     40960: /usr/sbin/phosphor-download-manager
+     40960: /usr/lib/python2.7/site-packages/gobject
+     40960: /usr/lib/python2.7/lib-dynload/_io.so
      40960: /lib/systemd/systemd-journald
      36864: /bin/systemd-hwdb
-     36864: /usr/lib/python2.7/logging
+     36864: /usr/bin/frb2-watchdog
+     36864: /usr/lib/libidn2.so.0.3.4
+     36864: /usr/lib/libnl-3.so.200.26.0
      36864: /usr/lib/python2.7/site-packages/_dbus_bindings.so
-     36864: /usr/lib/python2.7/site-packages/obmc
      36864: /usr/lib/python2.7/site-packages/gobject/_gobject.so
-     36864: /usr/sbin/ipmbbridged
+     36864: /usr/sbin/smbiosapp
+     36864: /usr/sbin/node-manager-proxy
      36864: /usr/sbin/phosphor-fan-monitor
      36864: /lib/libtinfo.so.5.9
-     32768: /usr/bin/dbus-broker-launch
+     32768: /usr/bin/resolvectl
      32768: /usr/bin/mtd-util
+     32768: /usr/lib/libcrypt.so.1.1.0
+     32768: /usr/lib/libboost_thread.so.1.68.0
+     32768: /usr/lib/python2.7/logging
+     32768: /usr/lib/python2.7/site-packages/obmc
      32768: /usr/lib/python2.7/lib-dynload/_ctypes.so
      32768: /usr/lib/python2.7/xml/dom
-     32768: /usr/lib/ipmid-providers/libsmbiosmdrv2.so.0.1.0
+     32768: /usr/lib/ipmid-providers/libusercmds.so.0.0.0
      32768: /usr/lib/ipmid-providers/libsmbioshandler.so.0.1.0
-     32768: /usr/sbin/smbiosapp
      32768: /usr/sbin/ipmid
-     32768: /lib/libpthread-2.27.so
+     32768: /usr/sbin/phosphor-softpoweroff
      32768: /lib/libgcc_s.so.1
      32768: /lib/libz.so.1.2.11
-     28672: /usr/bin/systemd-resolve
+     32768: /lib/libpthread-2.28.so
      28672: /usr/bin/lsz
-     28672: /usr/bin/dtc
-     28672: /usr/share/keymaps/i386/qwertz
+     28672: /usr/bin/gpasswd
+     28672: /usr/share/mime/mime.cache
      28672: /usr/share/mime/image
-     28672: /usr/share/consolefonts/partialfonts
      28672: /usr/lib/python2.7/lib-dynload/datetime.so
      28672: /usr/lib/python2.7/lib-dynload/_codecs_hk.so
      28672: /usr/sbin/useradd
-     28672: /usr/sbin/phosphor-softpoweroff
      28672: /usr/sbin/usermod
-     28672: /lib/libnsl-2.27.so
-     28672: /lib/libresolv-2.27.so
+     28672: /lib/libresolv-2.28.so
      28672: /lib/systemd/system
-     28672: /lib/systemd/system-generators
-     24576: /usr/bin/xz
+     24576: /usr/bin/dbus-broker-launch
+     24576: /usr/bin/xz.xz
+     24576: /usr/bin/dtc
      24576: /usr/bin/lrz
-     24576: /usr/share/mime/mime.cache
+     24576: /usr/share/locale
+     24576: /usr/share/locale/en_GB
+     24576: /usr/share/locale/en_GB/LC_MESSAGES
      24576: /usr/share/www/app
-     24576: /usr/share/www/node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff
-     24576: /usr/share/www/node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf.gz
-     24576: /usr/share/www/node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.svg.gz
      24576: /usr/share/www/app/assets
      24576: /usr/share/www/app/assets/images
+     24576: /usr/lib/libbz2.so.1.0.6
      24576: /usr/lib/libwritefrudata.so.1.0.0
      24576: /usr/lib/libsdeventplus.so.0.0.0
-     24576: /usr/lib/locale/en_US/LC_CTYPE
      24576: /usr/lib/python2.7/tarfile.pyc
-     24576: /usr/lib/python2.7/site-packages/glib
      24576: /usr/lib/python2.7/lib-dynload/_ssl.so
      24576: /usr/lib/python2.7/lib-dynload/parser.so
      24576: /usr/lib/python2.7/lib-dynload/cPickle.so
-     24576: /usr/lib/python2.7/lib-dynload/_socket.so
      24576: /usr/sbin/logrotate
      24576: /usr/sbin/avahi-daemon
      24576: /usr/sbin/xtables-multi
-     24576: /lib/udev/cdrom_id
-     24576: /lib/udev/scsi_id
+     24576: /lib/libnsl-2.28.so
+     24576: /lib/systemd/system-generators
      20480: /bin/busybox.suid
-     20480: /usr/bin/busctl
+     20480: /usr/bin/jtag_test
      20480: /usr/bin/asd
-     20480: /usr/bin/gpasswd
-     20480: /usr/bin/dumpkeys
-     20480: /usr/share/gdb
-     20480: /usr/share/gdb/syscalls
-     20480: /usr/share/www/node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.eot
+     20480: /usr/share/locale/en_GB/LC_MESSAGES/glib20.mo
      20480: /usr/lib/libkmod.so.2.3.3
-     20480: /usr/lib/libboost_iostreams.so.1.66.0
-     20480: /usr/lib/python2.7/site-packages/obmc/mapper
-     20480: /usr/lib/python2.7/lib-dynload/cmath.so
-     20480: /usr/lib/ipmid-providers/libzstoragecommands.so.0.1.0
-     20480: /usr/sbin/phosphor-timemanager
+     20480: /usr/lib/libboost_iostreams.so.1.68.0
+     20480: /usr/lib/python2.7/site-packages/glib
+     20480: /usr/lib/python2.7/lib-dynload/_socket.so
+     20480: /usr/sbin/smbiosmdrv2app
+     20480: /usr/sbin/userdel
      20480: /usr/sbin/newusers
      20480: /usr/sbin/phosphor-fan-control
      20480: /usr/sbin/phosphor-fru-fault-monitor
-     20480: /lib/udev/collect
-     20480: /lib/udev/ata_id
-     20480: /lib/udev/rules.d
+     20480: /lib/systemd/systemd-timesyncd
+     20480: /lib/udev/scsi_id
      16384: /bin/systemd-tmpfiles
      16384: /bin/networkctl
      16384: /bin/mount.util-linux
      16384: /bin/journalctl
      16384: /usr/libexec
+     16384: /usr/bin/busctl
      16384: /usr/bin/chage
-     16384: /usr/bin/loadunimap
      16384: /usr/bin/update-mime-database
-     16384: /usr/bin/xmllint
+     16384: /usr/bin/chassis-control
      16384: /usr/libexec/dbus-daemon-launch-helper
-     16384: /usr/share/nslcd-utils
-     16384: /usr/share/keymaps/mac
-     16384: /usr/share/keymaps/i386/dvorak
      16384: /usr/share/mime/audio
-     16384: /usr/share/www/node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2
-     16384: /usr/share/www/app/assets/images/DMTF_Redfish_logo_2017.svg.gz
+     16384: /usr/lib/libsnmp.so.0.0.0
      16384: /usr/lib/libxtables.so.12.0.0
      16384: /usr/lib/libavahi-common.so.3.5.3
-     16384: /usr/lib/libbz2.so.1.0.6
      16384: /usr/lib/libtinyxml2.so.6.0.0
+     16384: /usr/lib/libdtovl.so.1
      16384: /usr/lib/libpopt.so.0.0.0
      16384: /usr/lib/python2.7/optparse.pyc
      16384: /usr/lib/python2.7/locale.pyc
@@ -244,110 +241,97 @@
      16384: /usr/lib/python2.7/argparse.pyc
      16384: /usr/lib/python2.7/_pyio.pyc
      16384: /usr/lib/python2.7/cookielib.pyc
+     16384: /usr/lib/python2.7/urllib.pyc
+     16384: /usr/lib/python2.7/urllib2.pyc
      16384: /usr/lib/python2.7/site-packages/glib/_glib.so
+     16384: /usr/lib/python2.7/site-packages/obmc/mapper
      16384: /usr/lib/python2.7/lib-dynload/_elementtree.so
+     16384: /usr/lib/python2.7/lib-dynload/array.so
      16384: /usr/lib/python2.7/logging/__init__.pyc
      16384: /usr/lib/python2.7/xml/sax
-     16384: /usr/sbin/groupmod
-     16384: /usr/sbin/phosphor-ledmanager
-     16384: /usr/sbin/userdel
-     16384: /usr/sbin/slpd
+     16384: /usr/lib/python2.7/xml/dom/minidom.pyc
      16384: /lib/libpam.so.0.84.2
-     16384: /sbin/agetty
-     16384: /sbin/vipw.shadow
+     16384: /lib/systemd/systemd-shutdown
      12288: /bin/systemd-sysusers
      12288: /bin/su.shadow
      12288: /bin/login.shadow
-     12288: /usr/bin/jtag_test
      12288: /usr/bin/passwd.shadow
      12288: /usr/bin/systemd-run
+     12288: /usr/bin/systemd-cgtop
      12288: /usr/bin/systemd-mount
-     12288: /usr/bin/newgrp.shadow
-     12288: /usr/share/keymaps/atari
-     12288: /usr/share/keymaps/i386/azerty
-     12288: /usr/share/keymaps/mac/all
-     12288: /usr/share/www/DMTF_Redfish_logo_2017.svg
+     12288: /usr/share/nslcd-utils
+     12288: /usr/share/www/redfish/v1/schema/ComputerSystem_v1.xml
+     12288: /usr/share/www/app/assets/images/DMTF_Redfish_logo_2017.svg.gz
      12288: /usr/lib/libkrb5support.so.0.1
-     12288: /usr/lib/libsnmp.so.0.0.0
      12288: /usr/lib/libfastjson.so.4.2.0
-     12288: /usr/lib/liblber-2.4.so.2.10.8
-     12288: /usr/lib/libconfig++.so.9.2.0
-     12288: /usr/lib/libffi.so.6.0.4
+     12288: /usr/lib/libboost_coroutine.so.1.68.0
+     12288: /usr/lib/libconfig++.so.11.0.2
+     12288: /usr/lib/liblber-2.4.so.2.10.9
      12288: /usr/lib/libhistory.so.7.0
-     12288: /usr/lib/libdtovl.so.1
      12288: /usr/lib/python2.7/httplib.pyc
      12288: /usr/lib/python2.7/rfc822.pyc
+     12288: /usr/lib/python2.7/pickle.pyc
      12288: /usr/lib/python2.7/platform.pyc
      12288: /usr/lib/python2.7/imaplib.pyc
-     12288: /usr/lib/python2.7/urllib.pyc
-     12288: /usr/lib/python2.7/urllib2.pyc
+     12288: /usr/lib/python2.7/threading.pyc
      12288: /usr/lib/python2.7/inspect.pyc
      12288: /usr/lib/python2.7/zipfile.pyc
      12288: /usr/lib/python2.7/ctypes
      12288: /usr/lib/python2.7/json
-     12288: /usr/lib/python2.7/lib-dynload/bz2.so
+     12288: /usr/lib/python2.7/lib-dynload/itertools.so
      12288: /usr/lib/python2.7/lib-dynload/_json.so
      12288: /usr/lib/python2.7/lib-dynload/math.so
-     12288: /usr/lib/python2.7/lib-dynload/array.so
+     12288: /usr/lib/python2.7/lib-dynload/cmath.so
      12288: /usr/lib/python2.7/logging/handlers.pyc
-     12288: /usr/lib/python2.7/xml/dom/minidom.pyc
-     12288: /usr/sbin/grpconv
-     12288: /usr/sbin/snooper
-     12288: /usr/sbin/grpunconv
+     12288: /usr/lib/python2.7/xml/etree
+     12288: /usr/sbin/phosphor-timemanager
      12288: /usr/sbin/mtdinfo
-     12288: /usr/sbin/groupadd
+     12288: /usr/sbin/phosphor-ledmanager
      12288: /usr/sbin/phosphor-discover-system-state
      12288: /usr/sbin/phosphor-ledcontroller
-     12288: /usr/sbin/grpck
+     12288: /usr/sbin/slpd
      12288: /lib/libuuid.so.1.3.0
-     12288: /lib/libnss_files-2.27.so
-     12288: /lib/libcrypt-2.27.so
-     12288: /lib/systemd/systemd-shutdown
-     12288: /lib/systemd/systemd-timesyncd
+     12288: /lib/libnss_files-2.28.so
      12288: /lib/security/pam_unix.so
-     12288: /sbin/fsck.util-linux
+     12288: /lib/udev/cdrom_id
+     12288: /lib/udev/rules.d
      12288: /sbin/sulogin.util-linux
-      8192: /bin/systemd-tty-ask-password-agent
-      8192: /bin/systemd-firstboot
+     12288: /sbin/agetty
+     12288: /sbin/vipw.shadow
       8192: /usr/include
-      8192: /usr/bin/setfont
-      8192: /usr/bin/selftest
-      8192: /usr/bin/openvt.kbd
-      8192: /usr/bin/systemd-cgtop
-      8192: /usr/bin/newuidmap
-      8192: /usr/bin/chassis-control
-      8192: /usr/bin/hostnamectl
-      8192: /usr/bin/newgidmap
+      8192: /usr/bin/obmc-ikvm
+      8192: /usr/bin/timedatectl
+      8192: /usr/bin/yat2m
+      8192: /usr/bin/chfn.shadow
+      8192: /usr/bin/sexp-conv
+      8192: /usr/bin/chsh.shadow
+      8192: /usr/bin/newgrp.shadow
       8192: /usr/bin/dtoverlay
       8192: /usr/share/entity-manager
-      8192: /usr/share/dbus-1
-      8192: /usr/share/keymaps/i386/bepo
-      8192: /usr/share/keymaps/i386/qwertz/cz.map.gz
-      8192: /usr/share/keymaps/i386/qwerty/cz.map.gz
       8192: /usr/share/mime/magic
       8192: /usr/share/mime/multipart
       8192: /usr/share/mime/video
       8192: /usr/share/mime/x-content
       8192: /usr/share/entity-manager/configurations
-      8192: /usr/share/www/redfish/v1/schema/ComputerSystem_v1.xml
+      8192: /usr/share/www/DMTF_Redfish_logo_2017.svg
       8192: /usr/share/www/redfish/v1/schema/Resource_v1.xml
+      8192: /usr/share/www/redfish/v1/schema/Memory_v1.xml
       8192: /usr/share/www/redfish/v1/JsonSchemas/ComputerSystem
       8192: /usr/share/www/redfish/v1/JsonSchemas/ComputerSystem/ComputerSystem.json
-      8192: /usr/lib/liblogging-stdlog.so.0.0.0
       8192: /usr/lib/libphosphor_logging.so.1.0.0
+      8192: /usr/lib/libfdt.so.1
+      8192: /usr/lib/libchassisgpio.so.0.1.0
+      8192: /usr/lib/libffi.so.6.0.4
       8192: /usr/lib/libcjson.so.1.7.6
       8192: /usr/lib/xtables/libxt_hashlimit.so
       8192: /usr/lib/python2.7/calendar.pyc
+      8192: /usr/lib/python2.7/telnetlib.pyc
       8192: /usr/lib/python2.7/ConfigParser.pyc
-      8192: /usr/lib/python2.7/sre_parse.pyc
       8192: /usr/lib/python2.7/uuid.pyc
       8192: /usr/lib/python2.7/subprocess.pyc
       8192: /usr/lib/python2.7/ssl.pyc
       8192: /usr/lib/python2.7/shutil.pyc
-      8192: /usr/lib/python2.7/Cookie.pyc
       8192: /usr/lib/python2.7/ftplib.pyc
-      8192: /usr/lib/python2.7/pickle.pyc
-      8192: /usr/lib/python2.7/threading.pyc
       8192: /usr/lib/python2.7/codecs.pyc
       8192: /usr/lib/python2.7/smtplib.pyc
       8192: /usr/lib/python2.7/cgi.pyc
@@ -356,321 +340,191 @@
       8192: /usr/lib/python2.7/site-packages/dbus/service.py
       8192: /usr/lib/python2.7/site-packages/obmc/utils
       8192: /usr/lib/python2.7/site-packages/obmc/mapper/server.pyc
-      8192: /usr/lib/python2.7/lib-dynload/itertools.so
-      8192: /usr/lib/python2.7/lib-dynload/_codecs_iso2022.so
-      8192: /usr/lib/python2.7/lib-dynload/_multibytecodec.so
+      8192: /usr/lib/python2.7/lib-dynload/bz2.so
       8192: /usr/lib/python2.7/lib-dynload/_csv.so
       8192: /usr/lib/python2.7/lib-dynload/_collections.so
       8192: /usr/lib/python2.7/lib-dynload/_struct.so
-      8192: /usr/lib/python2.7/lib-dynload/strop.so
+      8192: /usr/lib/python2.7/lib-dynload/_heapq.so
+      8192: /usr/lib/python2.7/lib-dynload/_ctypes_test.so
       8192: /usr/lib/python2.7/logging/config.pyc
       8192: /usr/lib/python2.7/email/message.pyc
-      8192: /usr/lib/python2.7/xml/etree
       8192: /usr/lib/python2.7/xml/etree/ElementTree.pyc
       8192: /usr/lib/python2.7/xml/dom/expatbuilder.pyc
-      8192: /usr/lib/ipmid-providers/libmanualcmds.so.0.0.0
       8192: /usr/lib/ipmid-providers/libzbridgecmd.so.0.1.0
       8192: /usr/lib/rsyslog/imuxsock.so
-      8192: /usr/lib/rsyslog/lmtcpsrv.so
       8192: /usr/include/python2.7
       8192: /usr/include/python2.7/pyconfig-32.h
+      8192: /usr/sbin/snooper
       8192: /usr/sbin/flash_erase
-      8192: /usr/sbin/unix_update
-      8192: /usr/sbin/unix_chkpwd
+      8192: /usr/sbin/groupmod
       8192: /usr/sbin/phosphor-rsyslog-conf
       8192: /usr/sbin/phosphor-bmc-state-manager
       8192: /usr/sbin/ncsi-netlink
       8192: /usr/sbin/obmc-console-server
-      8192: /usr/sbin/chgpasswd
-      8192: /usr/sbin/phosphor-unit-failure-monitor
-      8192: /etc/services
-      8192: /etc/security
-      8192: /etc/terminfo
       8192: /lib/libnss_ldap.so.2
+      8192: /lib/librt-2.28.so
       8192: /lib/libacl.so.1.1.0
-      8192: /lib/librt-2.27.so
-      8192: /lib/libthread_db-1.0.so
-      8192: /lib/libnss_compat-2.27.so
+      8192: /lib/libnss_compat-2.28.so
       8192: /lib/libcrack.so.2.9.0
       8192: /lib/libe2p.so.2.3
+      8192: /lib/systemd/systemd-timedated
       8192: /lib/systemd/system-generators/systemd-sysv-generator
       8192: /lib/systemd/system-generators/systemd-fstab-generator
       8192: /lib/security/pam_ldap.so
-      4096: /var
+      8192: /lib/udev/collect
+      8192: /lib/udev/ata_id
+      8192: /sbin/fsck.util-linux
+      4096: /bin/systemd-tty-ask-password-agent
       4096: /bin/systemd-machine-id-setup
       4096: /usr/bin/dbus-monitor
-      4096: /usr/bin/dbus-run-session
-      4096: /usr/bin/fdtget
-      4096: /usr/bin/psfxtable
       4096: /usr/bin/systemd-delta
-      4096: /usr/bin/fdtdump
-      4096: /usr/bin/kbdrate
-      4096: /usr/bin/dbus-update-activation-environment
+      4096: /usr/bin/mpicalc
       4096: /usr/bin/fdtput
-      4096: /usr/bin/timedatectl
-      4096: /usr/bin/xzdec
-      4096: /usr/bin/mapscrn
+      4096: /usr/bin/io
+      4096: /usr/bin/dbus-launch
       4096: /usr/bin/systemd-socket-activate
       4096: /usr/bin/rngtest
-      4096: /usr/bin/lpc_cmds
-      4096: /usr/bin/peci_cmds
       4096: /usr/bin/expiry
-      4096: /usr/bin/chfn.shadow
       4096: /usr/bin/dreport
-      4096: /usr/bin/chsh.shadow
-      4096: /usr/bin/xmlcatalog
+      4096: /usr/bin/pkcs1-conv
+      4096: /usr/bin/hostnamectl
       4096: /usr/bin/dbus-send
       4096: /usr/bin/fdtoverlay
       4096: /usr/bin/lastlog
       4096: /usr/bin/faillog
-      4096: /usr/bin/selftest_test
-      4096: /usr/share/factory
+      4096: /usr/share/dbus-1
       4096: /usr/share/dreport.d
-      4096: /usr/share/keymaps/include
-      4096: /usr/share/keymaps/amiga
-      4096: /usr/share/keymaps/sun/sunt4-no-latin1.map.gz
-      4096: /usr/share/keymaps/sun/sunt5-cz-us.map.gz
-      4096: /usr/share/keymaps/sun/sundvorak.map.gz
-      4096: /usr/share/keymaps/sun/sunt4-fi-latin1.map.gz
-      4096: /usr/share/keymaps/sun/sunt5-uk.map.gz
-      4096: /usr/share/keymaps/sun/sunkeymap.map.gz
-      4096: /usr/share/keymaps/sun/sunt5-us-cz.map.gz
-      4096: /usr/share/keymaps/sun/sunt5-ru.map.gz
-      4096: /usr/share/keymaps/sun/sunt5-fr-latin1.map.gz
-      4096: /usr/share/keymaps/sun/sun-pl.map.gz
-      4096: /usr/share/keymaps/sun/sun-pl-altgraph.map.gz
-      4096: /usr/share/keymaps/i386/fgGIod
-      4096: /usr/share/keymaps/i386/include
-      4096: /usr/share/keymaps/i386/dvorak/dvorak-ru.map.gz
-      4096: /usr/share/keymaps/i386/bepo/fr-bepo-latin9.map.gz
-      4096: /usr/share/keymaps/i386/fgGIod/tr_f-latin5.map.gz
-      4096: /usr/share/keymaps/i386/azerty/fr-latin9.map.gz
-      4096: /usr/share/keymaps/i386/qwertz/de_alt_UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwertz/sk-qwertz.map.gz
-      4096: /usr/share/keymaps/i386/qwertz/sk-prog-qwertz.map.gz
-      4096: /usr/share/keymaps/i386/qwertz/cz-us-qwertz.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ua-ws.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/cz-lat2-prog.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/bg_bds-utf8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/lt.l4.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/mk-utf.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ru-cp1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ttwin_alt-UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/cz-lat2.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/hypermap.m4
-      4096: /usr/share/keymaps/i386/qwerty/bywin-cp1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/mk-cp1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/bg_pho-utf8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_cplk-CP1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ru4.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/gr.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ua-utf.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_ct_sh-UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/lt.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_alt-UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ru2.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/bashkir.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/us-acentos.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/mk.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_ctrl-CP1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_alt_sh-UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ru1.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ky_alt_sh-UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_ctrl-KOI8-R.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/il.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/defkeymap.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/kyrgyz.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ttwin_ct_sh-UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/sr-cy.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/se-lat6.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ru_win.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ru3.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_cplk-UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/bg_bds-cp1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/kazakh.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ua-utf-ws.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ru-yawerty.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/tj_alt-UTF8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ua-cp1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_ctrl-UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/se-ir209.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/by.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ru.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/gr-pc.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_alt-KOI8-R.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/bg-cp855.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ttwin_cplk-UTF-8.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/bg-cp1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ua.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/lt.baltic.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ruwin_alt-CP1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/sk-prog-qwerty.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/cz-cp1250.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/bg_pho-cp1251.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ru-ms.map.gz
-      4096: /usr/share/keymaps/i386/qwerty/ttwin_ctrl-UTF-8.map.gz
-      4096: /usr/share/keymaps/mac/include
-      4096: /usr/share/keymaps/amiga/amiga-de.map.gz
-      4096: /usr/share/keymaps/atari/atari-us.map.gz
-      4096: /usr/share/keymaps/atari/atari-uk-falcon.map.gz
-      4096: /usr/share/keymaps/atari/atari-se.map.gz
-      4096: /usr/share/keymaps/atari/atari-de.map.gz
+      4096: /usr/share/ipmitool
       4096: /usr/share/mime/globs
       4096: /usr/share/mime/types
       4096: /usr/share/mime/aliases
       4096: /usr/share/mime/subclasses
+      4096: /usr/share/mime/generic-icons
       4096: /usr/share/mime/globs2
       4096: /usr/share/mime/inode
+      4096: /usr/share/mime/font
       4096: /usr/share/mime/message
-      4096: /usr/share/entity-manager/overlay_templates
-      4096: /usr/share/entity-manager/configurations/WFT Baseboard.json
-      4096: /usr/share/entity-manager/configurations/STP Baseboard.json
-      4096: /usr/share/entity-manager/configurations/WC-Baseboard.json
-      4096: /usr/share/entity-manager/configurations/schemas
-      4096: /usr/share/entity-manager/configurations/schemas/global.json
-      4096: /usr/share/entity-manager/configurations/schemas/Pid.Zone.json
-      4096: /usr/share/entity-manager/configurations/schemas/Pid.json
-      4096: /usr/share/entity-manager/overlay_templates/IntelFruDevice.template
-      4096: /usr/share/entity-manager/overlay_templates/IntelFanConnector.template
-      4096: /usr/share/gdb/syscalls/aarch64-linux.xml
-      4096: /usr/share/gdb/syscalls/s390-linux.xml
-      4096: /usr/share/gdb/syscalls/gdb-syscalls.dtd
-      4096: /usr/share/gdb/syscalls/mips-o32-linux.xml
-      4096: /usr/share/gdb/syscalls/mips-n64-linux.xml
-      4096: /usr/share/gdb/syscalls/ppc-linux.xml
-      4096: /usr/share/gdb/syscalls/freebsd.xml
-      4096: /usr/share/gdb/syscalls/amd64-linux.xml
-      4096: /usr/share/gdb/syscalls/ppc64-linux.xml
-      4096: /usr/share/gdb/syscalls/s390x-linux.xml
-      4096: /usr/share/gdb/syscalls/i386-linux.xml
-      4096: /usr/share/gdb/syscalls/mips-n32-linux.xml
+      4096: /usr/share/mime/application/x-x509-ca-cert.xml
+      4096: /usr/share/locale/en_GB/LC_MESSAGES/avahi.mo
       4096: /usr/share/www/highlight.pack.js
-      4096: /usr/share/www/redfish/v1/$metadata
+      4096: /usr/share/www/redfish/v1/Registries
+      4096: /usr/share/www/redfish/v1/schema/Task_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/ExternalAccountProvider_v1.xml
       4096: /usr/share/www/redfish/v1/schema/Drive_v1.xml
       4096: /usr/share/www/redfish/v1/schema/Chassis_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Fabric_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Event_v1.xml
       4096: /usr/share/www/redfish/v1/schema/ServiceRoot_v1.xml
       4096: /usr/share/www/redfish/v1/schema/LogEntry_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/TelemetryService_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/HostInterface_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Job_v1.xml
       4096: /usr/share/www/redfish/v1/schema/Processor_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Triggers_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/MetricDefinition_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/JsonSchemaFile_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/CertificateService_v1.xml
       4096: /usr/share/www/redfish/v1/schema/Manager_v1.xml
       4096: /usr/share/www/redfish/v1/schema/Endpoint_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Sensor_v1.xml
       4096: /usr/share/www/redfish/v1/schema/AccountService_v1.xml
       4096: /usr/share/www/redfish/v1/schema/ResourceBlock_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/EventService_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Switch_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Settings_v1.xml
       4096: /usr/share/www/redfish/v1/schema/Storage_v1.xml
       4096: /usr/share/www/redfish/v1/schema/EthernetInterface_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/UpdateService_v1.xml
       4096: /usr/share/www/redfish/v1/schema/Thermal_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Redundancy_v1.xml
       4096: /usr/share/www/redfish/v1/schema/Power_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Certificate_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Assembly_v1.xml
       4096: /usr/share/www/redfish/v1/schema/NetworkAdapter_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/VirtualMedia_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/IPAddresses_v1.xml
       4096: /usr/share/www/redfish/v1/schema/NetworkDeviceFunction_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/Volume_v1.xml
       4096: /usr/share/www/redfish/v1/schema/AttributeRegistry_v1.xml
-      4096: /usr/share/www/redfish/v1/schema/Memory_v1.xml
-      4096: /usr/share/www/redfish/v1/JsonSchemas/JsonSchemaFile
-      4096: /usr/share/www/redfish/v1/JsonSchemas/ManagerAccount
-      4096: /usr/share/www/redfish/v1/JsonSchemas/PCIeFunction
+      4096: /usr/share/www/redfish/v1/schema/EventDestination_v1.xml
+      4096: /usr/share/www/redfish/v1/schema/RedfishExtensions_v1.xml
+      4096: /usr/share/www/redfish/v1/JsonSchemas/MetricDefinition
       4096: /usr/share/www/redfish/v1/JsonSchemas/AccountService
       4096: /usr/share/www/redfish/v1/JsonSchemas/NetworkAdapter
       4096: /usr/share/www/redfish/v1/JsonSchemas/NetworkDeviceFunction
       4096: /usr/share/www/redfish/v1/JsonSchemas/LogEntry
       4096: /usr/share/www/redfish/v1/JsonSchemas/Resource
+      4096: /usr/share/www/redfish/v1/JsonSchemas/Triggers
       4096: /usr/share/www/redfish/v1/JsonSchemas/Memory
-      4096: /usr/share/www/redfish/v1/JsonSchemas/ManagerNetworkProtocol
-      4096: /usr/share/www/redfish/v1/JsonSchemas/Event
-      4096: /usr/share/www/redfish/v1/JsonSchemas/EventService
-      4096: /usr/share/www/redfish/v1/JsonSchemas/MessageRegistry
-      4096: /usr/share/www/redfish/v1/JsonSchemas/MemoryMetrics
-      4096: /usr/share/www/redfish/v1/JsonSchemas/IPAddresses
+      4096: /usr/share/www/redfish/v1/JsonSchemas/MetricReportDefinition
+      4096: /usr/share/www/redfish/v1/JsonSchemas/Sensor
+      4096: /usr/share/www/redfish/v1/JsonSchemas/VirtualMedia
       4096: /usr/share/www/redfish/v1/JsonSchemas/AttributeRegistry
-      4096: /usr/share/www/redfish/v1/JsonSchemas/LogService
-      4096: /usr/share/www/redfish/v1/JsonSchemas/HostInterface
-      4096: /usr/share/www/redfish/v1/JsonSchemas/Drive
-      4096: /usr/share/www/redfish/v1/JsonSchemas/ExternalAccountProvider
-      4096: /usr/share/www/redfish/v1/JsonSchemas/EventDestination
       4096: /usr/share/www/redfish/v1/JsonSchemas/Chassis
-      4096: /usr/share/www/redfish/v1/JsonSchemas/NetworkPort
+      4096: /usr/share/www/redfish/v1/JsonSchemas/Processor
       4096: /usr/share/www/redfish/v1/JsonSchemas/Manager
       4096: /usr/share/www/redfish/v1/JsonSchemas/Power
       4096: /usr/share/www/redfish/v1/JsonSchemas/EthernetInterface
-      4096: /usr/share/www/redfish/v1/JsonSchemas/JsonSchemaFile/JsonSchemaFile.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/ManagerAccount/ManagerAccount.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/PCIeFunction/PCIeFunction.json
+      4096: /usr/share/www/redfish/v1/JsonSchemas/UpdateService
+      4096: /usr/share/www/redfish/v1/JsonSchemas/Thermal
+      4096: /usr/share/www/redfish/v1/JsonSchemas/MetricDefinition/MetricDefinition.json
       4096: /usr/share/www/redfish/v1/JsonSchemas/AccountService/AccountService.json
       4096: /usr/share/www/redfish/v1/JsonSchemas/NetworkAdapter/NetworkAdapter.json
       4096: /usr/share/www/redfish/v1/JsonSchemas/NetworkDeviceFunction/NetworkDeviceFunction.json
       4096: /usr/share/www/redfish/v1/JsonSchemas/LogEntry/LogEntry.json
       4096: /usr/share/www/redfish/v1/JsonSchemas/Resource/Resource.json
+      4096: /usr/share/www/redfish/v1/JsonSchemas/Triggers/Triggers.json
       4096: /usr/share/www/redfish/v1/JsonSchemas/Memory/Memory.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/ManagerNetworkProtocol/ManagerNetworkProtocol.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/Event/Event.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/EventService/EventService.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/MessageRegistry/MessageRegistry.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/MemoryMetrics/MemoryMetrics.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/IPAddresses/IPAddresses.json
+      4096: /usr/share/www/redfish/v1/JsonSchemas/MetricReportDefinition/MetricReportDefinition.json
+      4096: /usr/share/www/redfish/v1/JsonSchemas/Sensor/Sensor.json
       4096: /usr/share/www/redfish/v1/JsonSchemas/AttributeRegistry/AttributeRegistry.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/HostInterface/HostInterface.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/Drive/Drive.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/ExternalAccountProvider/ExternalAccountProvider.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/EventDestination/EventDestination.json
       4096: /usr/share/www/redfish/v1/JsonSchemas/Chassis/Chassis.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/NetworkPort/NetworkPort.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/Manager/Manager.json
+      4096: /usr/share/www/redfish/v1/JsonSchemas/Processor/Processor.json
       4096: /usr/share/www/redfish/v1/JsonSchemas/Power/Power.json
-      4096: /usr/share/www/redfish/v1/JsonSchemas/EthernetInterface/EthernetInterface.json
-      4096: /usr/share/www/redfish/v1/$metadata/index.xml
-      4096: /usr/share/factory/etc
-      4096: /usr/share/factory/etc/pam.d
+      4096: /usr/share/www/redfish/v1/JsonSchemas/UpdateService/UpdateService.json
+      4096: /usr/share/www/redfish/v1/JsonSchemas/Thermal/Thermal.json
+      4096: /usr/share/www/redfish/v1/Registries/Base
+      4096: /usr/share/www/redfish/v1/Registries/Base/Base.1.4.0.json
       4096: /usr/share/cracklib/pw_dict.pwi
-      4096: /usr/share/consolefonts/latarcyrheb-sun16.psfu.gz
-      4096: /usr/share/consolefonts/greek-polytonic.psfu.gz
-      4096: /usr/share/consolefonts/eurlatgr.psfu.gz
-      4096: /usr/share/consolefonts/drdos8x14.psfu.gz
-      4096: /usr/share/consolefonts/README.eurlatgr
-      4096: /usr/share/consolefonts/latarcyrheb-sun32.psfu.gz
-      4096: /usr/share/consolefonts/drdos8x16.psfu.gz
-      4096: /usr/share/consolefonts/LatGrkCyr-12x22.psfu.gz
-      4096: /usr/share/consolefonts/UniCyrExt_8x16.psf.gz
-      4096: /usr/share/consolefonts/drdos8x8.psfu.gz
-      4096: /usr/share/consolefonts/sun12x22.psfu.gz
-      4096: /usr/share/consolefonts/pancyrillic.f16.psfu.gz
-      4096: /usr/share/nslcd-utils/getent.py
+      4096: /usr/share/ipmitool/oem_ibm_sel_map
+      4096: /usr/lib/libconfig.so.11.0.2
+      4096: /usr/lib/libgmodule-2.0.so.0.5800.0
+      4096: /usr/lib/libboost_context.so.1.68.0
       4096: /usr/lib/libsdbusplus.so.1.0.0
+      4096: /usr/lib/libdaemon.so.0.5.0
       4096: /usr/lib/libpyglib-2.0-python.so.0.0.0
-      4096: /usr/lib/libchassisgpio.so.0.1.0
+      4096: /usr/lib/libboost_system.so.1.68.0
+      4096: /usr/lib/liblogging-stdlog.so.0.1.0
       4096: /usr/lib/libnl-genl-3.so.200.26.0
-      4096: /usr/lib/e2initrd_helper
+      4096: /usr/lib/libatomic.so.1.2.0
+      4096: /usr/lib/libestr.so.0.0.0
       4096: /usr/lib/libip4tc.so.0.1.0
       4096: /usr/lib/libip6tc.so.0.1.0
       4096: /usr/lib/libmapper.so.1.0.0
       4096: /usr/lib/systemd
       4096: /usr/lib/phosphor-ipmi-host
       4096: /usr/lib/opkg
-      4096: /usr/lib/systemd/catalog
-      4096: /usr/lib/systemd/catalog/systemd.catalog
       4096: /usr/lib/xtables/libxt_rateest.so
       4096: /usr/lib/xtables/libxt_SET.so
       4096: /usr/lib/xtables/libxt_RATEEST.so
       4096: /usr/lib/xtables/libxt_conntrack.so
-      4096: /usr/lib/xtables/libxt_statistic.so
       4096: /usr/lib/xtables/libxt_set.so
       4096: /usr/lib/xtables/libxt_sctp.so
-      4096: /usr/lib/xtables/libxt_policy.so
       4096: /usr/lib/xtables/libxt_state.so
-      4096: /usr/lib/xtables/libxt_time.so
       4096: /usr/lib/phosphor-ipmi-host/utils.cpp
       4096: /usr/lib/opkg/alternatives
       4096: /usr/lib/python2.7/urlparse.pyc
       4096: /usr/lib/python2.7/shelve.pyc
-      4096: /usr/lib/python2.7/UserString.pyc
-      4096: /usr/lib/python2.7/SimpleHTTPServer.pyc
-      4096: /usr/lib/python2.7/telnetlib.pyc
       4096: /usr/lib/python2.7/site.pyc
+      4096: /usr/lib/python2.7/sre_parse.pyc
       4096: /usr/lib/python2.7/code.pyc
       4096: /usr/lib/python2.7/sre_compile.pyc
       4096: /usr/lib/python2.7/poplib.pyc
-      4096: /usr/lib/python2.7/quopri.pyc
       4096: /usr/lib/python2.7/os.pyc
       4096: /usr/lib/python2.7/shlex.pyc
       4096: /usr/lib/python2.7/_abcoll.pyc
       4096: /usr/lib/python2.7/warnings.pyc
-      4096: /usr/lib/python2.7/_sysconfigdata.py
+      4096: /usr/lib/python2.7/Cookie.pyc
       4096: /usr/lib/python2.7/heapq.pyc
       4096: /usr/lib/python2.7/base64.pyc
       4096: /usr/lib/python2.7/sysconfig.pyc
@@ -683,6 +537,7 @@
       4096: /usr/lib/python2.7/posixpath.pyc
       4096: /usr/lib/python2.7/BaseHTTPServer.pyc
       4096: /usr/lib/python2.7/nntplib.pyc
+      4096: /usr/lib/python2.7/rlcompleter.pyc
       4096: /usr/lib/python2.7/socket.pyc
       4096: /usr/lib/python2.7/ast.pyc
       4096: /usr/lib/python2.7/tokenize.pyc
@@ -703,48 +558,57 @@
       4096: /usr/lib/python2.7/ctypes/util.pyc
       4096: /usr/lib/python2.7/ctypes/__init__.pyc
       4096: /usr/lib/python2.7/ctypes/macholib
+      4096: /usr/lib/python2.7/site-packages/_dbus_glib_bindings.so
+      4096: /usr/lib/python2.7/site-packages/dbus/exceptions.py
       4096: /usr/lib/python2.7/site-packages/dbus/connection.py
+      4096: /usr/lib/python2.7/site-packages/dbus/decorators.py
+      4096: /usr/lib/python2.7/site-packages/dbus/gobject_service.py
+      4096: /usr/lib/python2.7/site-packages/dbus/proxies.py
+      4096: /usr/lib/python2.7/site-packages/dbus/bus.py
+      4096: /usr/lib/python2.7/site-packages/dbus/_dbus.py
+      4096: /usr/lib/python2.7/site-packages/dbus/gi_service.py
+      4096: /usr/lib/python2.7/site-packages/dbus/server.py
+      4096: /usr/lib/python2.7/site-packages/dbus/mainloop
       4096: /usr/lib/python2.7/site-packages/gtk-2.0/dsextras.py
       4096: /usr/lib/python2.7/site-packages/gtk-2.0/gio/unix.so
       4096: /usr/lib/python2.7/site-packages/obmc/dbuslib
       4096: /usr/lib/python2.7/site-packages/obmc/mapper/server.py
-      4096: /usr/lib/python2.7/json/__init__.pyc
       4096: /usr/lib/python2.7/json/encoder.pyc
       4096: /usr/lib/python2.7/json/decoder.pyc
       4096: /usr/lib/python2.7/lib-dynload/zlib.so
       4096: /usr/lib/python2.7/lib-dynload/select.so
       4096: /usr/lib/python2.7/lib-dynload/cStringIO.so
       4096: /usr/lib/python2.7/lib-dynload/fcntl.so
+      4096: /usr/lib/python2.7/lib-dynload/_codecs_iso2022.so
+      4096: /usr/lib/python2.7/lib-dynload/_multibytecodec.so
       4096: /usr/lib/python2.7/lib-dynload/_hashlib.so
       4096: /usr/lib/python2.7/lib-dynload/_locale.so
       4096: /usr/lib/python2.7/lib-dynload/termios.so
       4096: /usr/lib/python2.7/lib-dynload/operator.so
-      4096: /usr/lib/python2.7/lib-dynload/_bisect.so
-      4096: /usr/lib/python2.7/lib-dynload/_heapq.so
-      4096: /usr/lib/python2.7/lib-dynload/_ctypes_test.so
+      4096: /usr/lib/python2.7/lib-dynload/strop.so
       4096: /usr/lib/python2.7/lib-dynload/time.so
       4096: /usr/lib/python2.7/lib-dynload/_random.so
       4096: /usr/lib/python2.7/lib-dynload/readline.so
       4096: /usr/lib/python2.7/lib-dynload/binascii.so
       4096: /usr/lib/python2.7/email/header.pyc
-      4096: /usr/lib/python2.7/email/utils.pyc
       4096: /usr/lib/python2.7/email/charset.pyc
       4096: /usr/lib/python2.7/email/feedparser.pyc
       4096: /usr/lib/python2.7/email/_parseaddr.pyc
       4096: /usr/lib/python2.7/email/generator.pyc
       4096: /usr/lib/python2.7/email/mime
-      4096: /usr/lib/python2.7/xml/sax/handler.pyc
+      4096: /usr/lib/python2.7/xml/dom/xmlbuilder.pyc
+      4096: /usr/lib/python2.7/xml/dom/pulldom.pyc
       4096: /usr/lib/python2.7/xml/sax/xmlreader.pyc
       4096: /usr/lib/python2.7/xml/sax/saxutils.pyc
       4096: /usr/lib/python2.7/xml/sax/expatreader.pyc
-      4096: /usr/lib/ipmid-providers/libmtmcmds.so.0.1.0
+      4096: /usr/lib/ipmid-providers/libmanualcmds.so.0.0.0
       4096: /usr/lib/ipmid-providers/libsysintfcmds.so.0.0.0
       4096: /usr/lib/rsyslog/imudp.so
       4096: /usr/lib/rsyslog/imtcp.so
       4096: /usr/lib/rsyslog/lmstrmsrv.so
       4096: /usr/lib/rsyslog/lmnsd_ptcp.so
       4096: /usr/lib/rsyslog/lmnet.so
-      4096: /usr/lib/rsyslog/mmexternal.so
+      4096: /usr/lib/rsyslog/lmtcpsrv.so
       4096: /usr/sbin/logoutd
       4096: /usr/sbin/obmc-flash-bmc
       4096: /usr/sbin/groupdel
@@ -754,56 +618,56 @@
       4096: /usr/sbin/kcsbridged
       4096: /usr/sbin/chpasswd.shadow
       4096: /usr/sbin/snoopd
-      4096: /usr/sbin/i2cdetect
-      4096: /usr/sbin/i2cset
-      4096: /usr/sbin/nandtest
+      4096: /usr/sbin/groupadd
+      4096: /usr/sbin/i2cdump.i2c-tools
       4096: /usr/sbin/phosphor-watchdog
       4096: /usr/sbin/nanddump.mtd-utils
-      4096: /usr/sbin/bmc_update.py
       4096: /usr/sbin/fan_control.exe
       4096: /usr/sbin/groupmems
       4096: /usr/sbin/eeprog
+      4096: /usr/sbin/chgpasswd
       4096: /usr/sbin/phosphor-read-eeprom
+      4096: /usr/sbin/phosphor-unit-failure-monitor
+      4096: /usr/sbin/grpck
       4096: /usr/sbin/setsensor
-      4096: /usr/sbin/i2ctransfer
+      4096: /usr/sbin/i2cdetect.i2c-tools
       4096: /usr/sbin/rngd
-      4096: /usr/sbin/obmcutil
-      4096: /usr/sbin/i2cdump
+      4096: /usr/sbin/i2cset.i2c-tools
       4096: /usr/sbin/phosphor-host-check
+      4096: /etc/services
       4096: /etc/login.defs
       4096: /etc/systemd
-      4096: /etc/pam.d
-      4096: /etc/ssl
+      4096: /etc/security
+      4096: /etc/terminfo
       4096: /etc/systemd/system
-      4096: /etc/ssl/openssl.cnf
-      4096: /lib/libanl-2.27.so
+      4096: /lib/libanl-2.28.so
+      4096: /lib/libnss_dns-2.28.so
       4096: /lib/libcom_err.so.2.1
-      4096: /lib/libnss_dns-2.27.so
+      4096: /lib/libdl-2.28.so
       4096: /lib/libcap.so.2.25
-      4096: /lib/libpam_misc.so.0.82.1
-      4096: /lib/libdl-2.27.so
       4096: /lib/libattr.so.1.1.0
       4096: /lib/systemd/systemd-networkd-wait-online
-      4096: /lib/systemd/systemd-modules-load
-      4096: /lib/systemd/systemd-sysctl
+      4096: /lib/systemd/systemd-sleep
       4096: /lib/systemd/systemd-fsck
       4096: /lib/systemd/systemd-initctl
       4096: /lib/systemd/systemd-hostnamed
-      4096: /lib/systemd/systemd-vconsole-setup
       4096: /lib/systemd/systemd-socket-proxyd
-      4096: /lib/systemd/systemd-timedated
-      4096: /lib/systemd/systemd-dissect
       4096: /lib/systemd/systemd-growfs
+      4096: /lib/systemd/systemd-user-runtime-dir
       4096: /lib/systemd/system-generators/systemd-gpt-auto-generator
-      4096: /lib/security/pam_tally2.so
       4096: /lib/security/pam_ipmisave.so
       4096: /lib/security/pam_lastlog.so
-      4096: /lib/security/pam_access.so
-      4096: /lib/security/pam_pwhistory.so
       4096: /lib/security/pam_group.so
       4096: /lib/security/pam_env.so
       4096: /lib/security/pam_cracklib.so
       4096: /lib/security/pam_limits.so
+      4096: /lib/udev/v4l_id
+      4096: /lib/udev/mtd_probe
+      4096: /lib/udev/rules.d/50-udev-default.rules
+      4096: /lib/udev/rules.d/78-sound-card.rules
+      4096: /lib/udev/rules.d/60-persistent-storage.rules
+      4096: /lib/udev/rules.d/99-systemd.rules
+      4096: /lib/udev/rules.d/60-persistent-input.rules
          0: /tmp
          0: /boot
          0: /sys
@@ -814,227 +678,73 @@
          0: /run
          0: /dev
          0: /srv
+         0: /var
+         0: /bin/udevadm
          0: /bin/systemd-escape
          0: /bin/systemd-notify
          0: /bin/systemd-ask-password
          0: /usr/games
          0: /usr/src
          0: /usr/bin/systemd-cat
-         0: /usr/bin/setkeycodes
-         0: /usr/bin/setleds
+         0: /usr/bin/dbus-run-session
          0: /usr/bin/peci-hwmon-test.py
+         0: /usr/bin/fdtget
          0: /usr/bin/update-alternatives
-         0: /usr/bin/gcore
+         0: /usr/bin/fdtdump
          0: /usr/bin/dbus-cleanup-sockets
-         0: /usr/bin/fgconsole.kbd
-         0: /usr/bin/showkey.kbd
-         0: /usr/bin/unicode_start
+         0: /usr/bin/dbus-update-activation-environment
+         0: /usr/bin/xzdec
          0: /usr/bin/python2.7-config
-         0: /usr/bin/dbus-launch
          0: /usr/bin/set_fan_speeds.py
-         0: /usr/bin/chvt.kbd
          0: /usr/bin/dbus-uuidgen
          0: /usr/bin/groups.shadow
          0: /usr/bin/xzmore
-         0: /usr/bin/unicode_stop
          0: /usr/bin/xzdiff
          0: /usr/bin/xzgrep
          0: /usr/bin/fwupd.sh
          0: /usr/bin/systemd-detect-virt
-         0: /usr/bin/setvtrgb
+         0: /usr/bin/lpc_cmds
+         0: /usr/bin/nettle-pbkdf2
          0: /usr/bin/stdlogctl
+         0: /usr/bin/peci_cmds
          0: /usr/bin/systemd-path
-         0: /usr/bin/setmetamode
-         0: /usr/bin/c_rehash
+         0: /usr/bin/nettle-hash
+         0: /usr/bin/sol-option-check.sh
          0: /usr/bin/ffdc
          0: /usr/bin/xzless
+         0: /usr/bin/create_usbhid.sh
          0: /usr/bin/CloseMuxes.py
          0: /usr/bin/python2.7
+         0: /usr/bin/newuidmap
          0: /usr/bin/systemd-cgls
+         0: /usr/bin/nettle-lfib-stream
          0: /usr/bin/lzmainfo
+         0: /usr/bin/checkFru.sh
          0: /usr/bin/systemd-stdio-bridge
-         0: /usr/bin/showconsolefont
-         0: /usr/bin/kbd_mode
+         0: /usr/bin/set-passthrough.sh
          0: /usr/bin/nv-overlay.sh
-         0: /usr/bin/deallocvt.kbd
-         0: /usr/bin/kbdinfo
-         0: /usr/bin/getkeycodes
+         0: /usr/bin/newgidmap
          0: /usr/bin/lzmadec
          0: /usr/bin/obmc-console-client
+         0: /usr/libexec/udevadm
          0: /usr/libexec/gio-querymodules
          0: /usr/share/info
+         0: /usr/share/bash-completion
          0: /usr/share/avahi
          0: /usr/share/udhcpc
          0: /usr/share/dict
          0: /usr/share/rest-dbus
+         0: /usr/share/factory
          0: /usr/share/man
          0: /usr/share/misc
          0: /usr/share/xml
          0: /usr/share/ipmi-providers
-         0: /usr/share/keymaps/sun/sunt5-de-latin1.map.gz
-         0: /usr/share/keymaps/sun/sunt6-uk.map.gz
-         0: /usr/share/keymaps/sun/sunt4-es.map.gz
-         0: /usr/share/keymaps/sun/sunt5-es.map.gz
-         0: /usr/share/keymaps/sun/sunt5-fi-latin1.map.gz
-         0: /usr/share/keymaps/i386/olpc
-         0: /usr/share/keymaps/i386/colemak
-         0: /usr/share/keymaps/i386/carpalx
-         0: /usr/share/keymaps/i386/dvorak/dvorak-l.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak-uk.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak-es.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak-sv-a5.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak-ca-fr.map.gz
-         0: /usr/share/keymaps/i386/dvorak/ANSI-dvorak.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak-sv-a1.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak-programmer.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak.map.gz
-         0: /usr/share/keymaps/i386/dvorak/no.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak-fr.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak-r.map.gz
-         0: /usr/share/keymaps/i386/dvorak/dvorak-la.map.gz
-         0: /usr/share/keymaps/i386/bepo/fr-bepo.map.gz
-         0: /usr/share/keymaps/i386/fgGIod/trf.map.gz
-         0: /usr/share/keymaps/i386/azerty/wangbe.map.gz
-         0: /usr/share/keymaps/i386/azerty/be-latin1.map.gz
-         0: /usr/share/keymaps/i386/azerty/fr-latin1.map.gz
-         0: /usr/share/keymaps/i386/azerty/fr-pc.map.gz
-         0: /usr/share/keymaps/i386/azerty/fr.map.gz
-         0: /usr/share/keymaps/i386/azerty/wangbe2.map.gz
-         0: /usr/share/keymaps/i386/azerty/azerty.map.gz
-         0: /usr/share/keymaps/i386/qwertz/slovene.map.gz
-         0: /usr/share/keymaps/i386/qwertz/fr_CH-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwertz/de-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwertz/de_CH-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwertz/croat.map.gz
-         0: /usr/share/keymaps/i386/qwertz/fr_CH.map.gz
-         0: /usr/share/keymaps/i386/qwertz/sg-latin1-lk450.map.gz
-         0: /usr/share/keymaps/i386/qwertz/hu.map.gz
-         0: /usr/share/keymaps/i386/qwertz/de-latin1-nodeadkeys.map.gz
-         0: /usr/share/keymaps/i386/qwertz/sg.map.gz
-         0: /usr/share/keymaps/i386/qwertz/sg-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwertz/de-mobii.map.gz
-         0: /usr/share/keymaps/i386/qwertz/de.map.gz
-         0: /usr/share/keymaps/i386/olpc/pt.map.gz
-         0: /usr/share/keymaps/i386/olpc/es.map.gz
-         0: /usr/share/keymaps/i386/include/linux-with-two-alt-keys.inc
-         0: /usr/share/keymaps/i386/include/compose.inc
-         0: /usr/share/keymaps/i386/include/euro2.map.gz
-         0: /usr/share/keymaps/i386/include/azerty-layout.inc
-         0: /usr/share/keymaps/i386/include/windowkeys.map.gz
-         0: /usr/share/keymaps/i386/include/qwerty-layout.inc
-         0: /usr/share/keymaps/i386/include/keypad.map.gz
-         0: /usr/share/keymaps/i386/include/linux-keys-bare.inc
-         0: /usr/share/keymaps/i386/include/euro1.inc
-         0: /usr/share/keymaps/i386/include/euro1.map.gz
-         0: /usr/share/keymaps/i386/include/linux-with-alt-and-altgr.inc
-         0: /usr/share/keymaps/i386/include/linux-with-modeshift-altgr.inc
-         0: /usr/share/keymaps/i386/include/ctrl.map.gz
-         0: /usr/share/keymaps/i386/include/linux-keys-extd.inc
-         0: /usr/share/keymaps/i386/include/unicode.map.gz
-         0: /usr/share/keymaps/i386/include/qwertz-layout.inc
-         0: /usr/share/keymaps/i386/include/backspace.map.gz
-         0: /usr/share/keymaps/i386/include/applkey.map.gz
-         0: /usr/share/keymaps/i386/include/euro.map.gz
-         0: /usr/share/keymaps/i386/colemak/en-latin9.map.gz
-         0: /usr/share/keymaps/i386/qwerty/it2.map.gz
-         0: /usr/share/keymaps/i386/qwerty/it-ibm.map.gz
-         0: /usr/share/keymaps/i386/qwerty/us.map.gz
-         0: /usr/share/keymaps/i386/qwerty/cf.map.gz
-         0: /usr/share/keymaps/i386/qwerty/sv-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwerty/la-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwerty/lv.map.gz
-         0: /usr/share/keymaps/i386/qwerty/dk.map.gz
-         0: /usr/share/keymaps/i386/qwerty/pl1.map.gz
-         0: /usr/share/keymaps/i386/qwerty/trq.map.gz
-         0: /usr/share/keymaps/i386/qwerty/fi.map.gz
-         0: /usr/share/keymaps/i386/qwerty/nl.map.gz
-         0: /usr/share/keymaps/i386/qwerty/it.map.gz
-         0: /usr/share/keymaps/i386/qwerty/emacs2.map.gz
-         0: /usr/share/keymaps/i386/qwerty/ruwin_ct_sh-KOI8-R.map.gz
-         0: /usr/share/keymaps/i386/qwerty/et-nodeadkeys.map.gz
-         0: /usr/share/keymaps/i386/qwerty/uk.map.gz
-         0: /usr/share/keymaps/i386/qwerty/br-latin1-abnt2.map.gz
-         0: /usr/share/keymaps/i386/qwerty/br-abnt.map.gz
-         0: /usr/share/keymaps/i386/qwerty/lv-tilde.map.gz
-         0: /usr/share/keymaps/i386/qwerty/pt-latin9.map.gz
-         0: /usr/share/keymaps/i386/qwerty/ro.map.gz
-         0: /usr/share/keymaps/i386/qwerty/defkeymap_V1.0.map.gz
-         0: /usr/share/keymaps/i386/qwerty/ro_std.map.gz
-         0: /usr/share/keymaps/i386/qwerty/no-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwerty/et.map.gz
-         0: /usr/share/keymaps/i386/qwerty/br-abnt2.map.gz
-         0: /usr/share/keymaps/i386/qwerty/br-latin1-us.map.gz
-         0: /usr/share/keymaps/i386/qwerty/tr_q-latin5.map.gz
-         0: /usr/share/keymaps/i386/qwerty/trf.map.gz
-         0: /usr/share/keymaps/i386/qwerty/sk-qwerty.map.gz
-         0: /usr/share/keymaps/i386/qwerty/tralt.map.gz
-         0: /usr/share/keymaps/i386/qwerty/by-cp1251.map.gz
-         0: /usr/share/keymaps/i386/qwerty/nl2.map.gz
-         0: /usr/share/keymaps/i386/qwerty/pc110.map.gz
-         0: /usr/share/keymaps/i386/qwerty/se-fi-ir209.map.gz
-         0: /usr/share/keymaps/i386/qwerty/ro_win.map.gz
-         0: /usr/share/keymaps/i386/qwerty/is-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwerty/ruwin_cplk-KOI8-R.map.gz
-         0: /usr/share/keymaps/i386/qwerty/pt-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwerty/il-heb.map.gz
-         0: /usr/share/keymaps/i386/qwerty/is-latin1-us.map.gz
-         0: /usr/share/keymaps/i386/qwerty/dk-latin1.map.gz
-         0: /usr/share/keymaps/i386/qwerty/emacs.map.gz
-         0: /usr/share/keymaps/i386/qwerty/es-cp850.map.gz
-         0: /usr/share/keymaps/i386/qwerty/pl3.map.gz
-         0: /usr/share/keymaps/i386/qwerty/jp106.map.gz
-         0: /usr/share/keymaps/i386/qwerty/il-phonetic.map.gz
-         0: /usr/share/keymaps/i386/qwerty/se-fi-lat6.map.gz
-         0: /usr/share/keymaps/i386/qwerty/ruwin_ct_sh-CP1251.map.gz
-         0: /usr/share/keymaps/i386/qwerty/es.map.gz
-         0: /usr/share/keymaps/i386/qwerty/mk0.map.gz
-         0: /usr/share/keymaps/i386/qwerty/pl.map.gz
-         0: /usr/share/keymaps/i386/qwerty/pl4.map.gz
-         0: /usr/share/keymaps/i386/qwerty/hu101.map.gz
-         0: /usr/share/keymaps/i386/qwerty/no.map.gz
-         0: /usr/share/keymaps/i386/qwerty/pl2.map.gz
-         0: /usr/share/keymaps/i386/qwerty/no-latin1.doc
-         0: /usr/share/keymaps/i386/carpalx/carpalx.map.gz
-         0: /usr/share/keymaps/i386/carpalx/carpalx-full.map.gz
-         0: /usr/share/keymaps/mac/include/mac-euro2.map.gz
-         0: /usr/share/keymaps/mac/include/mac-qwertz-layout.inc
-         0: /usr/share/keymaps/mac/include/mac-azerty-layout.inc
-         0: /usr/share/keymaps/mac/include/mac-qwerty-layout.inc
-         0: /usr/share/keymaps/mac/include/mac-linux-keys-bare.inc
-         0: /usr/share/keymaps/mac/include/mac-euro.map.gz
-         0: /usr/share/keymaps/mac/all/mac-pt-latin1.map.gz
-         0: /usr/share/keymaps/mac/all/mac-de_CH.map.gz
-         0: /usr/share/keymaps/mac/all/mac-it.map.gz
-         0: /usr/share/keymaps/mac/all/mac-template.map.gz
-         0: /usr/share/keymaps/mac/all/mac-de-latin1-nodeadkeys.map.gz
-         0: /usr/share/keymaps/mac/all/mac-es.map.gz
-         0: /usr/share/keymaps/mac/all/mac-pl.map.gz
-         0: /usr/share/keymaps/mac/all/mac-dvorak.map.gz
-         0: /usr/share/keymaps/mac/all/mac-be.map.gz
-         0: /usr/share/keymaps/mac/all/mac-dk-latin1.map.gz
-         0: /usr/share/keymaps/mac/all/mac-se.map.gz
-         0: /usr/share/keymaps/mac/all/mac-fr.map.gz
-         0: /usr/share/keymaps/mac/all/mac-fr_CH-latin1.map.gz
-         0: /usr/share/keymaps/mac/all/mac-uk.map.gz
-         0: /usr/share/keymaps/mac/all/mac-us.map.gz
-         0: /usr/share/keymaps/mac/all/mac-fi-latin1.map.gz
-         0: /usr/share/keymaps/mac/all/mac-de-latin1.map.gz
-         0: /usr/share/keymaps/include/compose.latin1
-         0: /usr/share/keymaps/include/compose.latin2
-         0: /usr/share/keymaps/include/compose.8859_7
-         0: /usr/share/keymaps/include/compose.latin4
-         0: /usr/share/keymaps/include/compose.latin
-         0: /usr/share/keymaps/include/vim-compose.latin1
-         0: /usr/share/keymaps/include/compose.latin3
-         0: /usr/share/keymaps/include/compose.8859_8
-         0: /usr/share/keymaps/amiga/amiga-us.map.gz
+         0: /usr/share/polkit-1
          0: /usr/share/mime/version
          0: /usr/share/mime/treemagic
          0: /usr/share/mime/XMLnamespaces
-         0: /usr/share/mime/generic-icons
          0: /usr/share/mime/x-epoc
          0: /usr/share/mime/model
-         0: /usr/share/mime/font
          0: /usr/share/mime/inode/chardevice.xml
          0: /usr/share/mime/inode/fifo.xml
          0: /usr/share/mime/inode/mount-point.xml
@@ -1066,6 +776,7 @@
          0: /usr/share/mime/audio/x-matroska.xml
          0: /usr/share/mime/audio/x-iriver-pla.xml
          0: /usr/share/mime/audio/x-psf.xml
+         0: /usr/share/mime/audio/usac.xml
          0: /usr/share/mime/audio/amr.xml
          0: /usr/share/mime/audio/x-ms-wma.xml
          0: /usr/share/mime/audio/x-tta.xml
@@ -1084,6 +795,7 @@
          0: /usr/share/mime/audio/midi.xml
          0: /usr/share/mime/audio/amr-wb.xml
          0: /usr/share/mime/audio/x-xmf.xml
+         0: /usr/share/mime/audio/x-m4r.xml
          0: /usr/share/mime/audio/aac.xml
          0: /usr/share/mime/audio/mp2.xml
          0: /usr/share/mime/audio/x-m4b.xml
@@ -1106,10 +818,9 @@
          0: /usr/share/mime/audio/x-mo3.xml
          0: /usr/share/mime/audio/x-aiff.xml
          0: /usr/share/mime/audio/mpeg.xml
-         0: /usr/share/mime/model/x.stl-binary.xml
+         0: /usr/share/mime/model/stl.xml
          0: /usr/share/mime/model/vrml.xml
          0: /usr/share/mime/model/iges.xml
-         0: /usr/share/mime/model/x.stl-ascii.xml
          0: /usr/share/mime/video/annodex.xml
          0: /usr/share/mime/video/x-ms-wmv.xml
          0: /usr/share/mime/video/mp2t.xml
@@ -1124,6 +835,7 @@
          0: /usr/share/mime/video/ogg.xml
          0: /usr/share/mime/video/vnd.vivo.xml
          0: /usr/share/mime/video/x-mng.xml
+         0: /usr/share/mime/video/x-mjpeg.xml
          0: /usr/share/mime/video/x-anim.xml
          0: /usr/share/mime/video/quicktime.xml
          0: /usr/share/mime/video/isivideo.xml
@@ -1236,7 +948,6 @@
          0: /usr/share/mime/text/x-scons.xml
          0: /usr/share/mime/text/x-ms-regedit.xml
          0: /usr/share/mime/text/x-gettext-translation-template.xml
-         0: /usr/share/mime/text/vnd.trolltech.linguist.xml
          0: /usr/share/mime/text/x-haskell.xml
          0: /usr/share/mime/text/x-lilypond.xml
          0: /usr/share/mime/text/x-changelog.xml
@@ -1269,6 +980,7 @@
          0: /usr/share/mime/text/x-nfo.xml
          0: /usr/share/mime/text/x-fortran.xml
          0: /usr/share/mime/text/css.xml
+         0: /usr/share/mime/text/vnd.qt.linguist.xml
          0: /usr/share/mime/text/x-bibtex.xml
          0: /usr/share/mime/text/x-systemd-unit.xml
          0: /usr/share/mime/text/x-iptables.xml
@@ -1304,6 +1016,7 @@
          0: /usr/share/mime/application/x-go-sgf.xml
          0: /usr/share/mime/application/x-partial-download.xml
          0: /usr/share/mime/application/x-font-libgrx.xml
+         0: /usr/share/mime/application/x-neo-geo-pocket-color-rom.xml
          0: /usr/share/mime/application/pkix-cert.xml
          0: /usr/share/mime/application/x-raw-disk-image.xml
          0: /usr/share/mime/application/sieve.xml
@@ -1326,6 +1039,7 @@
          0: /usr/share/mime/application/x-ms-wim.xml
          0: /usr/share/mime/application/x-bzpdf.xml
          0: /usr/share/mime/application/vnd.openxmlformats-officedocument.presentationml.presentation.xml
+         0: /usr/share/mime/application/xliff+xml.xml
          0: /usr/share/mime/application/x-bzpostscript.xml
          0: /usr/share/mime/application/vnd.oasis.opendocument.image.xml
          0: /usr/share/mime/application/x-wais-source.xml
@@ -1344,7 +1058,6 @@
          0: /usr/share/mime/application/x-troff-man-compressed.xml
          0: /usr/share/mime/application/vnd.sun.xml.writer.xml
          0: /usr/share/mime/application/vnd.wordperfect.xml
-         0: /usr/share/mime/application/x-x509-ca-cert.xml
          0: /usr/share/mime/application/x-csh.xml
          0: /usr/share/mime/application/x-pkcs7-certificates.xml
          0: /usr/share/mime/application/x-msi.xml
@@ -1355,6 +1068,7 @@
          0: /usr/share/mime/application/x-gzpostscript.xml
          0: /usr/share/mime/application/x-mswrite.xml
          0: /usr/share/mime/application/x-ole-storage.xml
+         0: /usr/share/mime/application/x-raw-floppy-disk-image.xml
          0: /usr/share/mime/application/x-sv4cpio.xml
          0: /usr/share/mime/application/rtf.xml
          0: /usr/share/mime/application/x-tarz.xml
@@ -1395,7 +1109,6 @@
          0: /usr/share/mime/application/x-tzo.xml
          0: /usr/share/mime/application/x-kword.xml
          0: /usr/share/mime/application/x-apple-diskimage.xml
-         0: /usr/share/mime/application/x-cbr.xml
          0: /usr/share/mime/application/smil+xml.xml
          0: /usr/share/mime/application/vnd.android.package-archive.xml
          0: /usr/share/mime/application/x-designer.xml
@@ -1431,7 +1144,6 @@
          0: /usr/share/mime/application/x-lyx.xml
          0: /usr/share/mime/application/pkcs7-signature.xml
          0: /usr/share/mime/application/dicom.xml
-         0: /usr/share/mime/application/x-xliff.xml
          0: /usr/share/mime/application/x-windows-themepack.xml
          0: /usr/share/mime/application/x-font-vfont.xml
          0: /usr/share/mime/application/vnd.oasis.opendocument.text.xml
@@ -1439,6 +1151,7 @@
          0: /usr/share/mime/application/x-markaby.xml
          0: /usr/share/mime/application/x-dar.xml
          0: /usr/share/mime/application/pkcs8.xml
+         0: /usr/share/mime/application/vnd.youtube.yt.xml
          0: /usr/share/mime/application/pgp-signature.xml
          0: /usr/share/mime/application/x-pc-engine-rom.xml
          0: /usr/share/mime/application/vnd.stardivision.draw.xml
@@ -1479,7 +1192,6 @@
          0: /usr/share/mime/application/vnd.sun.xml.impress.xml
          0: /usr/share/mime/application/vnd.openxmlformats-officedocument.presentationml.template.xml
          0: /usr/share/mime/application/x-trash.xml
-         0: /usr/share/mime/application/x-sqlite3.xml
          0: /usr/share/mime/application/vnd.hp-hpgl.xml
          0: /usr/share/mime/application/vnd.ms-asf.xml
          0: /usr/share/mime/application/vnd.ms-powerpoint.xml
@@ -1557,6 +1269,7 @@
          0: /usr/share/mime/application/vnd.ms-tnef.xml
          0: /usr/share/mime/application/x-netshow-channel.xml
          0: /usr/share/mime/application/vnd.stardivision.impress.xml
+         0: /usr/share/mime/application/vnd.comicbook-rar.xml
          0: /usr/share/mime/application/x-qtiplot.xml
          0: /usr/share/mime/application/vnd.sun.xml.writer.global.xml
          0: /usr/share/mime/application/x-e-theme.xml
@@ -1599,6 +1312,7 @@
          0: /usr/share/mime/application/vnd.ms-excel.xml
          0: /usr/share/mime/application/relax-ng-compact-syntax.xml
          0: /usr/share/mime/application/x-nzb.xml
+         0: /usr/share/mime/application/vnd.sqlite3.xml
          0: /usr/share/mime/application/vnd.ms-excel.template.macroenabled.12.xml
          0: /usr/share/mime/application/mathml+xml.xml
          0: /usr/share/mime/application/x-xzpdf.xml
@@ -1700,6 +1414,7 @@
          0: /usr/share/mime/application/x-kspread-crypt.xml
          0: /usr/share/mime/application/geo+json.xml
          0: /usr/share/mime/application/xml-dtd.xml
+         0: /usr/share/mime/application/pkcs8-encrypted.xml
          0: /usr/share/mime/application/x-nes-rom.xml
          0: /usr/share/mime/application/x-font-bdf.xml
          0: /usr/share/mime/application/x-yaml.xml
@@ -1785,6 +1500,7 @@
          0: /usr/share/mime/image/x-nikon-nef.xml
          0: /usr/share/mime/image/rle.xml
          0: /usr/share/mime/image/x-portable-pixmap.xml
+         0: /usr/share/mime/image/heif.xml
          0: /usr/share/mime/image/x-tga.xml
          0: /usr/share/mime/image/x-adobe-dng.xml
          0: /usr/share/mime/image/x-sony-arw.xml
@@ -1807,27 +1523,32 @@
          0: /usr/share/mime/image/x-xcursor.xml
          0: /usr/share/mime/image/vnd.wap.wbmp.xml
          0: /usr/share/mime/image/x-lws.xml
+         0: /usr/share/entity-manager/overlay_templates
          0: /usr/share/entity-manager/configurations/1Ux16 Riser.json
+         0: /usr/share/entity-manager/configurations/WFT Baseboard.json
          0: /usr/share/entity-manager/configurations/R1000 Chassis.json
          0: /usr/share/entity-manager/configurations/STP P4000 Chassis.json
          0: /usr/share/entity-manager/configurations/R2000 Chassis.json
          0: /usr/share/entity-manager/configurations/PCIE SSD Retimer.json
          0: /usr/share/entity-manager/configurations/8X25 HSBP.json
          0: /usr/share/entity-manager/configurations/Delta DPS-750XB PSU.json
+         0: /usr/share/entity-manager/configurations/FBTP.json
          0: /usr/share/entity-manager/configurations/A2UL16RISER.json
+         0: /usr/share/entity-manager/configurations/STP Baseboard.json
          0: /usr/share/entity-manager/configurations/Intel Front Panel.json
          0: /usr/share/entity-manager/configurations/PSSF132202A.json
+         0: /usr/share/entity-manager/configurations/WC-Baseboard.json
          0: /usr/share/entity-manager/configurations/SAS Module.json
          0: /usr/share/entity-manager/configurations/Flextronics S-1100ADU00-201 PSU.json
          0: /usr/share/entity-manager/configurations/SOLUM_PSSF162202_PSU.json
          0: /usr/share/entity-manager/configurations/2Ux8 Riser.json
+         0: /usr/share/entity-manager/configurations/schemas
+         0: /usr/share/entity-manager/configurations/schemas/global.json
+         0: /usr/share/entity-manager/configurations/schemas/Stepwise.json
+         0: /usr/share/entity-manager/configurations/schemas/Pid.Zone.json
+         0: /usr/share/entity-manager/configurations/schemas/Pid.json
          0: /usr/share/entity-manager/overlay_templates/ADC.template
-         0: /usr/share/gdb/system-gdbinit
-         0: /usr/share/gdb/system-gdbinit/elinos.py
-         0: /usr/share/gdb/system-gdbinit/wrs-linux.py
-         0: /usr/share/gdb/syscalls/sparc-linux.xml
-         0: /usr/share/gdb/syscalls/arm-linux.xml
-         0: /usr/share/gdb/syscalls/sparc64-linux.xml
+         0: /usr/share/entity-manager/overlay_templates/IntelFanConnector.template
          0: /usr/share/dbus-1/system.conf
          0: /usr/share/dbus-1/session.conf
          0: /usr/share/dbus-1/system.d
@@ -1839,12 +1560,17 @@
          0: /usr/share/dbus-1/system.d/org.freedesktop.timedate1.conf
          0: /usr/share/dbus-1/system.d/org.freedesktop.network1.conf
          0: /usr/share/dbus-1/system.d/org.freedesktop.systemd1.conf
+         0: /usr/share/dbus-1/system.d/org.freedesktop.timesync1.conf
          0: /usr/share/dbus-1/system-services/org.freedesktop.resolve1.service
          0: /usr/share/dbus-1/system-services/org.freedesktop.hostname1.service
+         0: /usr/share/dbus-1/system-services/org.freedesktop.timesync1.service
          0: /usr/share/dbus-1/system-services/org.freedesktop.Avahi.service
          0: /usr/share/dbus-1/system-services/org.freedesktop.systemd1.service
          0: /usr/share/dbus-1/system-services/org.freedesktop.network1.service
          0: /usr/share/dbus-1/system-services/org.freedesktop.timedate1.service
+         0: /usr/share/locale/en_GB/LC_MESSAGES/Linux-PAM.mo
+         0: /usr/share/bash-completion/completions
+         0: /usr/share/bash-completion/completions/udevadm
          0: /usr/share/avahi/avahi-service.dtd
          0: /usr/share/udhcpc/default.script
          0: /usr/share/rest-dbus/resources
@@ -1858,22 +1584,24 @@
          0: /usr/share/rest-dbus/resources/style.css
          0: /usr/share/rest-dbus/resources/jstree.style.css
          0: /usr/share/rest-dbus/resources/dbus.js
+         0: /usr/share/www/index.html.gz
          0: /usr/share/www/favicon.ico.gz
          0: /usr/share/www/rest-dbus
          0: /usr/share/www/styles
          0: /usr/share/www/redfish/v1/odata
+         0: /usr/share/www/redfish/v1/$metadata
          0: /usr/share/www/redfish/v1/odata/index.json
-         0: /usr/share/www/redfish/v1/schema/Task_v1.xml
+         0: /usr/share/www/redfish/v1/schema/JobService_v1.xml
          0: /usr/share/www/redfish/v1/schema/VirtualMediaCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/TaskService_v1.xml
          0: /usr/share/www/redfish/v1/schema/MemoryDomainCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/HostInterfaceCollection_v1.xml
-         0: /usr/share/www/redfish/v1/schema/ExternalAccountProvider_v1.xml
-         0: /usr/share/www/redfish/v1/schema/Fabric_v1.xml
+         0: /usr/share/www/redfish/v1/schema/RedfishError_v1.xml
          0: /usr/share/www/redfish/v1/schema/SoftwareInventory_v1.xml
          0: /usr/share/www/redfish/v1/schema/ManagerNetworkProtocol_v1.xml
-         0: /usr/share/www/redfish/v1/schema/Event_v1.xml
-         0: /usr/share/www/redfish/v1/schema/HostInterface_v1.xml
+         0: /usr/share/www/redfish/v1/schema/CertificateLocations_v1.xml
+         0: /usr/share/www/redfish/v1/schema/MetricDefinitionCollection_v1.xml
+         0: /usr/share/www/redfish/v1/schema/ProcessorMetrics_v1.xml
          0: /usr/share/www/redfish/v1/schema/Zone_v1.xml
          0: /usr/share/www/redfish/v1/schema/ManagerAccount_v1.xml
          0: /usr/share/www/redfish/v1/schema/MemoryCollection_v1.xml
@@ -1882,6 +1610,7 @@
          0: /usr/share/www/redfish/v1/schema/VLanNetworkInterface_v1.xml
          0: /usr/share/www/redfish/v1/schema/PCIeFunction_v1.xml
          0: /usr/share/www/redfish/v1/schema/BootOption_v1.xml
+         0: /usr/share/www/redfish/v1/schema/AccelerationFunction_v1.xml
          0: /usr/share/www/redfish/v1/schema/MessageRegistryCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/MemoryMetrics_v1.xml
          0: /usr/share/www/redfish/v1/schema/EthernetInterfaceCollection_v1.xml
@@ -1893,128 +1622,161 @@
          0: /usr/share/www/redfish/v1/schema/ZoneCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/NetworkInterfaceCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/JsonSchemaFileCollection_v1.xml
-         0: /usr/share/www/redfish/v1/schema/JsonSchemaFile_v1.xml
+         0: /usr/share/www/redfish/v1/schema/MetricReportDefinitionCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/ComputerSystemCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/ResourceBlockCollection_v1.xml
+         0: /usr/share/www/redfish/v1/schema/MetricReportCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/VLanNetworkInterfaceCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/Privileges_v1.xml
          0: /usr/share/www/redfish/v1/schema/SessionCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/PrivilegeRegistry_v1.xml
          0: /usr/share/www/redfish/v1/schema/SessionService_v1.xml
+         0: /usr/share/www/redfish/v1/schema/TriggersCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/ManagerCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/NetworkPort_v1.xml
          0: /usr/share/www/redfish/v1/schema/EndpointCollection_v1.xml
-         0: /usr/share/www/redfish/v1/schema/EventService_v1.xml
+         0: /usr/share/www/redfish/v1/schema/SensorCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/OemManager_v1.xml
-         0: /usr/share/www/redfish/v1/schema/Switch_v1.xml
-         0: /usr/share/www/redfish/v1/schema/Settings_v1.xml
          0: /usr/share/www/redfish/v1/schema/CollectionCapabilities_v1.xml
+         0: /usr/share/www/redfish/v1/schema/AccelerationFunctionCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/LogServiceCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/FabricCollection_v1.xml
-         0: /usr/share/www/redfish/v1/schema/UpdateService_v1.xml
          0: /usr/share/www/redfish/v1/schema/LogEntryCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/ChassisCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/ExternalAccountProviderCollection_v1.xml
-         0: /usr/share/www/redfish/v1/schema/Redundancy_v1.xml
          0: /usr/share/www/redfish/v1/schema/TaskCollection_v1.xml
+         0: /usr/share/www/redfish/v1/schema/Schedule_v1.xml
          0: /usr/share/www/redfish/v1/schema/SwitchCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/BootOptionCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/SerialInterface_v1.xml
          0: /usr/share/www/redfish/v1/schema/PCIeDevice_v1.xml
          0: /usr/share/www/redfish/v1/schema/RoleCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/MemoryDomain_v1.xml
+         0: /usr/share/www/redfish/v1/schema/JobCollection_v1.xml
+         0: /usr/share/www/redfish/v1/schema/PCIeSlots_v1.xml
          0: /usr/share/www/redfish/v1/schema/ProcessorCollection_v1.xml
+         0: /usr/share/www/redfish/v1/schema/CertificateCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/MessageRegistry_v1.xml
+         0: /usr/share/www/redfish/v1/schema/MetricReport_v1.xml
          0: /usr/share/www/redfish/v1/schema/PhysicalContext_v1.xml
          0: /usr/share/www/redfish/v1/schema/NetworkPortCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/ActionInfo_v1.xml
-         0: /usr/share/www/redfish/v1/schema/Assembly_v1.xml
          0: /usr/share/www/redfish/v1/schema/Port_v1.xml
          0: /usr/share/www/redfish/v1/schema/SimpleStorage_v1.xml
          0: /usr/share/www/redfish/v1/schema/Message_v1.xml
          0: /usr/share/www/redfish/v1/schema/Protocol_v1.xml
          0: /usr/share/www/redfish/v1/schema/StorageCollection_v1.xml
-         0: /usr/share/www/redfish/v1/schema/VirtualMedia_v1.xml
-         0: /usr/share/www/redfish/v1/schema/IPAddresses_v1.xml
+         0: /usr/share/www/redfish/v1/schema/MetricReportDefinition_v1.xml
          0: /usr/share/www/redfish/v1/schema/PortCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/Session_v1.xml
          0: /usr/share/www/redfish/v1/schema/NetworkAdapterCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/SoftwareInventoryCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/CompositionService_v1.xml
-         0: /usr/share/www/redfish/v1/schema/Volume_v1.xml
          0: /usr/share/www/redfish/v1/schema/MessageRegistryFileCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/SerialInterfaceCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/SimpleStorageCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/LogService_v1.xml
-         0: /usr/share/www/redfish/v1/schema/EventDestination_v1.xml
          0: /usr/share/www/redfish/v1/schema/NetworkInterface_v1.xml
          0: /usr/share/www/redfish/v1/schema/SecureBoot_v1.xml
          0: /usr/share/www/redfish/v1/schema/MemoryChunksCollection_v1.xml
          0: /usr/share/www/redfish/v1/schema/ManagerAccountCollection_v1.xml
-         0: /usr/share/www/redfish/v1/schema/RedfishExtensions_v1.xml
          0: /usr/share/www/redfish/v1/JsonSchemas/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/ServiceRoot
          0: /usr/share/www/redfish/v1/JsonSchemas/Endpoint
+         0: /usr/share/www/redfish/v1/JsonSchemas/JsonSchemaFile
          0: /usr/share/www/redfish/v1/JsonSchemas/Port
          0: /usr/share/www/redfish/v1/JsonSchemas/Settings
+         0: /usr/share/www/redfish/v1/JsonSchemas/ManagerAccount
+         0: /usr/share/www/redfish/v1/JsonSchemas/CertificateService
          0: /usr/share/www/redfish/v1/JsonSchemas/Session
          0: /usr/share/www/redfish/v1/JsonSchemas/Bios
+         0: /usr/share/www/redfish/v1/JsonSchemas/PCIeFunction
          0: /usr/share/www/redfish/v1/JsonSchemas/BootOption
+         0: /usr/share/www/redfish/v1/JsonSchemas/TelemetryService
+         0: /usr/share/www/redfish/v1/JsonSchemas/MetricReport
          0: /usr/share/www/redfish/v1/JsonSchemas/MessageRegistryFile
          0: /usr/share/www/redfish/v1/JsonSchemas/PrivilegeRegistry
          0: /usr/share/www/redfish/v1/JsonSchemas/MemoryDomain
          0: /usr/share/www/redfish/v1/JsonSchemas/Privileges
+         0: /usr/share/www/redfish/v1/JsonSchemas/ManagerNetworkProtocol
          0: /usr/share/www/redfish/v1/JsonSchemas/PCIeDevice
          0: /usr/share/www/redfish/v1/JsonSchemas/redfish-schema
          0: /usr/share/www/redfish/v1/JsonSchemas/ResourceBlock
          0: /usr/share/www/redfish/v1/JsonSchemas/Volume
          0: /usr/share/www/redfish/v1/JsonSchemas/SessionService
          0: /usr/share/www/redfish/v1/JsonSchemas/Storage
+         0: /usr/share/www/redfish/v1/JsonSchemas/Event
+         0: /usr/share/www/redfish/v1/JsonSchemas/EventService
          0: /usr/share/www/redfish/v1/JsonSchemas/OemManager
+         0: /usr/share/www/redfish/v1/JsonSchemas/redfish-payload-annotations
+         0: /usr/share/www/redfish/v1/JsonSchemas/redfish-error
          0: /usr/share/www/redfish/v1/JsonSchemas/Task
-         0: /usr/share/www/redfish/v1/JsonSchemas/VirtualMedia
          0: /usr/share/www/redfish/v1/JsonSchemas/Switch
          0: /usr/share/www/redfish/v1/JsonSchemas/SimpleStorage
          0: /usr/share/www/redfish/v1/JsonSchemas/Redundancy
+         0: /usr/share/www/redfish/v1/JsonSchemas/JobService
          0: /usr/share/www/redfish/v1/JsonSchemas/CompositionService
+         0: /usr/share/www/redfish/v1/JsonSchemas/Job
+         0: /usr/share/www/redfish/v1/JsonSchemas/MessageRegistry
+         0: /usr/share/www/redfish/v1/JsonSchemas/AccelerationFunction
          0: /usr/share/www/redfish/v1/JsonSchemas/odata
+         0: /usr/share/www/redfish/v1/JsonSchemas/MemoryMetrics
          0: /usr/share/www/redfish/v1/JsonSchemas/Role
+         0: /usr/share/www/redfish/v1/JsonSchemas/Schedule
          0: /usr/share/www/redfish/v1/JsonSchemas/TaskService
          0: /usr/share/www/redfish/v1/JsonSchemas/SerialInterface
+         0: /usr/share/www/redfish/v1/JsonSchemas/IPAddresses
          0: /usr/share/www/redfish/v1/JsonSchemas/Message
          0: /usr/share/www/redfish/v1/JsonSchemas/SoftwareInventory
+         0: /usr/share/www/redfish/v1/JsonSchemas/LogService
          0: /usr/share/www/redfish/v1/JsonSchemas/NetworkInterface
+         0: /usr/share/www/redfish/v1/JsonSchemas/HostInterface
+         0: /usr/share/www/redfish/v1/JsonSchemas/Drive
          0: /usr/share/www/redfish/v1/JsonSchemas/SecureBoot
+         0: /usr/share/www/redfish/v1/JsonSchemas/ExternalAccountProvider
          0: /usr/share/www/redfish/v1/JsonSchemas/Zone
+         0: /usr/share/www/redfish/v1/JsonSchemas/EventDestination
+         0: /usr/share/www/redfish/v1/JsonSchemas/NetworkPort
          0: /usr/share/www/redfish/v1/JsonSchemas/Fabric
          0: /usr/share/www/redfish/v1/JsonSchemas/MemoryChunks
          0: /usr/share/www/redfish/v1/JsonSchemas/Assembly
-         0: /usr/share/www/redfish/v1/JsonSchemas/Processor
          0: /usr/share/www/redfish/v1/JsonSchemas/PhysicalContext
          0: /usr/share/www/redfish/v1/JsonSchemas/CollectionCapabilities
          0: /usr/share/www/redfish/v1/JsonSchemas/VLanNetworkInterface
-         0: /usr/share/www/redfish/v1/JsonSchemas/UpdateService
-         0: /usr/share/www/redfish/v1/JsonSchemas/Thermal
+         0: /usr/share/www/redfish/v1/JsonSchemas/ProcessorMetrics
+         0: /usr/share/www/redfish/v1/JsonSchemas/PCIeSlots
+         0: /usr/share/www/redfish/v1/JsonSchemas/CertificateLocations
          0: /usr/share/www/redfish/v1/JsonSchemas/ActionInfo
+         0: /usr/share/www/redfish/v1/JsonSchemas/Certificate
          0: /usr/share/www/redfish/v1/JsonSchemas/ServiceRoot/ServiceRoot.json
          0: /usr/share/www/redfish/v1/JsonSchemas/ServiceRoot/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/MetricDefinition/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Endpoint/Endpoint.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Endpoint/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/JsonSchemaFile/JsonSchemaFile.json
          0: /usr/share/www/redfish/v1/JsonSchemas/JsonSchemaFile/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Port/Port.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Port/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Settings/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Settings/Settings.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/ManagerAccount/ManagerAccount.json
          0: /usr/share/www/redfish/v1/JsonSchemas/ManagerAccount/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/CertificateService/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/CertificateService/CertificateService.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Session/Session.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Session/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Bios/Bios.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Bios/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/PCIeFunction/PCIeFunction.json
          0: /usr/share/www/redfish/v1/JsonSchemas/PCIeFunction/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/BootOption/BootOption.json
          0: /usr/share/www/redfish/v1/JsonSchemas/BootOption/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/TelemetryService/TelemetryService.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/TelemetryService/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/AccountService/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/NetworkAdapter/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/MetricReport/MetricReport.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/MetricReport/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/NetworkDeviceFunction/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/MessageRegistryFile/MessageRegistryFile.json
          0: /usr/share/www/redfish/v1/JsonSchemas/MessageRegistryFile/index.json
@@ -2024,9 +1786,11 @@
          0: /usr/share/www/redfish/v1/JsonSchemas/MemoryDomain/MemoryDomain.json
          0: /usr/share/www/redfish/v1/JsonSchemas/MemoryDomain/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Resource/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Triggers/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Privileges/Privileges.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Privileges/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Memory/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/ManagerNetworkProtocol/ManagerNetworkProtocol.json
          0: /usr/share/www/redfish/v1/JsonSchemas/ManagerNetworkProtocol/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/PCIeDevice/PCIeDevice.json
          0: /usr/share/www/redfish/v1/JsonSchemas/PCIeDevice/index.json
@@ -2040,9 +1804,17 @@
          0: /usr/share/www/redfish/v1/JsonSchemas/SessionService/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Storage/Storage.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Storage/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Event/Event.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Event/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/MetricReportDefinition/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/EventService/EventService.json
          0: /usr/share/www/redfish/v1/JsonSchemas/EventService/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/OemManager/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/redfish-payload-annotations/redfish-payload-annotations.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/redfish-payload-annotations/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/redfish-error/redfish-error.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/redfish-error/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Sensor/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Task/Task.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Task/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/VirtualMedia/VirtualMedia.json
@@ -2053,18 +1825,29 @@
          0: /usr/share/www/redfish/v1/JsonSchemas/SimpleStorage/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Redundancy/Redundancy.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Redundancy/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/JobService/JobService.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/JobService/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/CompositionService/CompositionService.json
          0: /usr/share/www/redfish/v1/JsonSchemas/CompositionService/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Job/Job.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Job/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/MessageRegistry/MessageRegistry.json
          0: /usr/share/www/redfish/v1/JsonSchemas/MessageRegistry/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/AccelerationFunction/AccelerationFunction.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/AccelerationFunction/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/odata/odata.json
          0: /usr/share/www/redfish/v1/JsonSchemas/odata/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/MemoryMetrics/MemoryMetrics.json
          0: /usr/share/www/redfish/v1/JsonSchemas/MemoryMetrics/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Role/Role.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Role/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Schedule/Schedule.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Schedule/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/TaskService/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/TaskService/TaskService.json
          0: /usr/share/www/redfish/v1/JsonSchemas/SerialInterface/SerialInterface.json
          0: /usr/share/www/redfish/v1/JsonSchemas/SerialInterface/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/IPAddresses/IPAddresses.json
          0: /usr/share/www/redfish/v1/JsonSchemas/IPAddresses/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/AttributeRegistry/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Message/Message.json
@@ -2075,15 +1858,20 @@
          0: /usr/share/www/redfish/v1/JsonSchemas/LogService/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/NetworkInterface/NetworkInterface.json
          0: /usr/share/www/redfish/v1/JsonSchemas/NetworkInterface/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/HostInterface/HostInterface.json
          0: /usr/share/www/redfish/v1/JsonSchemas/HostInterface/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Drive/Drive.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Drive/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/SecureBoot/SecureBoot.json
          0: /usr/share/www/redfish/v1/JsonSchemas/SecureBoot/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/ExternalAccountProvider/ExternalAccountProvider.json
          0: /usr/share/www/redfish/v1/JsonSchemas/ExternalAccountProvider/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Zone/Zone.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Zone/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/EventDestination/EventDestination.json
          0: /usr/share/www/redfish/v1/JsonSchemas/EventDestination/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Chassis/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/NetworkPort/NetworkPort.json
          0: /usr/share/www/redfish/v1/JsonSchemas/NetworkPort/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Fabric/Fabric.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Fabric/index.json
@@ -2092,23 +1880,36 @@
          0: /usr/share/www/redfish/v1/JsonSchemas/Assembly/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Assembly/Assembly.json
          0: /usr/share/www/redfish/v1/JsonSchemas/ComputerSystem/index.json
-         0: /usr/share/www/redfish/v1/JsonSchemas/Processor/Processor.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Processor/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/PhysicalContext/PhysicalContext.json
          0: /usr/share/www/redfish/v1/JsonSchemas/PhysicalContext/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Manager/Manager.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Manager/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/CollectionCapabilities/CollectionCapabilities.json
          0: /usr/share/www/redfish/v1/JsonSchemas/CollectionCapabilities/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/VLanNetworkInterface/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/VLanNetworkInterface/VLanNetworkInterface.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Power/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/ProcessorMetrics/ProcessorMetrics.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/ProcessorMetrics/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/PCIeSlots/PCIeSlots.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/PCIeSlots/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/CertificateLocations/CertificateLocations.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/CertificateLocations/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/EthernetInterface/EthernetInterface.json
          0: /usr/share/www/redfish/v1/JsonSchemas/EthernetInterface/index.json
-         0: /usr/share/www/redfish/v1/JsonSchemas/UpdateService/UpdateService.json
          0: /usr/share/www/redfish/v1/JsonSchemas/UpdateService/index.json
-         0: /usr/share/www/redfish/v1/JsonSchemas/Thermal/Thermal.json
          0: /usr/share/www/redfish/v1/JsonSchemas/Thermal/index.json
          0: /usr/share/www/redfish/v1/JsonSchemas/ActionInfo/ActionInfo.json
          0: /usr/share/www/redfish/v1/JsonSchemas/ActionInfo/index.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Certificate/Certificate.json
+         0: /usr/share/www/redfish/v1/JsonSchemas/Certificate/index.json
+         0: /usr/share/www/redfish/v1/Registries/index.json
+         0: /usr/share/www/redfish/v1/Registries/OpenBMC
+         0: /usr/share/www/redfish/v1/Registries/OpenBMC/OpenBMC.0.1.0.json
+         0: /usr/share/www/redfish/v1/Registries/OpenBMC/index.json
+         0: /usr/share/www/redfish/v1/Registries/Base/index.json
+         0: /usr/share/www/redfish/v1/$metadata/index.xml
          0: /usr/share/www/rest-dbus/index.html
          0: /usr/share/www/rest-dbus/res
          0: /usr/share/www/rest-dbus/res/throbber.gif
@@ -2141,7 +1942,9 @@
          0: /usr/share/www/app/assets/images/warn-slash.svg.gz
          0: /usr/share/www/app/assets/images/icon-warning.svg.gz
          0: /usr/share/www/styles/default.css
+         0: /usr/share/factory/etc
          0: /usr/share/factory/etc/nsswitch.conf
+         0: /usr/share/factory/etc/pam.d
          0: /usr/share/factory/etc/pam.d/system-auth
          0: /usr/share/factory/etc/pam.d/other
          0: /usr/share/cracklib/pw_dict.hwm
@@ -2149,236 +1952,6 @@
          0: /usr/share/xml/dbus-1
          0: /usr/share/xml/dbus-1/busconfig.dtd
          0: /usr/share/xml/dbus-1/introspect.dtd
-         0: /usr/share/consolefonts/lat9v-16.psfu.gz
-         0: /usr/share/consolefonts/gr928b-8x16.psfu.gz
-         0: /usr/share/consolefonts/README.cp1250
-         0: /usr/share/consolefonts/cp850-8x8.psfu.gz
-         0: /usr/share/consolefonts/GohaClassic-14.psfu.gz
-         0: /usr/share/consolefonts/koi8r-8x14.gz
-         0: /usr/share/consolefonts/gr928-9x14.psfu.gz
-         0: /usr/share/consolefonts/gr737c-8x14.psfu.gz
-         0: /usr/share/consolefonts/lat7a-16.psf.gz
-         0: /usr/share/consolefonts/lat7a-14.psfu.gz
-         0: /usr/share/consolefonts/gr737a-8x8.psfu.gz
-         0: /usr/share/consolefonts/iso01-12x22.psfu.gz
-         0: /usr/share/consolefonts/GohaClassic-12.psfu.gz
-         0: /usr/share/consolefonts/LatGrkCyr-8x16.psfu.gz
-         0: /usr/share/consolefonts/lat0-sun16.psfu.gz
-         0: /usr/share/consolefonts/alt-8x8.gz
-         0: /usr/share/consolefonts/lat4-12.psfu.gz
-         0: /usr/share/consolefonts/162.cp.gz
-         0: /usr/share/consolefonts/iso08.08.gz
-         0: /usr/share/consolefonts/iso02.08.gz
-         0: /usr/share/consolefonts/LatArCyrHeb-16.psfu.gz
-         0: /usr/share/consolefonts/iso05.14.gz
-         0: /usr/share/consolefonts/lat2-08.psfu.gz
-         0: /usr/share/consolefonts/lat9w-08.psfu.gz
-         0: /usr/share/consolefonts/iso05.08.gz
-         0: /usr/share/consolefonts/iso08.14.gz
-         0: /usr/share/consolefonts/Cyr_a8x16.psfu.gz
-         0: /usr/share/consolefonts/lat7-14.psfu.gz
-         0: /usr/share/consolefonts/Goha-16.psfu.gz
-         0: /usr/share/consolefonts/lat9-08.psf.gz
-         0: /usr/share/consolefonts/iso07.16.gz
-         0: /usr/share/consolefonts/iso03.16.gz
-         0: /usr/share/consolefonts/README.lat0
-         0: /usr/share/consolefonts/README.eurlatgr.mappings
-         0: /usr/share/consolefonts/README.drdos
-         0: /usr/share/consolefonts/iso01.08.gz
-         0: /usr/share/consolefonts/UniCyr_8x16.psf.gz
-         0: /usr/share/consolefonts/lat2-12.psfu.gz
-         0: /usr/share/consolefonts/lat4-08.psfu.gz
-         0: /usr/share/consolefonts/lat4a-10.psfu.gz
-         0: /usr/share/consolefonts/Cyr_a8x14.psfu.gz
-         0: /usr/share/consolefonts/koi8r-8x8.gz
-         0: /usr/share/consolefonts/gr737d-8x16.psfu.gz
-         0: /usr/share/consolefonts/lat5-12.psfu.gz
-         0: /usr/share/consolefonts/ruscii_8x8.psfu.gz
-         0: /usr/share/consolefonts/iso06.16.gz
-         0: /usr/share/consolefonts/iso10.14.gz
-         0: /usr/share/consolefonts/lat0-10.psfu.gz
-         0: /usr/share/consolefonts/LatKaCyrHeb-14.psfu.gz
-         0: /usr/share/consolefonts/lat4-19.psfu.gz
-         0: /usr/share/consolefonts/koi8u_8x16.psfu.gz
-         0: /usr/share/consolefonts/Agafari-12.psfu.gz
-         0: /usr/share/consolefonts/cp865-8x14.psfu.gz
-         0: /usr/share/consolefonts/gr737b-8x11.psfu.gz
-         0: /usr/share/consolefonts/iso04.14.gz
-         0: /usr/share/consolefonts/lat9w-10.psfu.gz
-         0: /usr/share/consolefonts/ruscii_8x16.psfu.gz
-         0: /usr/share/consolefonts/737.cp.gz
-         0: /usr/share/consolefonts/iso10.08.gz
-         0: /usr/share/consolefonts/lat9u-14.psfu.gz
-         0: /usr/share/consolefonts/880.cp.gz
-         0: /usr/share/consolefonts/lat4a-14.psfu.gz
-         0: /usr/share/consolefonts/gr928a-8x14.psfu.gz
-         0: /usr/share/consolefonts/lat5-16.psfu.gz
-         0: /usr/share/consolefonts/README.Lat2-Terminus16
-         0: /usr/share/consolefonts/LatArCyrHeb-14.psfu.gz
-         0: /usr/share/consolefonts/lat2-10.psfu.gz
-         0: /usr/share/consolefonts/lat0-08.psfu.gz
-         0: /usr/share/consolefonts/koi8c-8x16.gz
-         0: /usr/share/consolefonts/README.lat7
-         0: /usr/share/consolefonts/koi8r.8x8.psfu.gz
-         0: /usr/share/consolefonts/cp850-8x14.psfu.gz
-         0: /usr/share/consolefonts/iso06.08.gz
-         0: /usr/share/consolefonts/lat9-16.psf.gz
-         0: /usr/share/consolefonts/koi8u_8x8.psfu.gz
-         0: /usr/share/consolefonts/cp857.14.gz
-         0: /usr/share/consolefonts/README.Hebrew
-         0: /usr/share/consolefonts/lat2-sun16.psfu.gz
-         0: /usr/share/consolefonts/default8x16.psfu.gz
-         0: /usr/share/consolefonts/arm8.fnt.gz
-         0: /usr/share/consolefonts/lat1-14.psfu.gz
-         0: /usr/share/consolefonts/iso10.16.gz
-         0: /usr/share/consolefonts/GohaClassic-16.psfu.gz
-         0: /usr/share/consolefonts/161.cp.gz
-         0: /usr/share/consolefonts/lat1-16.psfu.gz
-         0: /usr/share/consolefonts/drdos8x6.psfu.gz
-         0: /usr/share/consolefonts/Lat2-Terminus16.psfu.gz
-         0: /usr/share/consolefonts/cybercafe.fnt.gz
-         0: /usr/share/consolefonts/gr928-9x16.psfu.gz
-         0: /usr/share/consolefonts/lat9v-08.psfu.gz
-         0: /usr/share/consolefonts/lat2a-16.psfu.gz
-         0: /usr/share/consolefonts/lat9-14.psf.gz
-         0: /usr/share/consolefonts/README.Arabic
-         0: /usr/share/consolefonts/UniCyr_8x8.psf.gz
-         0: /usr/share/consolefonts/iso07.14.gz
-         0: /usr/share/consolefonts/lat0-12.psfu.gz
-         0: /usr/share/consolefonts/lat1-08.psfu.gz
-         0: /usr/share/consolefonts/iso05.16.gz
-         0: /usr/share/consolefonts/cp865-8x8.psfu.gz
-         0: /usr/share/consolefonts/UniCyr_8x14.psf.gz
-         0: /usr/share/consolefonts/lat5-14.psfu.gz
-         0: /usr/share/consolefonts/972.cp.gz
-         0: /usr/share/consolefonts/163.cp.gz
-         0: /usr/share/consolefonts/lat4a-19.psfu.gz
-         0: /usr/share/consolefonts/iso02.16.gz
-         0: /usr/share/consolefonts/iso03.08.gz
-         0: /usr/share/consolefonts/gr737c-8x6.psfu.gz
-         0: /usr/share/consolefonts/README.12x22
-         0: /usr/share/consolefonts/cp866-8x14.psf.gz
-         0: /usr/share/consolefonts/iso04.08.gz
-         0: /usr/share/consolefonts/lat1-12.psfu.gz
-         0: /usr/share/consolefonts/gr928a-8x16.psfu.gz
-         0: /usr/share/consolefonts/default8x9.psfu.gz
-         0: /usr/share/consolefonts/lat4a-08.psfu.gz
-         0: /usr/share/consolefonts/t.fnt.gz
-         0: /usr/share/consolefonts/gr928b-8x14.psfu.gz
-         0: /usr/share/consolefonts/koi8u_8x14.psfu.gz
-         0: /usr/share/consolefonts/lat9w-12.psfu.gz
-         0: /usr/share/consolefonts/lat4a-16+.psfu.gz
-         0: /usr/share/consolefonts/cp857.16.gz
-         0: /usr/share/consolefonts/Goha-14.psfu.gz
-         0: /usr/share/consolefonts/lat9-12.psf.gz
-         0: /usr/share/consolefonts/lat9w-14.psfu.gz
-         0: /usr/share/consolefonts/cp1250.psfu.gz
-         0: /usr/share/consolefonts/alt-8x16.gz
-         0: /usr/share/consolefonts/lat9-10.psf.gz
-         0: /usr/share/consolefonts/README.lat9
-         0: /usr/share/consolefonts/Goha-12.psfu.gz
-         0: /usr/share/consolefonts/lat2-16.psfu.gz
-         0: /usr/share/consolefonts/LatArCyrHeb-08.psfu.gz
-         0: /usr/share/consolefonts/Agafari-14.psfu.gz
-         0: /usr/share/consolefonts/t850b.fnt.gz
-         0: /usr/share/consolefonts/ERRORS
-         0: /usr/share/consolefonts/aply16.psf.gz
-         0: /usr/share/consolefonts/LatArCyrHeb-19.psfu.gz
-         0: /usr/share/consolefonts/iso06.14.gz
-         0: /usr/share/consolefonts/altc-8x16.gz
-         0: /usr/share/consolefonts/lat9v-12.psfu.gz
-         0: /usr/share/consolefonts/lat9v-14.psfu.gz
-         0: /usr/share/consolefonts/koi8r-8x16.gz
-         0: /usr/share/consolefonts/gr737b-9x16-medieval.psfu.gz
-         0: /usr/share/consolefonts/iso01.14.gz
-         0: /usr/share/consolefonts/iso02-12x22.psfu.gz
-         0: /usr/share/consolefonts/cyr-sun16.psfu.gz
-         0: /usr/share/consolefonts/iso02.14.gz
-         0: /usr/share/consolefonts/cp866-8x8.psf.gz
-         0: /usr/share/consolefonts/viscii10-8x16.psfu.gz
-         0: /usr/share/consolefonts/cp857.08.gz
-         0: /usr/share/consolefonts/cp850-8x16.psfu.gz
-         0: /usr/share/consolefonts/lat2-14.psfu.gz
-         0: /usr/share/consolefonts/lat9u-16.psfu.gz
-         0: /usr/share/consolefonts/lat9u-10.psfu.gz
-         0: /usr/share/consolefonts/lat9u-12.psfu.gz
-         0: /usr/share/consolefonts/gr737c-8x7.psfu.gz
-         0: /usr/share/consolefonts/iso07u-16.psfu.gz
-         0: /usr/share/consolefonts/gr737c-8x16.psfu.gz
-         0: /usr/share/consolefonts/165.cp.gz
-         0: /usr/share/consolefonts/Agafari-16.psfu.gz
-         0: /usr/share/consolefonts/lat1-10.psfu.gz
-         0: /usr/share/consolefonts/lat0-14.psfu.gz
-         0: /usr/share/consolefonts/lat4a-16.psfu.gz
-         0: /usr/share/consolefonts/tcvn8x16.psf.gz
-         0: /usr/share/consolefonts/gr737c-8x8.psfu.gz
-         0: /usr/share/consolefonts/README.psfu
-         0: /usr/share/consolefonts/iso08.16.gz
-         0: /usr/share/consolefonts/iso09.14.gz
-         0: /usr/share/consolefonts/lat4-10.psfu.gz
-         0: /usr/share/consolefonts/cp866-8x16.psf.gz
-         0: /usr/share/consolefonts/lat4-16.psfu.gz
-         0: /usr/share/consolefonts/164.cp.gz
-         0: /usr/share/consolefonts/lat0-16.psfu.gz
-         0: /usr/share/consolefonts/cp865-8x16.psfu.gz
-         0: /usr/share/consolefonts/iso09.16.gz
-         0: /usr/share/consolefonts/README.LatGrkCyr
-         0: /usr/share/consolefonts/koi8-14.psf.gz
-         0: /usr/share/consolefonts/gr928-8x16-thin.psfu.gz
-         0: /usr/share/consolefonts/lat9u-08.psfu.gz
-         0: /usr/share/consolefonts/iso01.16.gz
-         0: /usr/share/consolefonts/lat9v-10.psfu.gz
-         0: /usr/share/consolefonts/iso09.08.gz
-         0: /usr/share/consolefonts/lat4-14.psfu.gz
-         0: /usr/share/consolefonts/alt-8x14.gz
-         0: /usr/share/consolefonts/gr737a-9x14.psfu.gz
-         0: /usr/share/consolefonts/iso04.16.gz
-         0: /usr/share/consolefonts/iso03.14.gz
-         0: /usr/share/consolefonts/928.cp.gz
-         0: /usr/share/consolefonts/gr737a-9x16.psfu.gz
-         0: /usr/share/consolefonts/lat9w-16.psfu.gz
-         0: /usr/share/consolefonts/LatArCyrHeb-16+.psfu.gz
-         0: /usr/share/consolefonts/lat4a-12.psfu.gz
-         0: /usr/share/consolefonts/lat4-16+.psfu.gz
-         0: /usr/share/consolefonts/partialfonts/8859-6.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/ascii.20-7f.08.gz
-         0: /usr/share/consolefonts/partialfonts/8859-1.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-3.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-10.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-9.a0-ff.08.gz
-         0: /usr/share/consolefonts/partialfonts/8859-3.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/none.00-17.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-6.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-2.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/none.00-17.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-1.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-4.a0-ff.08.gz
-         0: /usr/share/consolefonts/partialfonts/8859-5.a0-ff.08.gz
-         0: /usr/share/consolefonts/partialfonts/cp437.00-1f.08.gz
-         0: /usr/share/consolefonts/partialfonts/8859-2.a0-ff.08.gz
-         0: /usr/share/consolefonts/partialfonts/8859-10.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-7.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-9.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/cp437.00-1f.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-4.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-3.a0-ff.08.gz
-         0: /usr/share/consolefonts/partialfonts/ascii.20-7f.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-8.a0-ff.08.gz
-         0: /usr/share/consolefonts/partialfonts/8859-9.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-7.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-1.a0-ff.08.gz
-         0: /usr/share/consolefonts/partialfonts/8859-8.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/cp437.00-1f.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-5.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-4.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-10.a0-ff.08.gz
-         0: /usr/share/consolefonts/partialfonts/8859-8.a0-ff.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-7.a0-ff.08.gz
-         0: /usr/share/consolefonts/partialfonts/none.00-17.08.gz
-         0: /usr/share/consolefonts/partialfonts/8859-2.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/8859-5.a0-ff.16.gz
-         0: /usr/share/consolefonts/partialfonts/ascii.20-7f.14.gz
-         0: /usr/share/consolefonts/partialfonts/8859-6.a0-ff.08.gz
          0: /usr/share/ipmi-providers/dev_id.json
          0: /usr/share/ipmi-providers/power_reading.json
          0: /usr/share/ipmi-providers/dcmi_sensors.json
@@ -2392,6 +1965,7 @@
          0: /usr/share/nslcd-utils/cmdline.pyc
          0: /usr/share/nslcd-utils/users.py
          0: /usr/share/nslcd-utils/cmdline.pyo
+         0: /usr/share/nslcd-utils/getent.py
          0: /usr/share/nslcd-utils/constants.pyc
          0: /usr/share/nslcd-utils/nslcd.pyo
          0: /usr/share/nslcd-utils/chsh.pyc
@@ -2407,6 +1981,11 @@
          0: /usr/share/nslcd-utils/getent.pyo
          0: /usr/share/nslcd-utils/chsh.py
          0: /usr/share/nslcd-utils/nslcd.pyc
+         0: /usr/share/polkit-1/actions
+         0: /usr/share/polkit-1/actions/org.freedesktop.resolve1.policy
+         0: /usr/share/polkit-1/actions/org.freedesktop.timedate1.policy
+         0: /usr/share/polkit-1/actions/org.freedesktop.hostname1.policy
+         0: /usr/share/polkit-1/actions/org.freedesktop.systemd1.policy
          0: /usr/share/dreport.d/plugins.d
          0: /usr/share/dreport.d/pl_elog.d
          0: /usr/share/dreport.d/pl_user.d
@@ -2438,20 +2017,19 @@
          0: /usr/share/dreport.d/include.d/functions
          0: /usr/share/dreport.d/conf.d/dreport.conf
          0: /usr/lib/libiptc.so.0.0.0
-         0: /usr/lib/libdaemon.so.0.5.0
-         0: /usr/lib/libfdt.so.1
-         0: /usr/lib/libconfig.so.9.2.0
+         0: /usr/lib/libi2c.so.0.1.0
          0: /usr/lib/libpeci.so.1.0
-         0: /usr/lib/libestr.so.0.0.0
+         0: /usr/lib/libgthread-2.0.so.0.5800.0
+         0: /usr/lib/e2initrd_helper
          0: /usr/lib/os-release
          0: /usr/lib/libchassisi2c.so.0.1.0
          0: /usr/lib/krb5
          0: /usr/lib/tmpfiles.d
          0: /usr/lib/modules-load.d
+         0: /usr/lib/ssl-1.1
          0: /usr/lib/gio
          0: /usr/lib/sysctl.d
          0: /usr/lib/environment.d
-         0: /usr/lib/ssl
          0: /usr/lib/net-ipmid
          0: /usr/lib/sysusers.d
          0: /usr/lib/host-ipmid
@@ -2460,6 +2038,7 @@
          0: /usr/lib/krb5/plugins/libkrb5
          0: /usr/lib/systemd/user
          0: /usr/lib/systemd/user-generators
+         0: /usr/lib/systemd/catalog
          0: /usr/lib/systemd/user-environment-generators
          0: /usr/lib/systemd/user-preset
          0: /usr/lib/systemd/user/systemd-tmpfiles-clean.timer
@@ -2470,8 +2049,10 @@
          0: /usr/lib/systemd/user/systemd-tmpfiles-clean.service
          0: /usr/lib/systemd/user/bluetooth.target
          0: /usr/lib/systemd/user/printer.target
+         0: /usr/lib/systemd/user/dbus.socket
          0: /usr/lib/systemd/user/sound.target
          0: /usr/lib/systemd/user/paths.target
+         0: /usr/lib/systemd/user/dbus.service
          0: /usr/lib/systemd/user/default.target
          0: /usr/lib/systemd/user/graphical-session-pre.target
          0: /usr/lib/systemd/user/timers.target
@@ -2480,6 +2061,8 @@
          0: /usr/lib/systemd/user/systemd-tmpfiles-setup.service
          0: /usr/lib/systemd/user/graphical-session.target
          0: /usr/lib/systemd/user/shutdown.target
+         0: /usr/lib/systemd/user/sockets.target.wants
+         0: /usr/lib/systemd/catalog/systemd.catalog
          0: /usr/lib/systemd/user-environment-generators/30-systemd-environment-d-generator
          0: /usr/lib/systemd/user-preset/90-systemd.preset
          0: /usr/lib/tmpfiles.d/tmp.conf
@@ -2537,6 +2120,7 @@
          0: /usr/lib/xtables/libxt_ipvs.so
          0: /usr/lib/xtables/libip6t_hl.so
          0: /usr/lib/xtables/libxt_NFQUEUE.so
+         0: /usr/lib/xtables/libxt_statistic.so
          0: /usr/lib/xtables/libipt_CLUSTERIP.so
          0: /usr/lib/xtables/libipt_NETMAP.so
          0: /usr/lib/xtables/libxt_bpf.so
@@ -2549,6 +2133,7 @@
          0: /usr/lib/xtables/libxt_CONNSECMARK.so
          0: /usr/lib/xtables/libipt_DNAT.so
          0: /usr/lib/xtables/libxt_mark.so
+         0: /usr/lib/xtables/libxt_policy.so
          0: /usr/lib/xtables/libipt_REJECT.so
          0: /usr/lib/xtables/libip6t_frag.so
          0: /usr/lib/xtables/libip6t_mh.so
@@ -2568,6 +2153,7 @@
          0: /usr/lib/xtables/libxt_CT.so
          0: /usr/lib/xtables/libxt_string.so
          0: /usr/lib/xtables/libxt_esp.so
+         0: /usr/lib/xtables/libxt_time.so
          0: /usr/lib/xtables/libebt_log.so
          0: /usr/lib/xtables/libip6t_DNAT.so
          0: /usr/lib/xtables/libxt_TCPMSS.so
@@ -2602,7 +2188,6 @@
          0: /usr/lib/opkg/alternatives/dnsdomainname
          0: /usr/lib/opkg/alternatives/rdate
          0: /usr/lib/opkg/alternatives/seq
-         0: /usr/lib/opkg/alternatives/fgconsole
          0: /usr/lib/opkg/alternatives/[[
          0: /usr/lib/opkg/alternatives/ln
          0: /usr/lib/opkg/alternatives/mktemp
@@ -2622,6 +2207,7 @@
          0: /usr/lib/opkg/alternatives/wc
          0: /usr/lib/opkg/alternatives/dirname
          0: /usr/lib/opkg/alternatives/patch
+         0: /usr/lib/opkg/alternatives/unlzma
          0: /usr/lib/opkg/alternatives/hostname
          0: /usr/lib/opkg/alternatives/pwd
          0: /usr/lib/opkg/alternatives/unzip
@@ -2629,7 +2215,6 @@
          0: /usr/lib/opkg/alternatives/touch
          0: /usr/lib/opkg/alternatives/nc
          0: /usr/lib/opkg/alternatives/unlink
-         0: /usr/lib/opkg/alternatives/klogd
          0: /usr/lib/opkg/alternatives/expand
          0: /usr/lib/opkg/alternatives/resize
          0: /usr/lib/opkg/alternatives/tr
@@ -2658,6 +2243,7 @@
          0: /usr/lib/opkg/alternatives/modinfo
          0: /usr/lib/opkg/alternatives/top
          0: /usr/lib/opkg/alternatives/stat
+         0: /usr/lib/opkg/alternatives/i2cdetect
          0: /usr/lib/opkg/alternatives/mv
          0: /usr/lib/opkg/alternatives/chattr
          0: /usr/lib/opkg/alternatives/reboot
@@ -2667,6 +2253,7 @@
          0: /usr/lib/opkg/alternatives/date
          0: /usr/lib/opkg/alternatives/readlink
          0: /usr/lib/opkg/alternatives/fuser
+         0: /usr/lib/opkg/alternatives/i2cset
          0: /usr/lib/opkg/alternatives/vi
          0: /usr/lib/opkg/alternatives/expr
          0: /usr/lib/opkg/alternatives/realpath
@@ -2704,8 +2291,8 @@
          0: /usr/lib/opkg/alternatives/chmod
          0: /usr/lib/opkg/alternatives/devmem
          0: /usr/lib/opkg/alternatives/losetup
-         0: /usr/lib/opkg/alternatives/showkey
          0: /usr/lib/opkg/alternatives/chown
+         0: /usr/lib/opkg/alternatives/unxz
          0: /usr/lib/opkg/alternatives/switch_root
          0: /usr/lib/opkg/alternatives/cp
          0: /usr/lib/opkg/alternatives/echo
@@ -2737,6 +2324,7 @@
          0: /usr/lib/opkg/alternatives/newgrp
          0: /usr/lib/opkg/alternatives/logread
          0: /usr/lib/opkg/alternatives/bin-lsmod
+         0: /usr/lib/opkg/alternatives/lzma
          0: /usr/lib/opkg/alternatives/chfn
          0: /usr/lib/opkg/alternatives/netstat
          0: /usr/lib/opkg/alternatives/less
@@ -2769,6 +2357,7 @@
          0: /usr/lib/opkg/alternatives/shutdown
          0: /usr/lib/opkg/alternatives/chroot
          0: /usr/lib/opkg/alternatives/sulogin
+         0: /usr/lib/opkg/alternatives/xz
          0: /usr/lib/opkg/alternatives/whoami
          0: /usr/lib/opkg/alternatives/rb
          0: /usr/lib/opkg/alternatives/tty
@@ -2785,8 +2374,9 @@
          0: /usr/lib/opkg/alternatives/sh
          0: /usr/lib/opkg/alternatives/ps
          0: /usr/lib/opkg/alternatives/start-stop-daemon
+         0: /usr/lib/opkg/alternatives/i2cdump
          0: /usr/lib/opkg/alternatives/watchdog
-         0: /usr/lib/opkg/alternatives/syslogd
+         0: /usr/lib/opkg/alternatives/i2cget
          0: /usr/lib/opkg/alternatives/sed
          0: /usr/lib/opkg/alternatives/cmp
          0: /usr/lib/opkg/alternatives/passwd
@@ -2810,21 +2400,15 @@
          0: /usr/lib/opkg/alternatives/dmesg
          0: /usr/lib/opkg/alternatives/mknod
          0: /usr/lib/opkg/alternatives/usleep
-         0: /usr/lib/locale/en_US/LC_NUMERIC
-         0: /usr/lib/locale/en_US/LC_ADDRESS
-         0: /usr/lib/locale/en_US/LC_PAPER
-         0: /usr/lib/locale/en_US/LC_TIME
-         0: /usr/lib/locale/en_US/LC_MEASUREMENT
-         0: /usr/lib/locale/en_US/LC_NAME
-         0: /usr/lib/locale/en_US/LC_MONETARY
-         0: /usr/lib/locale/en_US/LC_TELEPHONE
-         0: /usr/lib/locale/en_US/LC_IDENTIFICATION
-         0: /usr/lib/locale/en_US/LC_MESSAGES
-         0: /usr/lib/locale/en_US/LC_MESSAGES/SYS_LC_MESSAGES
+         0: /usr/lib/ssl-1.1/ct_log_list.cnf
+         0: /usr/lib/ssl-1.1/openssl.cnf.dist
+         0: /usr/lib/ssl-1.1/ct_log_list.cnf.dist
          0: /usr/lib/python2.7/types.pyc
          0: /usr/lib/python2.7/contextlib.pyc
          0: /usr/lib/python2.7/dis.pyc
+         0: /usr/lib/python2.7/UserString.pyc
          0: /usr/lib/python2.7/xdrlib.pyc
+         0: /usr/lib/python2.7/SimpleHTTPServer.pyc
          0: /usr/lib/python2.7/hashlib.pyc
          0: /usr/lib/python2.7/UserList.pyc
          0: /usr/lib/python2.7/linecache.pyc
@@ -2832,9 +2416,11 @@
          0: /usr/lib/python2.7/io.pyc
          0: /usr/lib/python2.7/UserDict.pyc
          0: /usr/lib/python2.7/atexit.pyc
+         0: /usr/lib/python2.7/quopri.pyc
          0: /usr/lib/python2.7/MimeWriter.pyc
          0: /usr/lib/python2.7/copy_reg.pyc
          0: /usr/lib/python2.7/struct.pyc
+         0: /usr/lib/python2.7/_sysconfigdata.py
          0: /usr/lib/python2.7/md5.pyc
          0: /usr/lib/python2.7/mutex.pyc
          0: /usr/lib/python2.7/stat.pyc
@@ -2846,7 +2432,6 @@
          0: /usr/lib/python2.7/opcode.pyc
          0: /usr/lib/python2.7/symbol.pyc
          0: /usr/lib/python2.7/popen2.pyc
-         0: /usr/lib/python2.7/rlcompleter.pyc
          0: /usr/lib/python2.7/codeop.pyc
          0: /usr/lib/python2.7/commands.pyc
          0: /usr/lib/python2.7/stringold.pyc
@@ -2888,7 +2473,6 @@
          0: /usr/lib/python2.7/site-packages/pygtk.py
          0: /usr/lib/python2.7/site-packages/pygtk.pyo
          0: /usr/lib/python2.7/site-packages/pyphosphor-1.0-py2.7.egg-info
-         0: /usr/lib/python2.7/site-packages/_dbus_glib_bindings.so
          0: /usr/lib/python2.7/site-packages/pydownloadmgr-1.0-py2.7.egg-info
          0: /usr/lib/python2.7/site-packages/obmc_system_config.pyc
          0: /usr/lib/python2.7/site-packages/obmc_system_config.py
@@ -2900,9 +2484,7 @@
          0: /usr/lib/python2.7/site-packages/dbus/glib.pyo
          0: /usr/lib/python2.7/site-packages/dbus/__init__.py
          0: /usr/lib/python2.7/site-packages/dbus/connection.pyo
-         0: /usr/lib/python2.7/site-packages/dbus/exceptions.py
          0: /usr/lib/python2.7/site-packages/dbus/proxies.pyc
-         0: /usr/lib/python2.7/site-packages/dbus/decorators.py
          0: /usr/lib/python2.7/site-packages/dbus/bus.pyc
          0: /usr/lib/python2.7/site-packages/dbus/_compat.pyo
          0: /usr/lib/python2.7/site-packages/dbus/service.pyc
@@ -2912,22 +2494,17 @@
          0: /usr/lib/python2.7/site-packages/dbus/decorators.pyo
          0: /usr/lib/python2.7/site-packages/dbus/_expat_introspect_parser.pyo
          0: /usr/lib/python2.7/site-packages/dbus/decorators.pyc
-         0: /usr/lib/python2.7/site-packages/dbus/gobject_service.py
          0: /usr/lib/python2.7/site-packages/dbus/lowlevel.py
          0: /usr/lib/python2.7/site-packages/dbus/glib.pyc
          0: /usr/lib/python2.7/site-packages/dbus/_compat.pyc
-         0: /usr/lib/python2.7/site-packages/dbus/proxies.py
          0: /usr/lib/python2.7/site-packages/dbus/gobject_service.pyo
          0: /usr/lib/python2.7/site-packages/dbus/connection.pyc
          0: /usr/lib/python2.7/site-packages/dbus/__init__.pyo
          0: /usr/lib/python2.7/site-packages/dbus/server.pyo
-         0: /usr/lib/python2.7/site-packages/dbus/bus.py
          0: /usr/lib/python2.7/site-packages/dbus/glib.py
          0: /usr/lib/python2.7/site-packages/dbus/__init__.pyc
-         0: /usr/lib/python2.7/site-packages/dbus/_dbus.py
          0: /usr/lib/python2.7/site-packages/dbus/service.pyo
          0: /usr/lib/python2.7/site-packages/dbus/_expat_introspect_parser.pyc
-         0: /usr/lib/python2.7/site-packages/dbus/gi_service.py
          0: /usr/lib/python2.7/site-packages/dbus/gi_service.pyc
          0: /usr/lib/python2.7/site-packages/dbus/types.pyo
          0: /usr/lib/python2.7/site-packages/dbus/lowlevel.pyc
@@ -2935,14 +2512,12 @@
          0: /usr/lib/python2.7/site-packages/dbus/_dbus.pyo
          0: /usr/lib/python2.7/site-packages/dbus/proxies.pyo
          0: /usr/lib/python2.7/site-packages/dbus/lowlevel.pyo
-         0: /usr/lib/python2.7/site-packages/dbus/server.py
          0: /usr/lib/python2.7/site-packages/dbus/server.pyc
          0: /usr/lib/python2.7/site-packages/dbus/_expat_introspect_parser.py
          0: /usr/lib/python2.7/site-packages/dbus/exceptions.pyo
          0: /usr/lib/python2.7/site-packages/dbus/bus.pyo
          0: /usr/lib/python2.7/site-packages/dbus/gi_service.pyo
          0: /usr/lib/python2.7/site-packages/dbus/_dbus.pyc
-         0: /usr/lib/python2.7/site-packages/dbus/mainloop
          0: /usr/lib/python2.7/site-packages/dbus/mainloop/glib.pyo
          0: /usr/lib/python2.7/site-packages/dbus/mainloop/__init__.py
          0: /usr/lib/python2.7/site-packages/dbus/mainloop/glib.pyc
@@ -3004,6 +2579,7 @@
          0: /usr/lib/python2.7/site-packages/obmc/mapper/__init__.pyc
          0: /usr/lib/python2.7/json/tool.pyc
          0: /usr/lib/python2.7/json/scanner.pyc
+         0: /usr/lib/python2.7/json/__init__.pyc
          0: /usr/lib/python2.7/importlib/__init__.pyc
          0: /usr/lib/python2.7/encodings/cp1006.pyc
          0: /usr/lib/python2.7/encodings/iso8859_15.pyc
@@ -3128,11 +2704,12 @@
          0: /usr/lib/python2.7/lib-dynload/grp.so
          0: /usr/lib/python2.7/lib-dynload/crypt.so
          0: /usr/lib/python2.7/lib-dynload/_functools.so
-         0: /usr/lib/python2.7/lib-dynload/nis.so
+         0: /usr/lib/python2.7/lib-dynload/_bisect.so
          0: /usr/lib/python2.7/email/iterators.pyc
          0: /usr/lib/python2.7/email/base64mime.pyc
          0: /usr/lib/python2.7/email/parser.pyc
          0: /usr/lib/python2.7/email/quoprimime.pyc
+         0: /usr/lib/python2.7/email/utils.pyc
          0: /usr/lib/python2.7/email/__init__.pyc
          0: /usr/lib/python2.7/email/errors.pyc
          0: /usr/lib/python2.7/email/encoders.pyc
@@ -3155,15 +2732,13 @@
          0: /usr/lib/python2.7/xml/dom/domreg.pyc
          0: /usr/lib/python2.7/xml/dom/NodeFilter.pyc
          0: /usr/lib/python2.7/xml/dom/__init__.pyc
-         0: /usr/lib/python2.7/xml/dom/xmlbuilder.pyc
-         0: /usr/lib/python2.7/xml/dom/pulldom.pyc
          0: /usr/lib/python2.7/xml/parsers/expat.pyc
          0: /usr/lib/python2.7/xml/parsers/__init__.pyc
+         0: /usr/lib/python2.7/xml/sax/handler.pyc
          0: /usr/lib/python2.7/xml/sax/_exceptions.pyc
          0: /usr/lib/python2.7/xml/sax/__init__.pyc
          0: /usr/lib/gio/modules
          0: /usr/lib/sysctl.d/50-default.conf
-         0: /usr/lib/ipmid-providers/libglobalcommands.so.0.1.0
          0: /usr/lib/ipmid-providers/libstrgfnhandler.so.1.0.0
          0: /usr/lib/rsyslog/lmnetstrms.so
          0: /usr/lib/rsyslog/immark.so
@@ -3171,44 +2746,56 @@
          0: /usr/lib/rsyslog/lmzlibw.so
          0: /usr/lib/rsyslog/lmtcpclt.so
          0: /usr/lib/rsyslog/lmregexp.so
+         0: /usr/lib/rsyslog/fmhash.so
+         0: /usr/lib/rsyslog/mmexternal.so
          0: /usr/lib/sysusers.d/dbus.conf
          0: /usr/lib/sysusers.d/basic.conf
          0: /usr/lib/sysusers.d/systemd.conf
          0: /usr/include/python2.7/pyconfig.h
          0: /usr/sbin/cracklib-check
+         0: /usr/sbin/grpconv
          0: /usr/sbin/flash_eraseall.mtd-utils
          0: /usr/sbin/flash_otp_info
          0: /usr/sbin/gpioutil
          0: /usr/sbin/phosphor-fan-presence-tach
          0: /usr/sbin/sync_inventory_items.py
+         0: /usr/sbin/grpunconv
          0: /usr/sbin/ipmi-net-firewall.sh
          0: /usr/sbin/flash_otp_dump
          0: /usr/sbin/update-rc.d
+         0: /usr/sbin/unix_update
          0: /usr/sbin/system_manager.py
+         0: /usr/sbin/unix_chkpwd
          0: /usr/sbin/download_manager.py
          0: /usr/sbin/cracklib-unpacker
          0: /usr/sbin/cracklib-format
          0: /usr/sbin/flashcp.mtd-utils
+         0: /usr/sbin/nandtest
          0: /usr/sbin/rest-dbus
          0: /usr/sbin/phosphor-mapper
+         0: /usr/sbin/bmc_update.py
          0: /usr/sbin/mtdpart
+         0: /usr/sbin/i2cget.i2c-tools
          0: /usr/sbin/run-postinsts
          0: /usr/sbin/pwunconv
          0: /usr/sbin/cracklib-packer
          0: /usr/sbin/mtd_debug
          0: /usr/sbin/pwconv
          0: /usr/sbin/flash_otp_write
+         0: /usr/sbin/i2ctransfer
          0: /usr/sbin/flash_lock.mtd-utils
          0: /usr/sbin/create-cracklib-dict
          0: /usr/sbin/control_bmc.exe
-         0: /usr/sbin/i2cget
+         0: /usr/sbin/obmcutil
          0: /usr/sbin/flash_unlock.mtd-utils
          0: /usr/sbin/flash_otp_lock
          0: /usr/sbin/mapper
          0: /etc/group
+         0: /etc/nslcd.conf.default
          0: /etc/issue.net
          0: /etc/inputrc
          0: /etc/timestamp
+         0: /etc/ipmi_pass
          0: /etc/hostname
          0: /etc/shadow
          0: /etc/hosts
@@ -3236,7 +2823,6 @@
          0: /etc/passwd
          0: /etc/environment
          0: /etc/nslcd.conf
-         0: /etc/rpmrc
          0: /etc/fstab
          0: /etc/shells
          0: /etc/default
@@ -3247,18 +2833,18 @@
          0: /etc/dbus-1
          0: /etc/libnl
          0: /etc/logrotate.d
-         0: /etc/rsyslog.d
          0: /etc/udhcpc.d
          0: /etc/openldap
          0: /etc/profile.d
          0: /etc/avahi
          0: /etc/modules-load.d
          0: /etc/modprobe.d
-         0: /etc/dnf
+         0: /etc/fru
          0: /etc/dropbear
          0: /etc/sysctl.d
+         0: /etc/pam.d
          0: /etc/udev
-         0: /etc/rpm
+         0: /etc/ssl
          0: /etc/skel
          0: /etc/default/postinst
          0: /etc/default/useradd
@@ -3270,10 +2856,13 @@
          0: /etc/default/obmc/mapper
          0: /etc/default/obmc/gpio
          0: /etc/default/obmc/phosphor-reboot-host
+         0: /etc/default/obmc/system-watchdog
          0: /etc/default/obmc/watchdog
          0: /etc/default/obmc/gpio/gpio_defs.json
          0: /etc/default/obmc/phosphor-reboot-host/reboot.conf
+         0: /etc/default/obmc/system-watchdog/system-watchdog.conf
          0: /etc/default/obmc/watchdog/poweron
+         0: /etc/systemd/logind.conf
          0: /etc/systemd/timesyncd.conf
          0: /etc/systemd/resolved.conf
          0: /etc/systemd/coredump.conf
@@ -3284,10 +2873,10 @@
          0: /etc/systemd/network
          0: /etc/systemd/system/network.target.wants
          0: /etc/systemd/system/obmc-host-start@0.target.wants
+         0: /etc/systemd/system/default.target.wants
          0: /etc/systemd/system/sockets.target.wants
          0: /etc/systemd/system/getty.target.wants
          0: /etc/systemd/system/obmc-standby.target.wants
-         0: /etc/systemd/system/xyz.openbmc_project.EntityManager.service.wants
          0: /etc/systemd/system/network-online.target.wants
          0: /etc/systemd/system/systemd-random-seed.service.wants
          0: /etc/systemd/system/local-fs.target.wants
@@ -3315,11 +2904,14 @@
          0: /etc/dbus-1/system.d/org.openbmc.conf
          0: /etc/dbus-1/system.d/xyz.openbmc_project.User.Manager.conf
          0: /etc/dbus-1/system.d/xyz.openbmc_project.Software.Download.conf
+         0: /etc/dbus-1/system.d/xyz.openbmc_project.LDAP.PrivilegeMapper.conf
          0: /etc/dbus-1/system.d/xyz.openbmc_project.State.BMC.conf
+         0: /etc/dbus-1/system.d/xyz.openbmc_project.Ldap.Config.conf
          0: /etc/dbus-1/system.d/xyz.openbmc_project.ObjectMapper.conf
          0: /etc/dbus-1/system.d/org.openbmc.HostIpmi.conf
          0: /etc/dbus-1/system.d/xyz.openbmc_project.Inventory.Manager.conf
          0: /etc/dbus-1/system.d/xyz.openbmc_project.State.Chassis.conf
+         0: /etc/dbus-1/system.d/org.openbmc.HostIpmi.SMM.conf
          0: /etc/dbus-1/system.d/com.intel.CpuDebugLog.conf
          0: /etc/dbus-1/system.d/xyz.openbmc_project.Chassis.Buttons.conf
          0: /etc/dbus-1/system.d/xyz.openbmc_project.Network.SNMP.conf
@@ -3338,7 +2930,8 @@
          0: /etc/libnl/classid
          0: /etc/libnl/pktloc
          0: /etc/logrotate.d/logrotate.rsyslog
-         0: /etc/rsyslog.d/server.conf
+         0: /etc/logrotate.d/btmp
+         0: /etc/logrotate.d/wtmp
          0: /etc/udhcpc.d/50default
          0: /etc/security/time.conf
          0: /etc/security/limits.conf
@@ -3358,8 +2951,8 @@
          0: /etc/avahi/services/ssh.service
          0: /etc/avahi/services/obmc_console.service
          0: /etc/avahi/services/sftp-ssh.service
-         0: /etc/dnf/vars
-         0: /etc/dnf/vars/arch
+         0: /etc/fru/S2600WC.fru.bin
+         0: /etc/fru/S2600WFT.fru.bin
          0: /etc/terminfo/x
          0: /etc/terminfo/l
          0: /etc/terminfo/a
@@ -3384,6 +2977,7 @@
          0: /etc/terminfo/d/dumb
          0: /etc/pam.d/common-session-noninteractive
          0: /etc/pam.d/groupdel
+         0: /etc/pam.d/asd
          0: /etc/pam.d/chpasswd
          0: /etc/pam.d/chage
          0: /etc/pam.d/groupmod
@@ -3410,44 +3004,47 @@
          0: /etc/udev/hwdb.d
          0: /etc/udev/rules.d
          0: /etc/udev/rules.d/touchscreen.rules
+         0: /etc/ssl/openssl.cnf
          0: /etc/ssl/certs
          0: /etc/ssl/private
-         0: /etc/rpm/macros
-         0: /etc/rpm/platform
          0: /etc/skel/.profile
          0: /etc/skel/.bashrc
          0: /lib/libnss_mdns.so.2
+         0: /lib/libutil-2.28.so
          0: /lib/libnss_mdns4.so.2
          0: /lib/libnss_mdns4_minimal.so.2
-         0: /lib/libutil-2.27.so
+         0: /lib/libBrokenLocale-2.28.so
          0: /lib/libnss_mdns6_minimal.so.2
+         0: /lib/libpam_misc.so.0.82.1
          0: /lib/libnss_mdns6.so.2
          0: /lib/libnss_mdns_minimal.so.2
-         0: /lib/libBrokenLocale-2.27.so
          0: /lib/libpamc.so.0.82.1
          0: /lib/depmod.d
          0: /lib/modprobe.d
-         0: /lib/systemd/systemd-sleep
+         0: /lib/systemd/systemd-modules-load
+         0: /lib/systemd/systemd-sysctl
          0: /lib/systemd/systemd-cgroups-agent
          0: /lib/systemd/systemd-user-sessions
          0: /lib/systemd/systemd-remount-fs
          0: /lib/systemd/systemd-sulogin-shell
          0: /lib/systemd/systemd-makefs
+         0: /lib/systemd/systemd-dissect
          0: /lib/systemd/systemd-update-done
          0: /lib/systemd/systemd-sysv-install
          0: /lib/systemd/systemd-ac-power
          0: /lib/systemd/resolv.conf
+         0: /lib/systemd/systemd-time-wait-sync
          0: /lib/systemd/systemd-volatile-root
          0: /lib/systemd/systemd-reply-password
          0: /lib/systemd/systemd-update-utmp
          0: /lib/systemd/systemd-random-seed
          0: /lib/systemd/system.conf.d
+         0: /lib/systemd/journald.conf.d
          0: /lib/systemd/system-preset
          0: /lib/systemd/system-shutdown
          0: /lib/systemd/system-sleep
          0: /lib/systemd/network
          0: /lib/systemd/system/avahi-daemon.service
-         0: /lib/systemd/system/xyz.openbmc_project.selftest.service
          0: /lib/systemd/system/local-fs.target
          0: /lib/systemd/system/systemd-tmpfiles-clean.timer
          0: /lib/systemd/system/xyz.openbmc_project.Syslog.Config.service
@@ -3491,9 +3088,11 @@
          0: /lib/systemd/system/initrd-cleanup.service
          0: /lib/systemd/system/xyz.openbmc_project.ObjectMapper.service
          0: /lib/systemd/system/var-volatile-spool.service
+         0: /lib/systemd/system/gpiodaemon.service
          0: /lib/systemd/system/var-volatile-lib.service
          0: /lib/systemd/system/rpcbind.target
          0: /lib/systemd/system/systemd-sysusers.service
+         0: /lib/systemd/system/smbios-mdrv2.service
          0: /lib/systemd/system/obmc-host-startmin@.target
          0: /lib/systemd/system/obmc-host-stop-pre@.target
          0: /lib/systemd/system/avahi-daemon.socket
@@ -3564,11 +3163,11 @@
          0: /lib/systemd/system/org.openbmc.HostIpmi.service
          0: /lib/systemd/system/obmc-send-signal-host-starting@.service
          0: /lib/systemd/system/systemd-udev-settle.service
-         0: /lib/systemd/system/com.intel.AtScaleDebugJtagTest.service
          0: /lib/systemd/system/system-update.target
          0: /lib/systemd/system/systemd-udev-trigger.service
          0: /lib/systemd/system/obmc-chassis-hard-poweroff@.target
          0: /lib/systemd/system/nss-lookup.target
+         0: /lib/systemd/system/org.openbmc.HostIpmi.SMM.service
          0: /lib/systemd/system/obmc-host-started@.target
          0: /lib/systemd/system/network-online.target
          0: /lib/systemd/system/systemd-journal-catalog-update.service
@@ -3597,9 +3196,10 @@
          0: /lib/systemd/system/xyz.openbmc_project.Dump.Manager.service
          0: /lib/systemd/system/obmc-host-start@.target
          0: /lib/systemd/system/initrd-udevadm-cleanup-db.service
-         0: /lib/systemd/system/systemd-firstboot.service
+         0: /lib/systemd/system/xyz.openbmc_project.Logging.IPMI.service
          0: /lib/systemd/system/com.intel.CpuDebugLog.service
          0: /lib/systemd/system/obmc-send-signal-pre-host-stop@.service
+         0: /lib/systemd/system/user-runtime-dir@.service
          0: /lib/systemd/system/phosphor-dbus-monitor.service
          0: /lib/systemd/system/obmc-led-group-start@.service
          0: /lib/systemd/system/reboot.target
@@ -3623,35 +3223,39 @@
          0: /lib/systemd/system/systemd-journald-audit.socket
          0: /lib/systemd/system/xyz.openbmc_project.Network.SNMP.service
          0: /lib/systemd/system/systemd-initctl.service
-         0: /lib/systemd/system/systemd-vconsole-setup.service
          0: /lib/systemd/system/bmcweb.service
          0: /lib/systemd/system/systemd-timesyncd.service
          0: /lib/systemd/system/systemd-timedated.service
+         0: /lib/systemd/system/system-update-pre.target
          0: /lib/systemd/system/multi-user.target
          0: /lib/systemd/system/obmc-chassis-poweron@.target
          0: /lib/systemd/system/systemd-suspend.service
          0: /lib/systemd/system/xyz.openbmc_project.led.controller@.service
          0: /lib/systemd/system/initrd-root-device.target
          0: /lib/systemd/system/final.target
-         0: /lib/systemd/system/system.slice
          0: /lib/systemd/system/obmc-fan-watchdog-takeover.target
          0: /lib/systemd/system/getty-pre.target
          0: /lib/systemd/system/sys-kernel-debug.mount
          0: /lib/systemd/system/phosphor-reset-host-running@.service
          0: /lib/systemd/system/dropbear@.service
          0: /lib/systemd/system/timers.target
+         0: /lib/systemd/system/phosphor-certificate-manager@.service
          0: /lib/systemd/system/phosphor-fan-monitor-init@.service
          0: /lib/systemd/system/container-getty@.service
          0: /lib/systemd/system/obmc-host-start-pre@.target
+         0: /lib/systemd/system/system-watchdog.service
          0: /lib/systemd/system/phosphor-pid-control.service
          0: /lib/systemd/system/org.openbmc.control.Bmc@.service
+         0: /lib/systemd/system/node-manager-proxy.service
          0: /lib/systemd/system/basic.target
          0: /lib/systemd/system/swap.target
          0: /lib/systemd/system/rescue.service
+         0: /lib/systemd/system/srvcfg-manager.service
          0: /lib/systemd/system/phosphor-ipmi-host.service
          0: /lib/systemd/system/dev-mqueue.mount
          0: /lib/systemd/system/sockets.target
          0: /lib/systemd/system/var-volatile-srv.service
+         0: /lib/systemd/system/SetBaseboardFru.service
          0: /lib/systemd/system/logrotate.timer
          0: /lib/systemd/system/systemd-user-sessions.service
          0: /lib/systemd/system/obmc-flash-bmc-setenv@.service
@@ -3670,6 +3274,8 @@
          0: /lib/systemd/system/smbios-mdrv1.service
          0: /lib/systemd/system/systemd-tmpfiles-setup.service
          0: /lib/systemd/system/nslcd.service
+         0: /lib/systemd/system/xyz.openbmc_project.Ldap.Config.service
+         0: /lib/systemd/system/systemd-time-wait-sync.service
          0: /lib/systemd/system/user@.service
          0: /lib/systemd/system/phosphor-reset-host-reboot-attempts@.service
          0: /lib/systemd/system/obmc-led-group-stop@.service
@@ -3680,6 +3286,7 @@
          0: /lib/systemd/system/mapper-subtree-remove@.service
          0: /lib/systemd/system/lpcsnoop.service
          0: /lib/systemd/system/systemd-journald.service
+         0: /lib/systemd/system/xyz.openbmc_project.exitairsensor.service
          0: /lib/systemd/system/org.openbmc.managers.System.service
          0: /lib/systemd/system/systemd-poweroff.service
          0: /lib/systemd/system/sys-kernel-config.mount
@@ -3702,6 +3309,7 @@
          0: /lib/systemd/system/shutdown.target
          0: /lib/systemd/system/systemd-udevd-kernel.socket
          0: /lib/systemd/system/obmc-webserver-pre.target
+         0: /lib/systemd/system/start-ipkvm.service
          0: /lib/systemd/system/host-failure-reboots@.service
          0: /lib/systemd/system/xyz.openbmc_project.Logging.service
          0: /lib/systemd/system/systemd-journald-dev-log.socket
@@ -3713,11 +3321,13 @@
          0: /lib/systemd/system/obmc-chassis-powered-off@.target
          0: /lib/systemd/system/emergency.service
          0: /lib/systemd/system/systemd-ask-password-console.service
+         0: /lib/systemd/system/xyz.openbmc_project.LDAP.PrivilegeMapper.service
          0: /lib/systemd/system/systemd-ask-password-wall.service
          0: /lib/systemd/system/reboot.target.wants
          0: /lib/systemd/system/sockets.target.wants
          0: /lib/systemd/system/runlevel4.target.wants
          0: /lib/systemd/system/dbus.target.wants
+         0: /lib/systemd/system/user-.slice.d
          0: /lib/systemd/system/obmc-chassis-poweron@0.target.wants
          0: /lib/systemd/system/obmc-standby.target.wants
          0: /lib/systemd/system/obmc-host-starting@0.target.requires
@@ -3737,7 +3347,6 @@
          0: /lib/systemd/system/runlevel2.target.wants
          0: /lib/systemd/system/obmc-chassis-hard-poweroff@0.target.requires
          0: /lib/systemd/system/obmc-host-start@0.target.requires
-         0: /lib/systemd/system/phosphor-watchdog@poweron.service.d
          0: /lib/systemd/system/obmc-fan-control-ready@0.target.requires
          0: /lib/systemd/system/obmc-power-stop@0.target.wants
          0: /lib/systemd/system/poweroff.target.wants
@@ -3747,6 +3356,7 @@
          0: /lib/systemd/system/obmc-host-reset@0.target.requires
          0: /lib/systemd/system/obmc-host-start-pre@0.target.requires
          0: /lib/systemd/system/obmc-led-group-start@bmc_booted.service.d
+         0: /lib/systemd/system/rsyslog.service.d
          0: /lib/systemd/system/local-fs.target.wants
          0: /lib/systemd/system/obmc-host-reboot@0.target.requires
          0: /lib/systemd/system/obmc-chassis-powerreset@0.target.requires
@@ -3756,13 +3366,15 @@
          0: /lib/systemd/system/obmc-host-started@0.target.requires
          0: /lib/systemd/system/obmc-chassis-poweroff@0.target.requires
          0: /lib/systemd/system/multi-user.target.wants
-         0: /lib/systemd/system/phosphor-watchdog@poweron.service.d/poweron.conf
+         0: /lib/systemd/system/user-.slice.d/10-defaults.conf
          0: /lib/systemd/system/obmc-led-group-start@bmc_booted.service.d/bmc_booted.conf
+         0: /lib/systemd/system/rsyslog.service.d/rsyslog-override.conf
          0: /lib/systemd/system-generators/systemd-system-update-generator
          0: /lib/systemd/system-generators/systemd-getty-generator
          0: /lib/systemd/system-generators/systemd-debug-generator
          0: /lib/systemd/system-generators/systemd-rc-local-generator
          0: /lib/systemd/system.conf.d/service-restart-policy.conf
+         0: /lib/systemd/journald.conf.d/journald-maxlevel-policy.conf
          0: /lib/systemd/system-preset/90-systemd.preset
          0: /lib/systemd/network/80-container-ve.network
          0: /lib/systemd/network/80-container-host0.network
@@ -3771,10 +3383,13 @@
          0: /lib/systemd/network/default.network
          0: /lib/depmod.d/search.conf
          0: /lib/security/pam_keyinit.so
+         0: /lib/security/pam_tally2.so
          0: /lib/security/pam_shells.so
          0: /lib/security/pam_nologin.so
          0: /lib/security/pam_ipmicheck.so
          0: /lib/security/pam_motd.so
+         0: /lib/security/pam_access.so
+         0: /lib/security/pam_pwhistory.so
          0: /lib/security/pam_faildelay.so
          0: /lib/security/pam_loginuid.so
          0: /lib/security/pam_deny.so
@@ -3785,22 +3400,14 @@
          0: /lib/security/pam_warn.so
          0: /lib/security/pam_permit.so
          0: /lib/modprobe.d/systemd.conf
-         0: /lib/udev/v4l_id
-         0: /lib/udev/mtd_probe
-         0: /lib/udev/rules.d/90-vconsole.rules
-         0: /lib/udev/rules.d/50-udev-default.rules
          0: /lib/udev/rules.d/61-aspeed-vuart.rules
          0: /lib/udev/rules.d/60-serial.rules
          0: /lib/udev/rules.d/60-persistent-alsa.rules
          0: /lib/udev/rules.d/60-input-id.rules
          0: /lib/udev/rules.d/70-mouse.rules
          0: /lib/udev/rules.d/64-btrfs.rules
-         0: /lib/udev/rules.d/50-firmware.rules
          0: /lib/udev/rules.d/60-persistent-v4l.rules
-         0: /lib/udev/rules.d/78-sound-card.rules
          0: /lib/udev/rules.d/60-sensor.rules
-         0: /lib/udev/rules.d/60-persistent-storage.rules
-         0: /lib/udev/rules.d/99-systemd.rules
          0: /lib/udev/rules.d/75-probe_mtd.rules
          0: /lib/udev/rules.d/70-touchpad.rules
          0: /lib/udev/rules.d/80-net-setup-link.rules
@@ -3812,7 +3419,6 @@
          0: /lib/udev/rules.d/60-block.rules
          0: /lib/udev/rules.d/70-joystick.rules
          0: /lib/udev/rules.d/60-cdrom_id.rules
-         0: /lib/udev/rules.d/60-persistent-input.rules
          0: /lib/udev/rules.d/60-drm.rules
          0: /lib/udev/rules.d/70-leds.rules
          0: /home/bmcweb
@@ -3836,9 +3442,7 @@
          0: /var/local
          0: /var/spool
          0: /var/cache/ldconfig
-         0: /var/cache/dnf
          0: /var/cache/ldconfig/aux-cache
-         0: /var/cache/dnf/expired_repos.json
          0: /var/db/nscd
          0: /var/openldap/data
          0: /var/volatile/log
@@ -3847,38 +3451,4 @@
          0: /var/lib/systemd
          0: /var/lib/dbus
          0: /var/lib/misc
-         0: /var/lib/dnf
-         0: /var/lib/rpm
-         0: /var/lib/rpm/Requirename
-         0: /var/lib/rpm/Enhancename
-         0: /var/lib/rpm/Suggestname
-         0: /var/lib/rpm/Sigmd5
-         0: /var/lib/rpm/Conflictname
-         0: /var/lib/rpm/Recommendname
-         0: /var/lib/rpm/Obsoletename
-         0: /var/lib/rpm/Providename
-         0: /var/lib/rpm/Group
-         0: /var/lib/rpm/Triggername
-         0: /var/lib/rpm/Packages
-         0: /var/lib/rpm/Name
-         0: /var/lib/rpm/Dirnames
-         0: /var/lib/rpm/Sha1header
-         0: /var/lib/rpm/Transfiletriggername
-         0: /var/lib/rpm/Filetriggername
-         0: /var/lib/rpm/Basenames
-         0: /var/lib/rpm/Installtid
-         0: /var/lib/rpm/Supplementname
          0: /var/spool/mail
-     -4096: /usr/share/bash-completion
-     -4096: /usr/share/bash-completion/completions
-     -4096: /usr/share/bash-completion/completions/udevadm
-     -4096: /usr/share/consolefonts/README.cybercafe
-     -4096: /usr/share/consolefonts/README.Sun
-     -4096: /usr/share/consolefonts/README.Greek
-     -4096: /usr/share/consolefonts/README.Cyrillic
-     -4096: /usr/share/consolefonts/README.Ethiopic
-     -4096: /usr/share/consolefonts/Mik_8x16.gz
-     -4096: /usr/share/consolefonts/Cyr_a8x8.psfu.gz
-     -4096: /usr/lib/libi2c.so.0.1.0
-     -4096: /usr/lib/libgthread-2.0.so.0.5400.3
-     -4096: /usr/lib/libgmodule-2.0.so.0.5400.3
