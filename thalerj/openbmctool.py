@@ -307,7 +307,7 @@ def logout(host, username, pw, session, jsonFormat):
         print(connectionErrHandler(jsonFormat, "Timeout", None))
 
     if(jsonFormat==False):
-        if('"message": "200 OK"' in r.text):
+        if r.status_code == 200:
             print('User ' +username + ' has been logged out')
 
 
@@ -1419,7 +1419,7 @@ def bmcDumpCreate(host, args, session):
     url = 'https://'+host+'/xyz/openbmc_project/dump/action/CreateDump'
     try:
         r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=30)
-        if('"message": "200 OK"' in r.text and not args.json):
+        if(r.status_code == 200 and not args.json):
             return ('Dump successfully created')
         else:
             return ('Failed to create dump')
