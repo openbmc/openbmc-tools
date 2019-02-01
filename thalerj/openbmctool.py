@@ -3529,6 +3529,140 @@ def setPassword(host, args, session):
         return connectionErrHandler(args.json, "RequestException", err)
     return res.text
 
+
+def getThermalZones(host, args, session):
+    """
+        Get the available thermal control zones
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used to get the thermal
+               control zones
+        @param session: the active session to use
+        @return: Session object
+    """
+    url = "https://" + host + "/xyz/openbmc_project/control/thermal/enumerate"
+
+    try:
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    except(requests.exceptions.RequestException) as err:
+        return connectionErrHandler(args.json, "RequestException", err)
+
+    if (res.status_code == 404):
+        return "No thermal control zones found or system is in a" + \
+            " powered off state"
+
+    zonesDict = json.loads(res.text)
+    if not zonesDict['data']:
+        return "No thermal control zones found"
+    for zone in zonesDict['data']:
+        z = ",".join(str(zone.split('/')[-1]) for zone in zonesDict['data'])
+
+    return "Zones: [ " + z + " ]"
+
+
+def getThermalMode(host, args, session):
+    """
+        Get thermal control mode
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used to get the thermal
+               control mode
+        @param session: the active session to use
+        @param args.zone: the zone to get the mode on
+        @return: Session object
+    """
+    url = "https://" + host + "/xyz/openbmc_project/control/thermal/" + \
+        args.zone
+
+    try:
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    except(requests.exceptions.RequestException) as err:
+        return connectionErrHandler(args.json, "RequestException", err)
+
+    if (res.status_code == 404):
+        return "Thermal control zone(" + args.zone + ") not found or" + \
+            " system is in a powered off state"
+
+    propsDict = json.loads(res.text)
+    if not propsDict['data']:
+        return "No thermal control properties found on zone(" + args.zone + ")"
+    curMode = "Current"
+    supModes = "Supported"
+    result = "\n"
+    for prop in propsDict['data']:
+        if (prop.casefold() == curMode.casefold()):
+            result += curMode + " Mode: " + propsDict['data'][curMode] + "\n"
+        if (prop.casefold() == supModes.casefold()):
+            s = ", ".join(str(sup) for sup in propsDict['data'][supModes])
+            result += supModes + " Modes: [ " + s + " ]\n"
+
+    return result
+
+def setThermalMode(host, args, session):
+    """
+        Set thermal control mode
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used for setting the thermal
+               control mode
+        @param session: the active session to use
+        @param args.zone: the zone to set the mode on
+        @param args.mode: the mode to enable
+        @return: Session object
+    """
+    url = "https://" + host + "/xyz/openbmc_project/control/thermal/" + \
+        args.zone + "/attr/Current"
+
+    # Check args.mode against supported modes using `getThermalMode` output
+    modes = getThermalMode(host, args, session)
+    modes = os.linesep.join([m for m in modes.splitlines() if m])
+    modes = modes.replace("\n", ";").strip()
+    modesDict = dict(m.split(': ') for m in modes.split(';'))
+    sModes = ''.join(s for s in modesDict['Supported Modes'] if s not in '[ ]')
+    if args.mode.casefold() not in \
+            (m.casefold() for m in sModes.split(',')) or not args.mode:
+        result = ("Unsupported mode('" + args.mode + "') given, " +
+                  "select a supported mode: \n" +
+                  getThermalMode(host, args, session))
+        return result
+
+    data = '{"data":"' + args.mode + '"}'
+    try:
+        res = session.get(url, headers=jsonHeader, verify=False, timeout=30)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    except(requests.exceptions.RequestException) as err:
+        return connectionErrHandler(args.json, "RequestException", err)
+
+    if (data and res.status_code != 404):
+        try:
+            res = session.put(url, headers=jsonHeader,
+                              data=data, verify=False,
+                              timeout=30)
+        except(requests.exceptions.Timeout):
+            return(connectionErrHandler(args.json, "Timeout", None))
+        except(requests.exceptions.ConnectionError) as err:
+            return connectionErrHandler(args.json, "ConnectionError", err)
+        except(requests.exceptions.RequestException) as err:
+            return connectionErrHandler(args.json, "RequestException", err)
+
+        if res.status_code == 403:
+            return "The specified thermal control zone(" + args.zone + ")" + \
+                " does not exist"
+
+        return res.text
+    else:
+        return "Setting thermal control mode(" + args.mode + ")" + \
+            " not supported or operation not available(system powered off?)"
+
+
 def createCommandParser():
     """
          creates the parser for the command line along with help for each command and subcommand
@@ -3576,6 +3710,24 @@ def createCommandParser():
     sens_list.add_argument("sensNum", nargs='?', help="The Sensor number to get full details on" )
     sens_list.set_defaults(func=sensor)
 
+    #thermal control commands
+    parser_therm = subparsers.add_parser("thermal", help="Work with thermal control parameters")
+    therm_subparser=parser_therm.add_subparsers(title='subcommands', description='Thermal control actions to work with', help='Valid thermal control actions to work with', dest='command')
+    #thermal control zones
+    parser_thermZones = therm_subparser.add_parser("zones", help="Get a list of available thermal control zones")
+    parser_thermZones.set_defaults(func=getThermalZones)
+    #thermal control modes
+    parser_thermMode = therm_subparser.add_parser("modes", help="Work with thermal control modes")
+    thermMode_sub = parser_thermMode.add_subparsers(title='subactions', description='Work with thermal control modes', help="Work with thermal control modes")
+    #get thermal control mode
+    parser_getThermMode = thermMode_sub.add_parser("get", help="Get current and supported thermal control modes")
+    parser_getThermMode.add_argument('-z', '--zone', required=True, help='Thermal zone to work with')
+    parser_getThermMode.set_defaults(func=getThermalMode)
+    #set thermal control mode
+    parser_setThermMode = thermMode_sub.add_parser("set", help="Set the thermal control mode")
+    parser_setThermMode.add_argument('-z', '--zone', required=True, help='Thermal zone to work with')
+    parser_setThermMode.add_argument('-m', '--mode', required=True, help='The supported thermal control mode')
+    parser_setThermMode.set_defaults(func=setThermalMode)
 
     #sel command
     parser_sel = subparsers.add_parser("sel", help="Work with platform alerts")
@@ -4055,7 +4207,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application
     """
     global toolVersion
-    toolVersion = "1.12"
+    toolVersion = "1.13"
     parser = createCommandParser()
     args = parser.parse_args(argv)
 
