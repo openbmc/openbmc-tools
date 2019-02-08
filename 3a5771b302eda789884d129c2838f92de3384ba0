@@ -1,0 +1,9 @@
+Code-Review+1: Matt Spinler <spinler@us.ibm.com>
+Code-Review+1: Anthony P. Wilson <wilsonan@us.ibm.com>
+Code-Review+2: Andrew Geissler <geissonator@yahoo.com>
+Verified+1: Andrew Geissler <geissonator@yahoo.com>
+Submitted-by: Andrew Geissler <geissonator@yahoo.com>
+Submitted-at: Fri, 08 Feb 2019 13:38:45 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/17657
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
