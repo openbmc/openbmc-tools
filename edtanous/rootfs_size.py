@@ -21,6 +21,12 @@ parser.add_argument("-s", "--squashfs_file",
                     "/intel-platforms-wolfpass.squashfs-xz",
                     help="Squashfs file.")
 
+parser.add_argument("-z", "--squashfs_size",
+                    dest="SQUASHFS_SIZE",
+                    default=None,
+                    type=int,
+                    help="Squashfs size.")
+
 args = parser.parse_args()
 
 # files below this size wont be attempted
@@ -78,3 +84,10 @@ with open("results.txt", 'w') as result_file:
         result = "{:>10}: {}".format(size, filepath)
         print(result)
         result_file.write(result + "\n")
+
+if args.SQUASHFS_SIZE:
+    filepath, size = results[0]
+    print ("{:>10}: {}".format(size, filepath))
+    print ("{:>10}: {}".format(args.SQUASHFS_SIZE, "SQUASHFS_SIZE"))
+    if args.SQUASHFS_SIZE < size:
+        exit(1)
