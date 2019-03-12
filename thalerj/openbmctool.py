@@ -2592,7 +2592,7 @@ def enableLDAP(host, args, session):
             'OpenLDAP' : 'xyz.openbmc_project.User.Ldap.Create.Type.OpenLdap'
             }
 
-    data = {"data": [args.uri, args.bindDN, args.baseDN, args.bindPassword, scope[args.scope], serverType[args.serverType]]}
+    data = {"data": [args.uri, args.bindDN, args.baseDN, args.bindPassword, scope[args.scope], serverType[args.serverType], args.groupAttrName, args.userAttrName]}
 
     try:
         res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
@@ -2601,7 +2601,16 @@ def enableLDAP(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
 
-    return res.text
+    url = "https://"+host+"/xyz/openbmc_project/user/ldap/config/attr/Enabled"
+    data = "{\"data\": 1 }"
+    try:
+        res1 = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return res.text + res1.text
 
 
 def disableLDAP(host, args, session):
@@ -2615,11 +2624,11 @@ def disableLDAP(host, args, session):
             will be provided in json format for programmatic consumption
     """
 
-    url='https://'+host+'/xyz/openbmc_project/user/ldap/config/action/delete'
-    data = {"data": []}
-
+    url = "https://"+host+"/xyz/openbmc_project/user/ldap/config/attr/Enabled"
+    data = "{\"data\": 0 }"
     try:
-        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        res = session.put(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
+
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -3912,6 +3921,8 @@ def createCommandParser():
             help='Specifies the search scope:subtree, one level or base object.')
     parser_ldap_config.add_argument("-t", "--serverType", choices=['ActiveDirectory','OpenLDAP'],
             help='Specifies the configured server is ActiveDirectory(AD) or OpenLdap')
+    parser_ldap_config.add_argument("-g","--groupAttrName", required=False, default='', help="Group Attribute Name")
+    parser_ldap_config.add_argument("-u","--userAttrName", required=False, default='', help="User Attribute Name")
     parser_ldap_config.set_defaults(func=enableLDAP)
 
     # disable LDAP
