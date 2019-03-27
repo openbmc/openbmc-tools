@@ -4250,7 +4250,10 @@ def main(argv=None):
             commandTimeStart = int(round(time.time()*1000))
             output = args.func(args.host, args, mysess)
             commandTimeStop = int(round(time.time()*1000))
-            print(output)
+            if isinstance(output, dict):
+                print(json.dumps(output, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False))
+            else:
+                print(output)
             if (mysess is not None):
                 logout(args.host, args.user, pw, mysess, args.json)
             if(args.procTime):
