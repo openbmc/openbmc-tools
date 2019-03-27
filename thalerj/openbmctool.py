@@ -2343,12 +2343,15 @@ def parseFWdata(firmwareDict):
                 fwActivated = True
             else:
                 fwActivated = False
-            if firmwareDict['data'][key]['Priority'] == 0:
-                firmwareInfoDict['Functional'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
-            elif firmwareDict['data'][key]['Priority'] >= 0 and fwActivated:
-                firmwareInfoDict['Activated'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+            if 'Priority' in firmwareDict['data'][key]:
+                if firmwareDict['data'][key]['Priority'] == 0:
+                    firmwareInfoDict['Functional'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+                elif firmwareDict['data'][key]['Priority'] >= 0 and fwActivated:
+                    firmwareInfoDict['Activated'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+                else:
+                    firmwareInfoDict['NeedsActivated'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
             else:
-                firmwareInfoDict['Activated'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
+                firmwareInfoDict['NeedsActivated'].update(getFWInventoryAttributes(firmwareDict['data'][key], id))
     emptySections = []
     for key in firmwareInfoDict:
         if len(firmwareInfoDict[key])<=0:
