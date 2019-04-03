@@ -21912,7 +21912,7 @@
             "ComponentInstance": null,
             "DateAdded": null,
             "DateReviewed": null,
-            "EventType": "Monitoring Agent",
+            "EventType": "Firmware/Software Failure",
             "Internal": false,
             "LengthyDescription": null,
             "LogSource": "BMC",
@@ -22158,7 +22158,7 @@
     },
     "fileInfo": {
         "Entity": "IBM OpenBMC",
-        "Version": "1.8.1",
+        "Version": "1.8.2",
         "language": "English"
     }
 }
