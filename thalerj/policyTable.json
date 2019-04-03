@@ -9917,7 +9917,7 @@
             "AffectedSubsystem": "Systems Management - Core / Virtual Appliance",
             "BMCMessageID": "xyz.openbmc_project.Common.Callout.Error.GPIO",
             "CallHomeCandidate": false,
-            "CommonEventID": "FQPSPCR0039F",
+            "CommonEventID": "FQPSPCR0077F",
             "ComponentInstance": null,
             "DateAdded": null,
             "DateReviewed": null,
