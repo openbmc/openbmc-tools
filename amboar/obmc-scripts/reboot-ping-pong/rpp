@@ -104,7 +104,7 @@ class Bmc(object):
 
 class Host(object):
     def __init__(self, entity, bmc):
-        self.shell = "/ #".encode()
+        self.shell = "/? *#".encode()
         self.petitboot = "Petitboot".encode()
         self.session = None
         self.entity = entity
