@@ -52,7 +52,10 @@ class Obmcutil(object):
 
 class PexpectLogger(object):
     def write(self, bstring):
-        sys.stdout.write(bstring.decode())
+        try:
+            sys.stdout.write(bstring.decode())
+        except UnicodeDecodeError:
+            print("Dropping broken unicode line")
 
     def flush(self):
         sys.stdout.flush()
