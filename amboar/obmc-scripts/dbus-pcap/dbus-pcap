@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2019 IBM Corp.
 
+from argparse import ArgumentParser
 from itertools import islice, cycle
 from collections import namedtuple
 from enum import Enum
 from scapy.all import rdpcap
-import sys
 import struct
 import json
 
@@ -388,11 +388,22 @@ def packetconv(obj):
     raise TypeError
 
 def main():
-    stream = rdpcap(sys.argv[1])
-    matchers = [] if len(sys.argv) < 3 else parse_match_rules(sys.argv[2:])
+    parser = ArgumentParser()
+    parser.add_argument("--json", action="store_true",
+            help="Emit a JSON representation of the messages")
+    parser.add_argument("file", help="The pcap file")
+    parser.add_argument("expressions", nargs="*",
+            help="DBus message match expressions")
+    args = parser.parse_args()
+    stream = rdpcap(args.file)
+    matchers = parse_match_rules(args.expressions)
     try:
-        for msg in parse_session(stream, matchers):
-            print(json.dumps(msg, default=packetconv))
+        if args.json:
+            for msg in parse_session(stream, matchers):
+                print(json.dumps(msg, default=packetconv))
+        else:
+            for msg in parse_session(stream, matchers):
+                print(msg)
     except BrokenPipeError:
         pass
 
