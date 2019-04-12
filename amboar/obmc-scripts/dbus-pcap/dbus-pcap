@@ -251,6 +251,8 @@ def parse_array(endian, stream, tc):
     while (stream.offset - offset) < length:
         elem = parse_type(endian, stream, tc)
         arr.append(elem)
+        if (stream.offset - offset) < length:
+            stream.align(tc)
     return arr
 
 def parse_struct(endian, stream, tcs):
