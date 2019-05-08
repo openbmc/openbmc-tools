@@ -34,6 +34,10 @@ import uuid
 jsonHeader = {'Content-Type' : 'application/json'}
 xAuthHeader = {}
 baseTimeout = 60
+serverTypeMap = {
+        'ActiveDirectory' : 'active_directory',
+        'OpenLDAP' : 'openldap'
+        }
 
 def hilight(textToColor, color, bold):
     """
@@ -3315,7 +3319,7 @@ def createPrivilegeMapping(host, args, session):
                 will be provided in json format for programmatic consumption
     """
 
-    url = 'https://'+host+'/xyz/openbmc_project/user/ldap/action/Create'
+    url = 'https://'+host+'/xyz/openbmc_project/user/ldap/'+serverTypeMap[args.serverType]+'/action/Create'
 
     data = {"data": [args.groupName,args.privilege]}
 
@@ -3337,7 +3341,8 @@ def listPrivilegeMapping(host, args, session):
          @param args.json: boolean, if this flag is set to true, the output
                 will be provided in json format for programmatic consumption
     """
-    url = 'https://'+host+'/xyz/openbmc_project/user/ldap/enumerate'
+
+    url = 'https://'+host+'/xyz/openbmc_project/user/ldap/'+serverTypeMap[args.serverType]+'/role_map/enumerate'
     data = {"data": []}
 
     try:
@@ -3362,9 +3367,6 @@ def deletePrivilegeMapping(host, args, session):
     ldapNameSpaceObjects = json.loads(ldapNameSpaceObjects)["data"]
     path = ''
 
-    # not interested in the config objet
-    ldapNameSpaceObjects.pop('/xyz/openbmc_project/user/ldap/config', None)
-
     # search for the object having the mapping for the given group
     for key,value in ldapNameSpaceObjects.items():
         if value['GroupName'] == args.groupName:
@@ -3375,7 +3377,7 @@ def deletePrivilegeMapping(host, args, session):
         return "No privilege mapping found for this group."
 
     # delete the object
-    url = 'https://'+host+path+'/action/delete'
+    url = 'https://'+host+path+'/action/Delete'
     data = {"data": []}
 
     try:
@@ -3399,15 +3401,13 @@ def deleteAllPrivilegeMapping(host, args, session):
     ldapNameSpaceObjects = json.loads(ldapNameSpaceObjects)["data"]
     path = ''
 
-    # Remove the config object.
-    ldapNameSpaceObjects.pop('/xyz/openbmc_project/user/ldap/config', None)
     data = {"data": []}
 
     try:
         # search for GroupName property and delete if it is available.
         for path in ldapNameSpaceObjects.keys():
             # delete the object
-            url = 'https://'+host+path+'/action/delete'
+            url = 'https://'+host+path+'/action/Delete'
             res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
@@ -3932,21 +3932,29 @@ def createCommandParser():
             help="sub-command help", dest='command')
 
     parser_ldap_mapper_create = parser_ldap_mapper_sub.add_parser("create", help="Create mapping of ldap group and privilege")
+    parser_ldap_mapper_create.add_argument("-t", "--serverType", choices=['ActiveDirectory','OpenLDAP'],
+            help='Specifies the configured server is ActiveDirectory(AD) or OpenLdap',required=True)
     parser_ldap_mapper_create.add_argument("-g","--groupName",required=True,help="Group Name")
     parser_ldap_mapper_create.add_argument("-p","--privilege",choices=['priv-admin','priv-user'],required=True,help="Privilege")
     parser_ldap_mapper_create.set_defaults(func=createPrivilegeMapping)
 
     #list group privilege mapping
     parser_ldap_mapper_list = parser_ldap_mapper_sub.add_parser("list",help="List privilege mapping")
+    parser_ldap_mapper_list.add_argument("-t", "--serverType", choices=['ActiveDirectory','OpenLDAP'],
+            help='Specifies the configured server is ActiveDirectory(AD) or OpenLdap',required=True)
     parser_ldap_mapper_list.set_defaults(func=listPrivilegeMapping)
 
     #delete group privilege mapping
     parser_ldap_mapper_delete = parser_ldap_mapper_sub.add_parser("delete",help="Delete privilege mapping")
+    parser_ldap_mapper_delete.add_argument("-t", "--serverType", choices=['ActiveDirectory','OpenLDAP'],
+            help='Specifies the configured server is ActiveDirectory(AD) or OpenLdap',required=True)
     parser_ldap_mapper_delete.add_argument("-g","--groupName",required=True,help="Group Name")
     parser_ldap_mapper_delete.set_defaults(func=deletePrivilegeMapping)
 
     #deleteAll group privilege mapping
     parser_ldap_mapper_delete = parser_ldap_mapper_sub.add_parser("purge",help="Delete All privilege mapping")
+    parser_ldap_mapper_delete.add_argument("-t", "--serverType", choices=['ActiveDirectory','OpenLDAP'],
+            help='Specifies the configured server is ActiveDirectory(AD) or OpenLdap',required=True)
     parser_ldap_mapper_delete.set_defaults(func=deleteAllPrivilegeMapping)
 
     # set local user password
