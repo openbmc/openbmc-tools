@@ -1,0 +1,6 @@
+This is a package for a tool that can be used to configure
+GPIO lines. Functions such as set / get direction, set / get data,
+set / get pull-up / pull-down etc.
+
+Gpio Test Tool - Copyright (c) 2019 American Megatrends Inc.
+Usage : gpiotool <gpionumber> <option> [--verbose]
