@@ -336,12 +336,31 @@ def parse_packet(packet):
     msg = parse_message(RawMessage(data[0], data[:12], data[12:]))
     return msg
 
-def parse_session(session, matchers):
+CallEnvelope = namedtuple("CallEnvelope", "cookie, origin")
+def parse_session(session, matchers, track_calls):
+    calls = set()
     for packet in session:
         try:
             cooked = parse_packet(packet)
-            if not matchers or any(all(r(cooked) for r in m) for m in matchers):
+            if not matchers:
                 yield cooked
+            elif any(all(r(cooked) for r in m) for m in matchers):
+                if cooked.header.fixed.type == MessageType.METHOD_CALL.value:
+                    s = [f for f in cooked.header.fields
+                            if f.type == MessageFieldType.SENDER][0]
+                    calls.add(CallEnvelope(cooked.header.fixed.cookie, s.data))
+                yield cooked
+            elif track_calls:
+                if cooked.header.fixed.type != MessageType.METHOD_RETURN.value:
+                    continue
+                rs = [f for f in cooked.header.fields
+                        if f.type == MessageFieldType.REPLY_SERIAL][0]
+                d = [f for f in cooked.header.fields
+                        if f.type == MessageFieldType.DESTINATION][0]
+                ce = CallEnvelope(rs.data, d.data)
+                if ce in calls:
+                    calls.remove(ce)
+                    yield cooked
         except MalformedPacketError as e:
             pass
 
@@ -395,6 +414,8 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("--json", action="store_true",
             help="Emit a JSON representation of the messages")
+    parser.add_argument("--no-track-calls", action="store_true", default=False,
+            help="Make a call response pass filters")
     parser.add_argument("file", help="The pcap file")
     parser.add_argument("expressions", nargs="*",
             help="DBus message match expressions")
@@ -403,10 +424,10 @@ def main():
     matchers = parse_match_rules(args.expressions)
     try:
         if args.json:
-            for msg in parse_session(stream, matchers):
+            for msg in parse_session(stream, matchers, not args.no_track_calls):
                 print(json.dumps(msg, default=packetconv))
         else:
-            for msg in parse_session(stream, matchers):
+            for msg in parse_session(stream, matchers, not args.no_track_calls):
                 print(msg)
     except BrokenPipeError:
         pass
