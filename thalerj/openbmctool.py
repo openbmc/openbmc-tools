@@ -2517,9 +2517,9 @@ def certificateUpdate(host, args, session):
     """
          Called by certificate management function. update server/client/authority certificates
          Example:
-         certificate update server https -f cert.pem
-         certificate update authority ldap -f Root-CA.pem
-         certificate update client ldap -f cert.pem
+         certificate update server -f cert.pem
+         certificate update authority -f Root-CA.pem
+         certificate update client -f cert.pem
          @param host: string, the hostname or IP address of the bmc
          @param args: contains additional arguments used by the certificate update sub command
          @param session: the active session to use
@@ -2527,11 +2527,19 @@ def certificateUpdate(host, args, session):
 
     httpHeader = {'Content-Type': 'application/octet-stream'}
     httpHeader.update(xAuthHeader)
-    url = "https://" + host + "/xyz/openbmc_project/certs/" + args.type.lower() + "/" + args.service.lower()
+    url = "";
+    if(args.type.lower() == 'server'):
+        url = "https://" + host + \
+            "/redfish/v1/Managers/bmc/NetworkProtocol/HTTPS/Certificates"
+    elif(args.type.lower() == 'client'):
+        url = "https://" + host + \
+            "/redfish/v1/AccountService/LDAP/Certificates"
+    elif(args.type.lower() == 'authority'):
+        url = "https://" + host + \
+        "/redfish/v1/Managers/bmc/Truststore/Certificates"
     data = open(args.fileloc, 'rb').read()
-    print("Updating certificate url=" + url)
     try:
-        resp = session.put(url, headers=httpHeader, data=data, verify=False)
+        resp = session.post(url, headers=httpHeader, data=data, verify=False)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -3885,9 +3893,10 @@ def createCommandParser():
     certMgmt_subproc = parser_cert.add_subparsers(title='subcommands', description='valid certificate commands', help='sub-command help', dest='command')
 
     certUpdate = certMgmt_subproc.add_parser('update', help="Update the certificate")
-    certUpdate.add_argument('type', choices=['server', 'client', 'authority'], help="certificate type to update")
-    certUpdate.add_argument('service', choices=['https', 'ldap'], help="Service to update")
-    certUpdate.add_argument('-f', '--fileloc', required=True, help="The absolute path to the certificate file")
+    certUpdate.add_argument('type', choices=['server', 'client', 'authority'],
+        help="certificate type to upload")
+    certUpdate.add_argument('-f', '--fileloc', required=True,
+        help="The absolute path to the certificate file")
     certUpdate.set_defaults(func=certificateUpdate)
 
     certDelete = certMgmt_subproc.add_parser('delete', help="Delete the certificate")
