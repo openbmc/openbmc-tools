@@ -2512,6 +2512,19 @@ def remoteLoggingConfig(host, args, session):
         return(connectionErrHandler(args.json, "Timeout", None))
     return res.text
 
+def redfishSupportPresent(host, session):
+    url = "https://" + host + "/redfish/v1"
+    try:
+        resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
+    except(requests.exceptions.Timeout):
+        return False
+    except(requests.exceptions.ConnectionError) as err:
+        return False
+    if resp.status_code != 200:
+        return False
+    else:
+       return True
+
 
 def certificateUpdate(host, args, session):
     """
@@ -2524,14 +2537,29 @@ def certificateUpdate(host, args, session):
          @param args: contains additional arguments used by the certificate update sub command
          @param session: the active session to use
     """
-
     httpHeader = {'Content-Type': 'application/octet-stream'}
     httpHeader.update(xAuthHeader)
-    url = "https://" + host + "/xyz/openbmc_project/certs/" + args.type.lower() + "/" + args.service.lower()
     data = open(args.fileloc, 'rb').read()
-    print("Updating certificate url=" + url)
     try:
-        resp = session.put(url, headers=httpHeader, data=data, verify=False)
+        if redfishSupportPresent(host, session):
+            url = "";
+            if(args.type.lower() == 'server'):
+                url = "https://" + host + \
+                    "/redfish/v1/Managers/bmc/NetworkProtocol/HTTPS/Certificates"
+            elif(args.type.lower() == 'client'):
+                url = "https://" + host + \
+                    "/redfish/v1/AccountService/LDAP/Certificates"
+            elif(args.type.lower() == 'authority'):
+                url = "https://" + host + \
+                "/redfish/v1/Managers/bmc/Truststore/Certificates"
+            else:
+                return "Unsupported certificate type"
+            resp = session.post(url, headers=httpHeader, data=data, 
+                        verify=False)
+        else:
+            url = "https://" + host + "/xyz/openbmc_project/certs/" + \
+                args.type.lower() + "/" + args.service.lower()
+            resp = session.put(url, headers=httpHeader, data=data, verify=False)
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -2540,8 +2568,7 @@ def certificateUpdate(host, args, session):
         print(resp.text)
         return "Failed to update the certificate"
     else:
-       print("Update complete.")
-
+        print("Update complete.")
 
 def certificateDelete(host, args, session):
     """
@@ -4211,7 +4238,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application
     """
     global toolVersion
-    toolVersion = "1.14"
+    toolVersion = "1.15"
     parser = createCommandParser()
     args = parser.parse_args(argv)
 
