@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
- Copyright 2017 IBM Corporation
+ Copyright 2017,2019 IBM Corporation
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -3678,6 +3678,7 @@ def createCommandParser():
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-A", "--askpw", action='store_true', help='prompt for password')
     group.add_argument("-P", "--PW", help='Provide the password in-line')
+    group.add_argument("-E", "--PWenvvar", action='store_true', help='Get password from envvar OPENBMCTOOL_PASSWORD')
     parser.add_argument('-j', '--json', action='store_true', help='output json data only')
     parser.add_argument('-t', '--policyTableLoc', help='The location of the policy table to parse alerts')
     parser.add_argument('-c', '--CerFormat', action='store_true', help=argparse.SUPPRESS)
@@ -4210,7 +4211,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application
     """
     global toolVersion
-    toolVersion = "1.13"
+    toolVersion = "1.14"
     parser = createCommandParser()
     args = parser.parse_args(argv)
 
@@ -4232,6 +4233,8 @@ def main(argv=None):
                 pw = getpass.getpass()
             elif(args.PW is not None):
                 pw = args.PW
+            elif(args.PWenvvar):
+                pw = os.environ['OPENBMCTOOL_PASSWORD']
             else:
                 print("You must specify a password")
                 sys.exit()
@@ -4261,7 +4264,9 @@ def main(argv=None):
                 print("loginTime: " + str(logintimeStop - logintimeStart))
                 print("command Time: " + str(commandTimeStop - commandTimeStart))
         else:
-            print("usage: openbmctool.py [-h] -H HOST -U USER [-A | -P PW] [-j]\n" +
+            print("usage:\n"
+                  "  OPENBMCTOOL_PASSWORD=secret  # if using -E\n"
+                  "  openbmctool.py [-h] -H HOST -U USER {-A | -P PW | -E} [-j]\n" +
                       "\t[-t POLICYTABLELOC] [-V]\n" +
                       "\t{fru,sensors,sel,chassis,collect_service_data, \
                           health_check,dump,bmc,mc,gardclear,firmware,logging}\n" +

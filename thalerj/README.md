@@ -10,8 +10,10 @@ connecting to a BMC.
 These are passed in with the following options:
 - `-H`: The hostname or IP for the BMC
 - `-U`: The username
+One of the password options:
 - `-P`: The password, provided in-line
-- `-A`: Prompt for a password. Can be used in place of `-P`.
+- `-A`: Prompt for a password
+- `-E`: Take the password from envvar OPENBMCTOOL_PASSWORD
 
 ## Enabling and Disabling Local BMC User Accounts
 
