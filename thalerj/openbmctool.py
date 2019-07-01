@@ -2651,6 +2651,46 @@ def certificateReplace(host, args, session):
        print("Replace complete.")
     return resp.text
 
+def certificateDisplay(host, args, session):
+    """
+         Called by certificate management function. display server/client/
+         authority certificates
+         Example:
+         certificate display server
+         certificate display authority
+         certificate display client
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the certificate
+                      display sub command
+         @param session: the active session to use
+    """
+    if not redfishSupportPresent(host, session):
+        return "Not supported";
+
+    httpHeader = {'Content-Type': 'application/octet-stream'}
+    httpHeader.update(xAuthHeader)
+    if(args.type.lower() == 'server'):
+        url = "https://" + host + \
+            "/redfish/v1/Managers/bmc/NetworkProtocol/HTTPS/Certificates/1"
+    elif(args.type.lower() == 'client'):
+        url = "https://" + host + \
+            "/redfish/v1/AccountService/LDAP/Certificates/1"
+    elif(args.type.lower() == 'authority'):
+        url = "https://" + host + \
+            "/redfish/v1/Managers/bmc/Truststore/Certificates/1"
+    try:
+        resp = session.get(url, headers=httpHeader, verify=False)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if resp.status_code != 200:
+        print(resp.text)
+        return "Failed to display the certificate"
+    else:
+       print("Display complete.")
+    return resp.text
+
 def enableLDAP(host, args, session):
     """
          Called by the ldap function. Configures LDAP.
@@ -3982,6 +4022,12 @@ def createCommandParser():
     certReplace.add_argument('-f', '--fileloc', required=True,
         help="The absolute path to the certificate file")
     certReplace.set_defaults(func=certificateReplace)
+
+    certDisplay = certMgmt_subproc.add_parser('display',
+        help="Print the certificate")
+    certDisplay.add_argument('type', choices=['server', 'client', 'authority'],
+        help="certificate type to display")
+    certDisplay.set_defaults(func=certificateDisplay)
 
     # local users
     parser_users = subparsers.add_parser("local_users", help="Work with local users")
