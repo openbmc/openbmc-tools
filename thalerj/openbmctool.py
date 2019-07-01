@@ -2629,6 +2629,33 @@ def certificateDisplay(host, args, session):
        print("Display complete.")
     return resp.text
 
+def certificateLocations(host, args, session):
+    """
+         Called by certificate management function.
+         Example:
+         certificate locations
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the certificate
+                      locations sub command
+         @param session: the active session to use
+    """
+    httpHeader = {'Content-Type': 'application/octet-stream'}
+    httpHeader.update(xAuthHeader)
+    url = "https://" + host + \
+        "/redfish/v1/CertificateService/CertificateLocations/"
+    try:
+        resp = session.get(url, headers=httpHeader, verify=False)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if resp.status_code != 200:
+        print(resp.text)
+        return "Failed to list certificates"
+    else:
+       print("Locations complete.")
+    return resp.text
+
 def enableLDAP(host, args, session):
     """
          Called by the ldap function. Configures LDAP.
@@ -3961,6 +3988,10 @@ def createCommandParser():
     certDisplay.add_argument('type', choices=['server', 'client', 'authority'],
         help="certificate type to display")
     certDisplay.set_defaults(func=certificateDisplay)
+
+    certLocations = certMgmt_subproc.add_parser('locations',
+        help="Certificate list")
+    certLocations.set_defaults(func=certificateLocations)
 
     # local users
     parser_users = subparsers.add_parser("local_users", help="Work with local users")
