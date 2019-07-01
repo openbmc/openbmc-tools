@@ -2598,6 +2598,55 @@ def certificateDelete(host, args, session):
     else:
         print("Delete complete.")
 
+def certificateReplace(host, args, session):
+    """
+         Called by certificate management function. replace server/client/
+         authority certificates
+         Example:
+         certificate replace server https -f cert.pem
+         certificate replace authority ldap -f Root-CA.pem
+         certificate replace authority ldap -f Root-CA.pem
+         certificate replace client ldap -f cert.pem
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the certificate
+                      replace sub command
+         @param session: the active session to use
+    """
+    cert = open(args.fileloc, 'rb').read()
+    try:
+        if redfishSupportPresent(host, session):
+            httpHeader = {'Content-Type': 'application/json'}
+            httpHeader.update(xAuthHeader)
+            url = "";
+            if(args.type.lower() == 'server'):
+                url = "/redfish/v1/Managers/bmc/NetworkProtocol/HTTPS/Certificates/1"
+            elif(args.type.lower() == 'client'):
+                url = "/redfish/v1/AccountService/LDAP/Certificates/1"
+            elif(args.type.lower() == 'authority'):
+                url = "/redfish/v1/Managers/bmc/Truststore/Certificates/1"
+            replaceUrl = "https://" + host + \
+                "/redfish/v1/CertificateService/Actions/CertificateService.ReplaceCertificate"
+            data ={"CertificateUri":{"@odata.id":url}, "CertificateType":"PEM",
+                    "CertificateString":cert}
+            resp = session.post(replaceUrl, headers=httpHeader, json=data, verify=False)
+        else:
+            httpHeader = {'Content-Type': 'application/octet-stream'}
+            httpHeader.update(xAuthHeader)
+            url = "https://" + host + "/xyz/openbmc_project/certs/" + \
+                args.type.lower() + "/" + args.service.lower()
+            resp = session.delete(url, headers=httpHeader)
+            resp = session.put(url, headers=httpHeader, data=cert, verify=False)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if resp.status_code != 200:
+        print(resp.text)
+        return "Failed to replace the certificate"
+    else:
+        print("Replace complete.")
+    return resp.text
+
 def enableLDAP(host, args, session):
     """
          Called by the ldap function. Configures LDAP.
@@ -3921,6 +3970,16 @@ def createCommandParser():
     certDelete.add_argument('type', choices=['server', 'client', 'authority'], help="certificate type to delete")
     certDelete.add_argument('service', choices=['https', 'ldap'], help="Service to delete the certificate")
     certDelete.set_defaults(func=certificateDelete)
+
+    certReplace = certMgmt_subproc.add_parser('replace',
+        help="Replace the certificate")
+    certReplace.add_argument('type', choices=['server', 'client', 'authority'],
+        help="certificate type to replace")
+    certReplace.add_argument('service', choices=['https', 'ldap'],
+        help="Service to replace the certificate")
+    certReplace.add_argument('-f', '--fileloc', required=True,
+        help="The absolute path to the certificate file")
+    certReplace.set_defaults(func=certificateReplace)
 
     # local users
     parser_users = subparsers.add_parser("local_users", help="Work with local users")
