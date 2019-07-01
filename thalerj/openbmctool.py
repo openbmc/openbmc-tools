@@ -2713,6 +2713,58 @@ def certificateList(host, args, session):
        print("List certificates complete.")
     return resp.text
 
+def certificateGenerateCSR(host, args, session):
+    """
+        Called by certificate management function. Generate CSR for server/
+        client certificates
+        Example:
+        certificate generatecsr server NJ w3.ibm.com US IBM IBM-UNIT NY EC 2048 prime256v1 cp abc.com an.com,bm.com gn sn un in ClientAuthentication,CodeSigning
+        certificate generatecsr client NJ w3.ibm.com US IBM IBM-UNIT NY EC 2048 prime256v1 cp abc.com an.com,bm.com gn sn un in ClientAuthentication,CodeSigning
+        @param host: string, the hostname or IP address of the bmc
+        @param args: contains additional arguments used by the certificate replace sub command
+        @param session: the active session to use
+    """
+    if not redfishSupportPresent(host, session):
+        return "Not supported";
+
+    httpHeader = {'Content-Type': 'application/octet-stream'}
+    httpHeader.update(xAuthHeader)
+    url = "";
+    if(args.type.lower() == 'server'):
+        url = "/redfish/v1/Managers/bmc/NetworkProtocol/HTTPS/Certificates/"
+    elif(args.type.lower() == 'client'):
+        url = "/redfish/v1/AccountService/LDAP/Certificates/"
+    elif(args.type.lower() == 'authority'):
+        url = "/redfish/v1/Managers/bmc/Truststore/Certificates/"
+    print("Generating CSR url=" + url)
+    generateCSRUrl = "https://" + host + \
+        "/redfish/v1/CertificateService/Actions/CertificateService.GenerateCSR"
+    try:
+        usage_list = args.keyUsage.split(",")
+        alt_name_list = args.alternativeNames.split(",")
+        data ={"CertificateCollection":{"@odata.id":url},
+            "CommonName":args.commonName, "City":args.city,
+            "Country":args.country, "Organization":args.organization,
+            "OrganizationalUnit":args.organizationUnit, "State":args.state,
+            "KeyPairAlgorithm":args.keyPairAlgorithm,
+            "KeyBitLength":int(args.keyBitLength), "KeyCurveId":args.keyCurveId,
+            "AlternativeNames":alt_name_list, "ContactPerson":args.contactPerson,
+            "Email":args.email, "GivenName":args.givenname, "Initials":args.initials,
+            "KeyUsage":usage_list, "Surname":args.surname, 
+            "UnstructuredName":args.unstructuredname}
+        resp = session.post(generateCSRUrl, headers=httpHeader,
+            json=data, verify=False)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+    if resp.status_code != 200:
+        print(resp.text)
+        return "Failed to generate CSR"
+    else:
+       print("GenerateCSR complete.")
+    return resp.text
+
 def enableLDAP(host, args, session):
     """
          Called by the ldap function. Configures LDAP.
@@ -4054,6 +4106,45 @@ def createCommandParser():
     certList = certMgmt_subproc.add_parser('list',
         help="Certificate list")
     certList.set_defaults(func=certificateList)
+
+    certGenerateCSR = certMgmt_subproc.add_parser('generatecsr', help="Generate CSR")
+    certGenerateCSR.add_argument('type', choices=['server', 'client', 'authority'],
+        help="Generate CSR")
+    certGenerateCSR.add_argument('city',
+        help="The city or locality of the organization making the request")
+    certGenerateCSR.add_argument('commonName',
+        help="The fully qualified domain name of the component that is being secured.")
+    certGenerateCSR.add_argument('country',
+        help="The country of the organization making the request")
+    certGenerateCSR.add_argument('organization',
+        help="The name of the organization making the request.")
+    certGenerateCSR.add_argument('organizationUnit',
+        help="The name of the unit or division of the organization making the request.")
+    certGenerateCSR.add_argument('state',
+        help="The state, province, or region of the organization making the request.")
+    certGenerateCSR.add_argument('keyPairAlgorithm',  choices=['RSA', 'EC'],
+        help="The type of key pair for use with signing algorithms.")
+    certGenerateCSR.add_argument('keyBitLength', choices=['2048'],
+        help="The length of the key in bits, if needed based on the value of the 'KeyPairAlgorithm' parameter.")
+    certGenerateCSR.add_argument('keyCurveId',
+        help="The curve ID to be used with the key, if needed based on the value of the 'KeyPairAlgorithm' parameter.")
+    certGenerateCSR.add_argument('contactPerson',
+        help="The name of the user making the request")
+    certGenerateCSR.add_argument('email',
+        help="The email address of the contact within the organization")
+    certGenerateCSR.add_argument('alternativeNames',
+        help="Additional hostnames of the component that is being secured")
+    certGenerateCSR.add_argument('givenname',
+        help="The given name of the user making the request")
+    certGenerateCSR.add_argument('surname',
+        help="The surname of the user making the request")
+    certGenerateCSR.add_argument('unstructuredname',
+        help="he unstructured name of the subject")
+    certGenerateCSR.add_argument('initials',
+        help="The initials of the user making the request")
+    certGenerateCSR.add_argument('keyUsage', help="The usage of the key contained in the certificate")
+
+    certGenerateCSR.set_defaults(func=certificateGenerateCSR)
 
     # local users
     parser_users = subparsers.add_parser("local_users", help="Work with local users")
