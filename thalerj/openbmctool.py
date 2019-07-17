@@ -2580,7 +2580,8 @@ def certificateDelete(host, args, session):
          @param args: contains additional arguments used by the certificate delete sub command
          @param session: the active session to use
     """
-
+    if redfishSupportPresent(host, session):
+        return "Not supported, please use certificate replace instead";
     httpHeader = {'Content-Type': 'multipart/form-data'}
     httpHeader.update(xAuthHeader)
     url = "https://" + host + "/xyz/openbmc_project/certs/" + args.type.lower() + "/" + args.service.lower()
@@ -2595,8 +2596,7 @@ def certificateDelete(host, args, session):
         print(resp.text)
         return "Failed to delete the certificate"
     else:
-       print("Delete complete.")
-
+        print("Delete complete.")
 
 def enableLDAP(host, args, session):
     """
