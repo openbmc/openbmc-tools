@@ -2779,7 +2779,56 @@ def enableLDAP(host, args, session):
             be provided in json format for programmatic consumption
     """
 
+    if(isRedfishSupport):
+        return enableLDAP(host, args, session)
+    else:
+        return enableLegacyLDAP(host, args, session)
+
+def enableLegacyLDAP(host, args, session):
+    """
+         Called by the ldap function. Configures LDAP on Lagecy systems.
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will
+            be provided in json format for programmatic consumption
+    """
+
     url='https://'+host+'/xyz/openbmc_project/user/ldap/action/CreateConfig'
+    scope = {
+             'sub' : 'xyz.openbmc_project.User.Ldap.Create.SearchScope.sub',
+             'one' : 'xyz.openbmc_project.User.Ldap.Create.SearchScope.one',
+             'base': 'xyz.openbmc_project.User.Ldap.Create.SearchScope.base'
+            }
+
+    serverType = {
+             'ActiveDirectory' : 'xyz.openbmc_project.User.Ldap.Create.Type.ActiveDirectory',
+             'OpenLDAP' : 'xyz.openbmc_project.User.Ldap.Create.Type.OpenLdap'
+            }
+
+    data = {"data": [args.uri, args.bindDN, args.baseDN, args.bindPassword, scope[args.scope], serverType[args.serverType]]}
+
+    try:
+        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+    return res.text
+
+def enableLDAP(host, args, session):
+    """
+         Called by the ldap function. Configures LDAP for systems with latest user-manager design changes
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the ldap subcommand
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will
+            be provided in json format for programmatic consumption
+    """
+
     scope = {
              'sub' : 'xyz.openbmc_project.User.Ldap.Create.SearchScope.sub',
              'one' : 'xyz.openbmc_project.User.Ldap.Create.SearchScope.one',
@@ -2794,13 +2843,90 @@ def enableLDAP(host, args, session):
     data = {"data": [args.uri, args.bindDN, args.baseDN, args.bindPassword, scope[args.scope], serverType[args.serverType]]}
 
     try:
-        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        data = {"data": args.baseDN}
+        res = session.put(url + serverTypeMap[serverTypeToBeEnabled] + '/attr/LDAPBaseDN', headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        if (res.status_code != requests.codes.ok):
+            print("Updates to the property LDAPBaseDN failed...")
+            return(res.text)
+
+        data = {"data": args.bindDN}
+        res = session.put(url + serverTypeMap[serverTypeToBeEnabled] + '/attr/LDAPBindDN', headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        if (res.status_code != requests.codes.ok):
+           print("Updates to the property LDAPBindDN failed...")
+           return(res.text)
+
+        data = {"data": args.bindPassword}
+        res = session.put(url + serverTypeMap[serverTypeToBeEnabled] + '/attr/LDAPBindDNPassword', headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        if (res.status_code != requests.codes.ok):
+           print("Updates to the property LDAPBindDNPassword failed...")
+           return(res.text)
+
+        data = {"data": scope[args.scope]}
+        res = session.put(url + serverTypeMap[serverTypeToBeEnabled] + '/attr/LDAPSearchScope', headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        if (res.status_code != requests.codes.ok):
+           print("Updates to the property LDAPSearchScope failed...")
+           return(res.text)
+
+        data = {"data": args.uri}
+        res = session.put(url + serverTypeMap[serverTypeToBeEnabled] + '/attr/LDAPServerURI', headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        if (res.status_code != requests.codes.ok):
+           print("Updates to the property LDAPServerURI failed...")
+           return(res.text)
+
+        data = {"data": args.groupAttrName}
+        res = session.put(url + serverTypeMap[serverTypeToBeEnabled] + '/attr/GroupNameAttribute', headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        if (res.status_code != requests.codes.ok):
+           print("Updates to the property GroupNameAttribute failed...")
+           return(res.text)
+
+        data = {"data": args.userAttrName}
+        res = session.put(url + serverTypeMap[serverTypeToBeEnabled] + '/attr/UserNameAttribute', headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        if (res.status_code != requests.codes.ok):
+           print("Updates to the property UserNameAttribute failed...")
+           return(res.text)
+
+        #After updating the properties, enable the given server
+        data = "{\"data\": 1 }"
+        res = session.put(url + serverTypeMap[serverTypeToBeEnabled] + '/attr/Enabled', headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
+
+        roleMapExistForToBeEnabled = False
+
+        #Check for the existence of role map for the newly enabled server type
+        data = {"data": []}
+        res = session.get(url + serverTypeMap[serverTypeToBeEnabled] + '/role_map/enumerate', headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        if (res.status_code != 404):
+            objDict = json.loads(res.text) 
+            if (objDict['data']):
+                roleMapExistForToBeEnabled = True
+                return("Role map exists for the server type " + serverTypeToBeEnabled)
+
+        #If the group name-privilege mapping does not exist for the newly enabled server type, then
+        #copy it from the previously enabled server type (provided a different server type was previously enabled and
+        #it has role mapping)
+        rules = [   roleMapExistForToBeEnabled == False,  
+                    serverTypeEnabled is not None,
+                    serverTypeToBeEnabled != serverTypeEnabled]
+        if all(rules):
+            data = {"data": []}
+            res = session.get(url + serverTypeMap[serverTypeEnabled] + '/role_map/enumerate', headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+            #Previously enabled server type has no role map
+            if (res.status_code != requests.codes.ok):
+                return("Server type " + serverTypeToBeEnabled + " has been enabled. Create role map before using it...")
+
+            objDict = json.loads(res.text) 
+            dataDict = objDict['data']
+            for  key,value in dataDict.items():
+                data = {"data": [value["GroupName"], value["Privilege"]]}
+                res = session.post(url + serverTypeMap[serverTypeToBeEnabled] + '/action/Create', headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
+        else:
+            #A different server type was not enabled before enabling the current server type
+            return("Server type " + serverTypeToBeEnabled + " has been enabled. Create role map before using it...")
+
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
-
-    return res.text
+    return res.txt
 
 
 def disableLDAP(host, args, session):
@@ -2814,18 +2940,36 @@ def disableLDAP(host, args, session):
             will be provided in json format for programmatic consumption
     """
 
-    url='https://'+host+'/xyz/openbmc_project/user/ldap/config/action/delete'
-    data = {"data": []}
+    if (isRedfishSupport) :
 
-    try:
-        res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
-    except(requests.exceptions.Timeout):
-        return(connectionErrHandler(args.json, "Timeout", None))
-    except(requests.exceptions.ConnectionError) as err:
-        return connectionErrHandler(args.json, "ConnectionError", err)
+        url = "https://"+host+"/xyz/openbmc_project/user/ldap/"
+
+        serverTypeEnabled = getLDAPTypeEnabled(host,session)
+
+        if (serverTypeEnabled is not None):
+            try:
+                data = "{\"data\": 0 }"
+                res = session.put(url + serverTypeMap[serverTypeEnabled] + '/attr/Enabled', headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
+            except(requests.exceptions.Timeout):
+                return(connectionErrHandler(args.json, "Timeout", None))
+            except(requests.exceptions.ConnectionError) as err:
+                return connectionErrHandler(args.json, "ConnectionError", err)
+        else:
+            return("LDAP server has not been enabled...")
+
+
+    else :
+        url='https://'+host+'/xyz/openbmc_project/user/ldap/config/action/delete'
+        data = {"data": []}
+
+        try:
+            res = session.post(url, headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+        except(requests.exceptions.Timeout):
+            return(connectionErrHandler(args.json, "Timeout", None))
+        except(requests.exceptions.ConnectionError) as err:
+            return connectionErrHandler(args.json, "ConnectionError", err)
 
     return res.text
-
 
 def enableDHCP(host, args, session):
 
@@ -3511,16 +3655,38 @@ def createPrivilegeMapping(host, args, session):
                 will be provided in json format for programmatic consumption
     """
 
-    url = 'https://'+host+'/xyz/openbmc_project/user/ldap/action/Create'
+    if (isRedfishSupport):
+        url = 'https://'+host+'/xyz/openbmc_project/user/ldap/'
 
-    data = {"data": [args.groupName,args.privilege]}
+        #To maintain the interface compatibility between op930 and op940, the server type has been made
+        #optional. If the server type is not specified, then create the role-mapper for the currently
+        #enabled server type.
+        serverType = args.serverType
+        if (serverType is None):
+            serverType = getLDAPTypeEnabled(host,session)
+            if (serverType is None):
+                return("LDAP server has not been enabled. Please specify LDAP serverType to proceed further...")
 
-    try:
-        res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
-    except(requests.exceptions.Timeout):
-        return(connectionErrHandler(args.json, "Timeout", None))
-    except(requests.exceptions.ConnectionError) as err:
-        return connectionErrHandler(args.json, "ConnectionError", err)
+        data = {"data": [args.groupName,args.privilege]}
+
+        try:
+            res = session.post(url + serverTypeMap[serverType] + '/action/Create', headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
+        except(requests.exceptions.Timeout):
+            return(connectionErrHandler(args.json, "Timeout", None))
+        except(requests.exceptions.ConnectionError) as err:
+            return connectionErrHandler(args.json, "ConnectionError", err)
+
+    else:
+        url = 'https://'+host+'/xyz/openbmc_project/user/ldap/action/Create'
+
+        data = {"data": [args.groupName,args.privilege]}
+
+        try:
+            res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
+        except(requests.exceptions.Timeout):
+            return(connectionErrHandler(args.json, "Timeout", None))
+        except(requests.exceptions.ConnectionError) as err:
+            return connectionErrHandler(args.json, "ConnectionError", err)
     return res.text
 
 def listPrivilegeMapping(host, args, session):
@@ -3533,7 +3699,19 @@ def listPrivilegeMapping(host, args, session):
          @param args.json: boolean, if this flag is set to true, the output
                 will be provided in json format for programmatic consumption
     """
-    url = 'https://'+host+'/xyz/openbmc_project/user/ldap/enumerate'
+
+    if (isRedfishSupport):
+        serverType = args.serverType
+        if (serverType is None):
+            serverType = getLDAPTypeEnabled(host,session)
+            if (serverType is None):
+                return("LDAP has not been enabled. Please specify LDAP serverType to proceed further...")
+
+        url = 'https://'+host+'/xyz/openbmc_project/user/ldap/'+serverTypeMap[serverType]+'/role_map/enumerate'
+
+    else:
+        url = 'https://'+host+'/xyz/openbmc_project/user/ldap/enumerate'
+
     data = {"data": []}
 
     try:
@@ -3542,6 +3720,7 @@ def listPrivilegeMapping(host, args, session):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
+
     return res.text
 
 def deletePrivilegeMapping(host, args, session):
@@ -3554,25 +3733,45 @@ def deletePrivilegeMapping(host, args, session):
          @param args.json: boolean, if this flag is set to true, the output
                 will be provided in json format for programmatic consumption
     """
-    (ldapNameSpaceObjects) = listPrivilegeMapping(host, args, session)
+
+    ldapNameSpaceObjects = listPrivilegeMapping(host, args, session)
     ldapNameSpaceObjects = json.loads(ldapNameSpaceObjects)["data"]
     path = ''
-
-    # not interested in the config objet
-    ldapNameSpaceObjects.pop('/xyz/openbmc_project/user/ldap/config', None)
-
-    # search for the object having the mapping for the given group
-    for key,value in ldapNameSpaceObjects.items():
-        if value['GroupName'] == args.groupName:
-            path = key
-            break
-
-    if path == '':
-        return "No privilege mapping found for this group."
-
-    # delete the object
-    url = 'https://'+host+path+'/action/delete'
     data = {"data": []}
+
+    if (isRedfishSupport):
+        if (args.serverType is None):
+            serverType = getLDAPTypeEnabled(host,session)
+            if (serverType is None):
+                return("LDAP has not been enabled. Please specify LDAP serverType to proceed further...")
+
+        # search for the object having the mapping for the given group
+        for key,value in ldapNameSpaceObjects.items():
+            if value['GroupName'] == args.groupName:
+                path = key
+                break
+
+        if path == '':
+            return "No privilege mapping found for this group."
+
+        # delete the object
+        url = 'https://'+host+path+'/action/Delete'
+
+    else:
+        # not interested in the config objet
+        ldapNameSpaceObjects.pop('/xyz/openbmc_project/user/ldap/config', None)
+
+        # search for the object having the mapping for the given group
+        for key,value in ldapNameSpaceObjects.items():
+            if value['GroupName'] == args.groupName:
+                path = key
+                break
+
+        if path == '':
+            return "No privilege mapping found for this group."
+
+        # delete the object
+        url = 'https://'+host+path+'/action/delete'
 
     try:
         res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
@@ -3591,13 +3790,21 @@ def deleteAllPrivilegeMapping(host, args, session):
          @param args.json: boolean, if this flag is set to true, the output
                 will be provided in json format for programmatic consumption
     """
+
     ldapNameSpaceObjects = listPrivilegeMapping(host, args, session)
     ldapNameSpaceObjects = json.loads(ldapNameSpaceObjects)["data"]
     path = ''
-
-    # Remove the config object.
-    ldapNameSpaceObjects.pop('/xyz/openbmc_project/user/ldap/config', None)
     data = {"data": []}
+
+    if (isRedfishSupport):
+        if (args.serverType is None):
+            serverType = getLDAPTypeEnabled(host,session)
+            if (serverType is None):
+                return("LDAP has not been enabled. Please specify LDAP serverType to proceed further...")
+
+    else:
+        # Remove the config object.
+        ldapNameSpaceObjects.pop('/xyz/openbmc_project/user/ldap/config', None)
 
     try:
         # search for GroupName property and delete if it is available.
@@ -3605,6 +3812,7 @@ def deleteAllPrivilegeMapping(host, args, session):
             # delete the object
             url = 'https://'+host+path+'/action/delete'
             res = session.post(url, headers=jsonHeader, json = data, verify=False, timeout=baseTimeout)
+
     except(requests.exceptions.Timeout):
         return(connectionErrHandler(args.json, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -3622,17 +3830,38 @@ def viewLDAPConfig(host, args, session):
          @param session: the active session to use
          @return returns LDAP's configured properties.
     """
-    url = "https://"+host+"/xyz/openbmc_project/user/ldap/config"
-    try:
-        res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
-    except(requests.exceptions.Timeout):
-        return(connectionErrHandler(args.json, "Timeout", None))
-    except(requests.exceptions.ConnectionError) as err:
-        return connectionErrHandler(args.json, "ConnectionError", err)
-    except(requests.exceptions.RequestException) as err:
-        return connectionErrHandler(args.json, "RequestException", err)
-    if res.status_code == 404:
-        return "LDAP server config has not been created"
+
+    if (isRedfishSupport):
+
+        url = "https://"+host+"/xyz/openbmc_project/user/ldap/"
+
+        serverTypeEnabled = getLDAPTypeEnabled(host,session)
+
+        if (serverTypeEnabled is not None):
+            try:
+                data = {"data": []}
+                res = session.get(url + serverTypeMap[serverTypeEnabled], headers=jsonHeader, json=data, verify=False, timeout=baseTimeout)
+            except(requests.exceptions.Timeout):
+                return(connectionErrHandler(args.json, "Timeout", None))
+            except(requests.exceptions.ConnectionError) as err:
+                return connectionErrHandler(args.json, "ConnectionError", err)
+            except(requests.exceptions.RequestException) as err:
+                return connectionErrHandler(args.json, "RequestException", err)
+        else:
+            return("LDAP server has not been enabled...")
+
+    else :
+        url = "https://"+host+"/xyz/openbmc_project/user/ldap/config"
+        try:
+            res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
+        except(requests.exceptions.Timeout):
+            return(connectionErrHandler(args.json, "Timeout", None))
+        except(requests.exceptions.ConnectionError) as err:
+            return connectionErrHandler(args.json, "ConnectionError", err)
+        except(requests.exceptions.RequestException) as err:
+            return connectionErrHandler(args.json, "RequestException", err)
+        if res.status_code == 404:
+            return "LDAP server config has not been created"
     return res.text
 
 def str2bool(v):
@@ -4171,6 +4400,9 @@ def createCommandParser():
             help='Specifies the search scope:subtree, one level or base object.')
     parser_ldap_config.add_argument("-t", "--serverType", choices=['ActiveDirectory','OpenLDAP'],
             help='Specifies the configured server is ActiveDirectory(AD) or OpenLdap')
+    parser_ldap_config.add_argument("-g","--groupAttrName", required=False, default='', help="Group Attribute Name")
+    parser_ldap_config.add_argument("-u","--userAttrName", required=False, default='', help="User Attribute Name")
+
     parser_ldap_config.set_defaults(func=enableLDAP)
 
     # disable LDAP
@@ -4188,6 +4420,9 @@ def createCommandParser():
             help="sub-command help", dest='command')
 
     parser_ldap_mapper_create = parser_ldap_mapper_sub.add_parser("create", help="Create mapping of ldap group and privilege")
+
+    parser_ldap_mapper_create.add_argument("-t", "--serverType", choices=['ActiveDirectory','OpenLDAP'],
+            help='Specifies the configured server is ActiveDirectory(AD) or OpenLdap')
     parser_ldap_mapper_create.add_argument("-g","--groupName",required=True,help="Group Name")
     parser_ldap_mapper_create.add_argument("-p","--privilege",choices=['priv-admin','priv-user'],required=True,help="Privilege")
     parser_ldap_mapper_create.set_defaults(func=createPrivilegeMapping)
@@ -4467,6 +4702,8 @@ def main(argv=None):
     """
     global toolVersion
     toolVersion = "1.15"
+    global isRedfishSupport
+
     parser = createCommandParser()
     args = parser.parse_args(argv)
 
@@ -4504,6 +4741,8 @@ def main(argv=None):
                     print(mysess)
                     sys.exit(1)
             logintimeStop = int(round(time.time()*1000))
+
+            isRedfishSupport = redfishSupportPresent(args.host,mysess)
 
             commandTimeStart = int(round(time.time()*1000))
             output = args.func(args.host, args, mysess)
