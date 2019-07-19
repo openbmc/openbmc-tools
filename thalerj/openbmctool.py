@@ -3714,10 +3714,17 @@ def setPassword(host, args, session):
                 will be provided in json format for programmatic consumption
          @return: Session object
     """
-    url = "https://" + host + "/xyz/openbmc_project/user/" + args.user + \
-        "/action/SetPassword"
     try:
-        res = session.post(url, headers=jsonHeader,
+        if(isRedfishSupport):
+            url = "https://" + host + "/redfish/v1/AccountService/Accounts/"+ \
+                  args.user
+            data = {"Password":args.password}
+            res = session.patch(url, headers=jsonHeader, json=data,
+                                verify=False, timeout=baseTimeout)
+        else:
+            url = "https://" + host + "/xyz/openbmc_project/user/" + args.user + \
+                "/action/SetPassword"
+            res = session.post(url, headers=jsonHeader,
                            json={"data": [args.password]}, verify=False,
                            timeout=baseTimeout)
     except(requests.exceptions.Timeout):
@@ -3726,8 +3733,7 @@ def setPassword(host, args, session):
         return connectionErrHandler(args.json, "ConnectionError", err)
     except(requests.exceptions.RequestException) as err:
         return connectionErrHandler(args.json, "RequestException", err)
-    return res.text
-
+    return res.status_code
 
 def getThermalZones(host, args, session):
     """
@@ -4467,6 +4473,7 @@ def main(argv=None):
     """
     global toolVersion
     toolVersion = "1.15"
+    global isRedfishSupport
     parser = createCommandParser()
     args = parser.parse_args(argv)
 
@@ -4504,7 +4511,7 @@ def main(argv=None):
                     print(mysess)
                     sys.exit(1)
             logintimeStop = int(round(time.time()*1000))
-
+            isRedfishSupport = redfishSupportPresent(args.host,mysess)
             commandTimeStart = int(round(time.time()*1000))
             output = args.func(args.host, args, mysess)
             commandTimeStop = int(round(time.time()*1000))
