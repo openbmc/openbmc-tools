@@ -252,6 +252,19 @@ def checkFWactivation(host, args, session):
                 return True
     return False
 
+def redfishSupportPresent(host, session):
+    url = "https://" + host + "/redfish/v1"
+    try:
+        resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
+    except(requests.exceptions.Timeout):
+        return False
+    except(requests.exceptions.ConnectionError) as err:
+        return False
+    if resp.status_code != 200:
+        return False
+    else:
+       return True
+
 def login(host, username, pw,jsonFormat):
     """
          Logs into the BMC and creates a session
@@ -3518,20 +3531,38 @@ def setPassword(host, args, session):
                 will be provided in json format for programmatic consumption
          @return: Session object
     """
-    url = "https://" + host + "/xyz/openbmc_project/user/" + args.user + \
-        "/action/SetPassword"
-    try:
-        res = session.post(url, headers=jsonHeader,
+    if(isRedfishSupport):
+        try:
+            url = "https://" + host + "/redfish/v1/AccountService/Accounts/"+ \
+                  args.user
+            data = {"Password":args.password}
+            response = session.patch(url, headers=jsonHeader, json=data,
+                                     verify=False, timeout=baseTimeout)
+        except(requests.exceptions.Timeout):
+            return(connectionErrHandler(args.json, "Timeout", None))
+        except(requests.exceptions.ConnectionError) as err:
+            return connectionErrHandler(args.json, "ConnectionError", err)
+        except(requests.exceptions.RequestException) as err:
+            return connectionErrHandler(args.json, "RequestException", err)
+        if response.status_code != 200:
+            print(response.status_code)
+            return False
+        else:
+            return True
+    else:
+        try:
+            url = "https://" + host + "/xyz/openbmc_project/user/" + args.user + \
+                "/action/SetPassword"
+            res = session.post(url, headers=jsonHeader,
                            json={"data": [args.password]}, verify=False,
                            timeout=baseTimeout)
-    except(requests.exceptions.Timeout):
-        return(connectionErrHandler(args.json, "Timeout", None))
-    except(requests.exceptions.ConnectionError) as err:
-        return connectionErrHandler(args.json, "ConnectionError", err)
-    except(requests.exceptions.RequestException) as err:
-        return connectionErrHandler(args.json, "RequestException", err)
-    return res.text
-
+        except(requests.exceptions.Timeout):
+            return(connectionErrHandler(args.json, "Timeout", None))
+        except(requests.exceptions.ConnectionError) as err:
+            return connectionErrHandler(args.json, "ConnectionError", err)
+        except(requests.exceptions.RequestException) as err:
+            return connectionErrHandler(args.json, "RequestException", err)
+        return res.text
 
 def getThermalZones(host, args, session):
     """
@@ -4211,6 +4242,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application
     """
     global toolVersion
+    global isRedfishSupport
     toolVersion = "1.14"
     parser = createCommandParser()
     args = parser.parse_args(argv)
@@ -4249,7 +4281,7 @@ def main(argv=None):
                     print(mysess)
                     sys.exit(1)
             logintimeStop = int(round(time.time()*1000))
-
+            isRedfishSupport = redfishSupportPresent(args.host,mysess)
             commandTimeStart = int(round(time.time()*1000))
             output = args.func(args.host, args, mysess)
             commandTimeStop = int(round(time.time()*1000))
