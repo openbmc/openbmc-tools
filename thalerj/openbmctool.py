@@ -267,21 +267,23 @@ def login(host, username, pw,jsonFormat):
     mysess = requests.session()
     try:
         r = mysess.post('https://'+host+'/login', headers=jsonHeader, json = {"data": [username, pw]}, verify=False, timeout=baseTimeout)
-
-        cookie = r.headers['Set-Cookie']
-        match = re.search('SESSION=(\w+);', cookie)
-        if match:
-            xAuthHeader['X-Auth-Token'] = match.group(1)
-            jsonHeader.update(xAuthHeader)
-        loginMessage = json.loads(r.text)
-        if (loginMessage['status'] != "ok"):
-            print(loginMessage["data"]["description"].encode('utf-8'))
-            sys.exit(1)
+        if r.status_code == 200:
+            cookie = r.headers['Set-Cookie']
+            match = re.search('SESSION=(\w+);', cookie)
+            if match:
+                xAuthHeader['X-Auth-Token'] = match.group(1)
+                jsonHeader.update(xAuthHeader)
+            loginMessage = json.loads(r.text)
+            if (loginMessage['status'] != "ok"):
+                print(loginMessage["data"]["description"].encode('utf-8'))
+                sys.exit(1)
 #         if(sys.version_info < (3,0)):
 #             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 #         if sys.version_info >= (3,0):
 #             requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
-        return mysess
+            return mysess
+        else:
+            return None
     except(requests.exceptions.Timeout):
         return (connectionErrHandler(jsonFormat, "Timeout", None))
     except(requests.exceptions.ConnectionError) as err:
@@ -4502,6 +4504,9 @@ def main(argv=None):
                 sys.exit()
             logintimeStart = int(round(time.time()*1000))
             mysess = login(args.host, args.user, pw, args.json)
+            if(mysess == None):
+                print("Login Failed!")
+                sys.exit()
             if(sys.version_info < (3,0)):
                 if isinstance(mysess, basestring):
                     print(mysess)
