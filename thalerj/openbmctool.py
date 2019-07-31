@@ -2760,8 +2760,8 @@ def getDomainName(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 404:
-        return "The specified Interface"+"("+args.Interface+")"+\
-        " doesn't exist"
+        return "The specified parameter does not exist on the interface"+"("+\
+               args.Interface+")"
 
     return res.text
 
@@ -3138,19 +3138,22 @@ def deleteIP(host, args, session):
         return "No object found for given address on given Interface"
 
     for obj in objDict['data']:
-        if args.address in objDict['data'][obj]['Address']:
-            url = "https://"+host+obj+"/action/delete"
-            try:
-                res = session.post(url, headers=jsonHeader, json=data,
-                                   verify=False, timeout=baseTimeout)
-            except(requests.exceptions.Timeout):
-                return(connectionErrHandler(args.json, "Timeout", None))
-            except(requests.exceptions.ConnectionError) as err:
-                return connectionErrHandler(args.json, "ConnectionError", err)
-            return res.text
-        else:
-            continue
-    return "No object found for given address on given Interface"
+        try:
+            if args.address in objDict['data'][obj]['Address']:
+                url = "https://"+host+obj+"/action/Delete"
+                try:
+                    res = session.post(url, headers=jsonHeader, json=data,
+                                       verify=False, timeout=baseTimeout)
+                except(requests.exceptions.Timeout):
+                    return(connectionErrHandler(args.json, "Timeout", None))
+                except(requests.exceptions.ConnectionError) as err:
+                    return connectionErrHandler(args.json, "ConnectionError", err)
+                return res.text
+            else:
+                continue
+        except KeyError:
+            return "No object found for address " + args.address + \
+                    " on Interface(" + args.Interface + ")"
 
 
 def addVLAN(host, args, session):
@@ -3166,8 +3169,7 @@ def addVLAN(host, args, session):
 
     url = "https://" + host+"/xyz/openbmc_project/network/action/VLAN"
 
-    data = {"data": [args.Interface,args.Identifier]}
-
+    data = {"data": [args.Interface,int(args.Identifier)]}
     try:
         res = session.post(url, headers=jsonHeader, json=data, verify=False,
                            timeout=baseTimeout)
@@ -3176,8 +3178,8 @@ def addVLAN(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 400:
-        return "The specified Interface" + "(" + args.Interface + ")" +\
-            " doesn't exist"
+        return "Adding VLAN to interface" + "(" + args.Interface + ")" +\
+            " failed"
 
     return res.text
 
@@ -4121,7 +4123,8 @@ def createCommandParser():
                                   help="The gateway for given interface")
     parser_ip_config.add_argument("-l", "--prefixLength", required=True,
                                   help="The prefixLength of IP address")
-    parser_ip_config.add_argument("-p", "--type", choices=['ipv4', 'ipv6'],
+    parser_ip_config.add_argument("-p", "--type", required=True,
+                                  choices=['ipv4', 'ipv6'],
                                   help="The protocol type of the given"
                                   "IP address")
     parser_ip_config.add_argument("-I", "--Interface", required=True,
