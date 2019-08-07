@@ -1,0 +1,10 @@
+Code-Review+1: ManojKiran Eda <manojkiran.eda@gmail.com>
+Code-Review+1: Justin Thaler <thalerj@us.ibm.com>
+Code-Review+1: Ratan Gupta <ratagupt@linux.vnet.ibm.com>
+Code-Review+2: Andrew Geissler <geissonator@yahoo.com>
+Verified+1: Andrew Geissler <geissonator@yahoo.com>
+Submitted-by: Andrew Geissler <geissonator@yahoo.com>
+Submitted-at: Wed, 07 Aug 2019 12:49:47 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/openbmc-tools/+/23666
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
