@@ -3393,7 +3393,7 @@ def deleteVLAN(host, args, session):
         @param session: the active session to use
     """
 
-    url = "https://" + host+"/xyz/openbmc_project/network/"+args.Interface+"/action/delete"
+    url = "https://" + host+"/xyz/openbmc_project/network/"+args.Interface+"/action/Delete"
     data = {"data": []}
 
     try:
@@ -3403,8 +3403,7 @@ def deleteVLAN(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 404:
-        return "The specified VLAN"+"("+args.Interface+"_"+args.Identifier\
-            +")" +" doesn't exist"
+        return "The specified VLAN"+"("+args.Interface+")" +" doesn't exist"
 
     return res.text
 
