@@ -2721,8 +2721,8 @@ def certificateGenerateCSR(host, args, session):
         Called by certificate management function. Generate CSR for server/
         client certificates
         Example:
-        certificate generatecsr server NJ w3.ibm.com US IBM IBM-UNIT NY EC 2048 prime256v1 cp abc.com an.com,bm.com gn sn un in ClientAuthentication,CodeSigning
-        certificate generatecsr client NJ w3.ibm.com US IBM IBM-UNIT NY EC 2048 prime256v1 cp abc.com an.com,bm.com gn sn un in ClientAuthentication,CodeSigning
+        certificate generatecsr server NJ w3.ibm.com US IBM IBM-UNIT NY EC 2048 prime256v1 cp abc.com an.com,bm.com gn sn un in
+        certificate generatecsr client NJ w3.ibm.com US IBM IBM-UNIT NY EC 2048 prime256v1 cp abc.com an.com,bm.com gn sn un in
         @param host: string, the hostname or IP address of the bmc
         @param args: contains additional arguments used by the certificate replace sub command
         @param session: the active session to use
@@ -2735,15 +2735,16 @@ def certificateGenerateCSR(host, args, session):
     url = "";
     if(args.type.lower() == 'server'):
         url = "/redfish/v1/Managers/bmc/NetworkProtocol/HTTPS/Certificates/"
+        usage_list = ["ServerAuthentication"]
     elif(args.type.lower() == 'client'):
         url = "/redfish/v1/AccountService/LDAP/Certificates/"
+        usage_list = ["ClientAuthentication"]
     elif(args.type.lower() == 'authority'):
         url = "/redfish/v1/Managers/bmc/Truststore/Certificates/"
     print("Generating CSR url=" + url)
     generateCSRUrl = "https://" + host + \
         "/redfish/v1/CertificateService/Actions/CertificateService.GenerateCSR"
     try:
-        usage_list = args.keyUsage.split(",")
         alt_name_list = args.alternativeNames.split(",")
         data ={"CertificateCollection":{"@odata.id":url},
             "CommonName":args.commonName, "City":args.city,
@@ -4153,8 +4154,6 @@ def createCommandParser():
         help="he unstructured name of the subject")
     certGenerateCSR.add_argument('initials',
         help="The initials of the user making the request")
-    certGenerateCSR.add_argument('keyUsage', help="The usage of the key contained in the certificate")
-
     certGenerateCSR.set_defaults(func=certificateGenerateCSR)
 
     # local users
