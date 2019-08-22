@@ -2543,6 +2543,12 @@ def certificateUpdate(host, args, session):
     data = open(args.fileloc, 'rb').read()
     try:
         if redfishSupportPresent(host, session):
+            if(args.type.lower() == 'server' and args.service.lower() != "https"):
+                return "Invalid service type"
+            if(args.type.lower() == 'client' and args.service.lower() != "ldap"):
+                return "Invalid service type"
+            if(args.type.lower() == 'authority' and args.service.lower() != "ldap"):
+                return "Invalid service type"
             url = "";
             if(args.type.lower() == 'server'):
                 url = "https://" + host + \
@@ -2619,6 +2625,12 @@ def certificateReplace(host, args, session):
             httpHeader = {'Content-Type': 'application/json'}
             httpHeader.update(xAuthHeader)
             url = "";
+            if(args.type.lower() == 'server' and args.service.lower() != "https"):
+                return "Invalid service type"
+            if(args.type.lower() == 'client' and args.service.lower() != "ldap"):
+                return "Invalid service type"
+            if(args.type.lower() == 'authority' and args.service.lower() != "ldap"):
+                return "Invalid service type"
             if(args.type.lower() == 'server'):
                 url = "/redfish/v1/Managers/bmc/NetworkProtocol/HTTPS/Certificates/1"
             elif(args.type.lower() == 'client'):
