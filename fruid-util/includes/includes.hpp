@@ -8,6 +8,7 @@
 #define __INCLUDES_HPP__
 
 #include <iostream>
+#include <iomanip>
 #include <pthread.h>
 #include <sdbusplus/asio/connection.hpp>
 #include <sdbusplus/asio/object_server.hpp>
@@ -63,13 +64,14 @@
 #define EXITCODE_FAILURE (1)
 #define EXITCODE_INVALID_USAGE (2)
 #define EXITCODE_CANT_GET_MANAGED_OBJECTS (3)
+#define EXITCODE_CANT_OPEN_KEYWORD_MAPPING (4)
+#define EXITCODE_CANT_READ_KEYWORD_MAPPING (5)
+#define EXITCODE_CANT_CLOSE_KEYWORD_MAPPING (6)
 
 
-namespace GetManagedObjectsResponse {
 
-// AnyTypeMap - the inner most level of the GetManagedObject response from FRUDevice returns a FRU property key, paired with its value
 
-typedef sdbusplus::message::variant< std::string,
+using AnyType = sdbusplus::message::variant< std::string,
                                      bool,
                                      uint8_t,
                                      int16_t,
@@ -79,12 +81,12 @@ typedef sdbusplus::message::variant< std::string,
                                      int64_t,
                                      uint64_t,
                                      double,
-                                     std::vector<std::string>> AnyType;
+                                     std::vector<std::string>>;
 
-typedef boost::container::flat_map< std::string, AnyType> AnyTypeMap;
-typedef std::vector<std::pair<std::string, AnyTypeMap>> NamedArrayOfAnyTypeMaps;
-typedef std::vector<std::pair<sdbusplus::message::object_path, NamedArrayOfAnyTypeMaps>> ArrayOfObjectPathsAndTieredAnyTypeMaps; 
-};
+using AnyTypeMap = boost::container::flat_map< std::string, AnyType>;
+using NamedArrayOfAnyTypeMaps = std::vector<std::pair<std::string, AnyTypeMap>>;
+using ArrayOfObjectPathsAndTieredAnyTypeMaps = std::vector<std::pair<sdbusplus::message::object_path, NamedArrayOfAnyTypeMaps>>; 
+
 
 #endif  // __INCLUDES_HPP__
 
