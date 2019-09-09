@@ -2739,8 +2739,8 @@ def certificateGenerateCSR(host, args, session):
         Called by certificate management function. Generate CSR for server/
         client certificates
         Example:
-        certificate generatecsr server NJ w3.ibm.com US IBM IBM-UNIT NY EC 2048 prime256v1 cp abc.com an.com,bm.com gn sn un in
-        certificate generatecsr client NJ w3.ibm.com US IBM IBM-UNIT NY EC 2048 prime256v1 cp abc.com an.com,bm.com gn sn un in
+        certificate generatecsr server NJ w3.ibm.com US IBM IBM-UNIT NY EC prime256v1 cp abc.com an.com,bm.com gn sn un in
+        certificate generatecsr client NJ w3.ibm.com US IBM IBM-UNIT NY EC prime256v1 cp abc.com an.com,bm.com gn sn un in
         @param host: string, the hostname or IP address of the bmc
         @param args: contains additional arguments used by the certificate replace sub command
         @param session: the active session to use
@@ -2768,8 +2768,7 @@ def certificateGenerateCSR(host, args, session):
             "CommonName":args.commonName, "City":args.city,
             "Country":args.country, "Organization":args.organization,
             "OrganizationalUnit":args.organizationUnit, "State":args.state,
-            "KeyPairAlgorithm":args.keyPairAlgorithm,
-            "KeyBitLength":int(args.keyBitLength), "KeyCurveId":args.keyCurveId,
+            "KeyPairAlgorithm":args.keyPairAlgorithm, "KeyCurveId":args.keyCurveId,
             "AlternativeNames":alt_name_list, "ContactPerson":args.contactPerson,
             "Email":args.email, "GivenName":args.givenname, "Initials":args.initials,
             "KeyUsage":usage_list, "Surname":args.surname,
@@ -4429,8 +4428,6 @@ def createCommandParser():
         help="The state, province, or region of the organization making the request.")
     certGenerateCSR.add_argument('keyPairAlgorithm',  choices=['RSA', 'EC'],
         help="The type of key pair for use with signing algorithms.")
-    certGenerateCSR.add_argument('keyBitLength', choices=['2048'],
-        help="The length of the key in bits, if needed based on the value of the 'KeyPairAlgorithm' parameter.")
     certGenerateCSR.add_argument('keyCurveId',
         help="The curve ID to be used with the key, if needed based on the value of the 'KeyPairAlgorithm' parameter.")
     certGenerateCSR.add_argument('contactPerson',
