@@ -3107,8 +3107,7 @@ def getDomainName(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 404:
-        return "The specified Interface"+"("+args.Interface+")"+\
-        " doesn't exist"
+        return "The DomainName is not configured on Interface"+"("+args.Interface+")"
 
     return res.text
 
@@ -3302,8 +3301,7 @@ def getDNS(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 404:
-        return "The specified Interface"+"("+args.Interface+")" + \
-            " doesn't exist"
+        return "The NameServer is not configured on Interface"+"("+args.Interface+")"
 
     return res.text
 
@@ -3352,7 +3350,6 @@ def getNTP(host, args, session):
 
     url = "https://" + host + "/xyz/openbmc_project/network/" + args.Interface\
         + "/attr/NTPServers"
-
     try:
         res = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
     except(requests.exceptions.Timeout):
@@ -3360,8 +3357,7 @@ def getNTP(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 404:
-        return "The specified Interface"+"("+args.Interface+")" + \
-            " doesn't exist"
+        return "The NTPServer is not configured on Interface"+"("+args.Interface+")"
 
     return res.text
 
@@ -3483,7 +3479,6 @@ def deleteIP(host, args, session):
     objDict = json.loads(res.text)
     if not objDict['data']:
         return "No object found for given address on given Interface"
-
     for obj in objDict['data']:
         try:
             if args.address in objDict['data'][obj]['Address']:
@@ -3499,8 +3494,9 @@ def deleteIP(host, args, session):
             else:
                 continue
         except KeyError:
-            return "No object found for address " + args.address + \
-                    " on Interface(" + args.Interface + ")"
+            continue
+    return "No object found for address " + args.address + \
+           " on Interface(" + args.Interface + ")"
 
 
 def addVLAN(host, args, session):
