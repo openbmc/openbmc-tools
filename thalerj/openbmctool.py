@@ -530,6 +530,14 @@ def sensor(host, args, session):
         for key in sensors:
             senDict = {}
             keyparts = key.split("/")
+
+            # Associations like the following also show up here:
+            # /xyz/openbmc_project/sensors/<type>/<name>/<assoc-name>
+            # Skip them.
+            # Note:  keyparts[0] = '' which is why there are 7 segments.
+            if len(keyparts) > 6:
+                continue
+
             senDict['sensorName'] = keyparts[-1]
             senDict['type'] = keyparts[-2]
             try:
@@ -4772,7 +4780,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application
     """
     global toolVersion
-    toolVersion = "1.15"
+    toolVersion = "1.16"
     global isRedfishSupport
 
     parser = createCommandParser()
