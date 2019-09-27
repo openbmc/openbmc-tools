@@ -4045,8 +4045,7 @@ def getThermalZones(host, args, session):
         return connectionErrHandler(args.json, "RequestException", err)
 
     if (res.status_code == 404):
-        return "No thermal control zones found or system is in a" + \
-            " powered off state"
+        return "No thermal control zones found"
 
     zonesDict = json.loads(res.text)
     if not zonesDict['data']:
@@ -4080,8 +4079,7 @@ def getThermalMode(host, args, session):
         return connectionErrHandler(args.json, "RequestException", err)
 
     if (res.status_code == 404):
-        return "Thermal control zone(" + args.zone + ") not found or" + \
-            " system is in a powered off state"
+        return "Thermal control zone(" + args.zone + ") not found"
 
     propsDict = json.loads(res.text)
     if not propsDict['data']:
@@ -4154,7 +4152,7 @@ def setThermalMode(host, args, session):
         return res.text
     else:
         return "Setting thermal control mode(" + args.mode + ")" + \
-            " not supported or operation not available(system powered off?)"
+            " not supported or operation not available"
 
 
 def createCommandParser():
