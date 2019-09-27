@@ -1,0 +1,10 @@
+Code-Review+1: Justin Thaler <thalerj@us.ibm.com>
+Code-Review+1: Shawn McCarney <shawnmm@us.ibm.com>
+Code-Review+1: Steven Sombar <ssombar@us.ibm.com>
+Code-Review+2: Andrew Geissler <geissonator@yahoo.com>
+Verified+1: Andrew Geissler <geissonator@yahoo.com>
+Submitted-by: Andrew Geissler <geissonator@yahoo.com>
+Submitted-at: Fri, 27 Sep 2019 20:57:55 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/openbmc-tools/+/25412
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
