@@ -281,6 +281,12 @@ def login(host, username, pw,jsonFormat):
             if (loginMessage['status'] != "ok"):
                 print(loginMessage["data"]["description"].encode('utf-8'))
                 sys.exit(1)
+            if ('extendedMessage' in r.json()) and\
+                ('The password for this account must be changed' in r.json()['extendedMessage']):
+                print("The password for this system has expired and must be changed"+
+                        "\nsee openbmctool.py set_password --help")
+                logout(host, username, pw, mysess, jsonFormat)
+                sys.exit(0)
 #         if(sys.version_info < (3,0)):
 #             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 #         if sys.version_info >= (3,0):
