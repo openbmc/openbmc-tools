@@ -256,7 +256,7 @@ def checkFWactivation(host, args, session):
                 return True
     return False
 
-def login(host, username, pw,jsonFormat):
+def login(host, username, pw,jsonFormat, allowExpiredPassword):
     """
          Logs into the BMC and creates a session
 
@@ -281,6 +281,13 @@ def login(host, username, pw,jsonFormat):
             if (loginMessage['status'] != "ok"):
                 print(loginMessage["data"]["description"].encode('utf-8'))
                 sys.exit(1)
+            if (('extendedMessage' in r.json()) and
+                ('The password for this account must be changed' in r.json()['extendedMessage'])):
+                if (allowExpiredPassword):
+                    print("The password for this system has expired and must be changed"+
+                            "\nsee openbmctool.py set_password --help")
+                    logout(host, username, pw, mysess, jsonFormat)
+                    sys.exit(1)
 #         if(sys.version_info < (3,0)):
 #             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 #         if sys.version_info >= (3,0):
@@ -4804,7 +4811,7 @@ def main(argv=None):
                 print("You must specify a password")
                 sys.exit()
             logintimeStart = int(round(time.time()*1000))
-            mysess = login(args.host, args.user, pw, args.json)
+            mysess = login(args.host, args.user, pw, args.json, args.command == 'set_password')
             if(mysess == None):
                 print("Login Failed!")
                 sys.exit()
