@@ -1358,7 +1358,7 @@ def bmcDumpList(host, args, session):
          @param session: the active session to use
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
     """
-    url ='https://'+host+'/xyz/openbmc_project/dump/list'
+    url ='https://'+host+'/xyz/openbmc_project/dump/entry/list'
     try:
         r = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         dumpList = r.json()
@@ -1421,8 +1421,7 @@ def bmcDumpDeleteAll(host, args, session):
     d = vars(args)
     dumpNums = []
     for dump in dumpList:
-        if '/xyz/openbmc_project/dump/internal/manager' not in dump:
-            dumpNums.append(int(dump.strip().split('/')[-1]))
+        dumpNums.append(int(dump.strip().split('/')[-1]))
     d['dumpNum'] = dumpNums
 
     return bmcDumpDelete(host, args, session)
