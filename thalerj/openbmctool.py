@@ -1422,8 +1422,9 @@ def bmcDumpDeleteAll(host, args, session):
     d = vars(args)
     dumpNums = []
     for dump in dumpList:
-        if '/xyz/openbmc_project/dump/internal/manager' not in dump:
-            dumpNums.append(int(dump.strip().split('/')[-1]))
+        dumpNum = dump.strip().split('/')[-1]
+        if dumpNum.isdigit():
+            dumpNums.append(int(dumpNum))
     d['dumpNum'] = dumpNums
 
     return bmcDumpDelete(host, args, session)
