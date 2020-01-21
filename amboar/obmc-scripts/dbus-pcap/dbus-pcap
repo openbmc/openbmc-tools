@@ -343,13 +343,13 @@ def parse_session(session, matchers, track_calls):
         try:
             cooked = parse_packet(packet)
             if not matchers:
-                yield cooked
+                yield packet.time, cooked
             elif any(all(r(cooked) for r in m) for m in matchers):
                 if cooked.header.fixed.type == MessageType.METHOD_CALL.value:
                     s = [f for f in cooked.header.fields
                             if f.type == MessageFieldType.SENDER][0]
                     calls.add(CallEnvelope(cooked.header.fixed.cookie, s.data))
-                yield cooked
+                yield packet.time, cooked
             elif track_calls:
                 if cooked.header.fixed.type != MessageType.METHOD_RETURN.value:
                     continue
@@ -360,7 +360,7 @@ def parse_session(session, matchers, track_calls):
                 ce = CallEnvelope(rs.data, d.data)
                 if ce in calls:
                     calls.remove(ce)
-                    yield cooked
+                    yield packet.time, cooked
         except MalformedPacketError as e:
             pass
 
@@ -424,11 +424,12 @@ def main():
     matchers = parse_match_rules(args.expressions)
     try:
         if args.json:
-            for msg in parse_session(stream, matchers, not args.no_track_calls):
-                print(json.dumps(msg, default=packetconv))
+            for (_, msg) in parse_session(stream, matchers, not args.no_track_calls):
+                print("{}".format(json.dumps(msg, default=packetconv)))
         else:
-            for msg in parse_session(stream, matchers, not args.no_track_calls):
-                print(msg)
+            for (time, msg) in parse_session(stream, matchers, not args.no_track_calls):
+                print("{}: {}".format(time, msg))
+                print()
     except BrokenPipeError:
         pass
 
