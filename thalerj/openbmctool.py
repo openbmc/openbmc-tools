@@ -16,7 +16,6 @@
 """
 import argparse
 import requests
-import simplejson
 import getpass
 import json
 import os
@@ -31,6 +30,8 @@ import tempfile
 import hashlib
 import re
 import uuid
+try: import simplejson
+except: pass
 
 jsonHeader = {'Content-Type' : 'application/json'}
 xAuthHeader = {}
