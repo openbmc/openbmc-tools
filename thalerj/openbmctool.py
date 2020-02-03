@@ -4777,7 +4777,7 @@ def main(argv=None):
          main function for running the command line utility as a sub application
     """
     global toolVersion
-    toolVersion = "1.17"
+    toolVersion = "1.18"
     global isRedfishSupport
 
     parser = createCommandParser()
