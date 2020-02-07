@@ -1,7 +1,0 @@
-README for build script
-
-This script is used to simplify the build process for rpms. It must be run with root privileges.
-simply run the script with the current directory structure. It will prompt the user for the version
-and the release number to use. It will then create a tarball for the rpm content
-and then build the rpm. Once complete the new rpm can be found in /tmp/openbmctool-{version-release)/
-directory.
