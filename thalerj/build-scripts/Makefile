@@ -3,9 +3,7 @@
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
 #    You may obtain a copy of the License at
-# 
 #        http://www.apache.org/licenses/LICENSE-2.0
-# 
 #    Unless required by applicable law or agreed to in writing, software
 #    distributed under the License is distributed on an "AS IS" BASIS,
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,8 +40,6 @@ rpm: default
 	mkdir -p $(RPMDIR)
 	mkdir -p $(RPMDIR)/openbmctool
 	for i in BUILD BUILDROOT RPMS SOURCES SPECS SRPMS; do mkdir -p $(RPMDIR)/$$i; done
-#	for i in bin lib; do mkdir -p $(RPMDIR)/BUILDROOT/$(NAME)/opt/ibm/ras/$$i; done
-	#for i in system system-preset; do mkdir -p $(RPMDIR)/BUILDROOT/$(NAME)/usr/lib/systemd/$$i; done
 	cp openbmctool-rhel$(RHEL_VER).spec $(RPMDIR)/SPECS
 	cp ../openbmctool.py ../policyTable.json $(RPMDIR)/openbmctool/
 	tar -cvzf $(RPMDIR)/SOURCES/openbmctool-$(VER)-$(REL).tgz -C $(RPMDIR) openbmctool
