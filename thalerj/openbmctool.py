@@ -31,7 +31,14 @@ import tempfile
 import hashlib
 import re
 import uuid
+import ssl
+import socket
+import select
+import http.client
+from subprocess import check_output
 
+
+MAX_NBD_PACKET_SIZE = 131088
 jsonHeader = {'Content-Type' : 'application/json'}
 xAuthHeader = {}
 baseTimeout = 60
@@ -39,6 +46,163 @@ serverTypeMap = {
         'ActiveDirectory' : 'active_directory',
         'OpenLDAP' : 'openldap'
         }
+
+class NBDPipe:
+
+    def openHTTPSocket(self,args):
+
+        try:
+            _create_unverified_https_context = ssl._create_unverified_context
+        except AttributeError:
+            # Legacy Python that doesn't verify HTTPS certificates by default
+            pass
+        else:
+            # Handle target environment that doesn't support HTTPS verification
+            ssl._create_default_https_context = _create_unverified_https_context
+
+
+        token = gettoken(args)
+        self.conn = http.client.HTTPSConnection(args.host,port=443)
+        URI = "/redfish/v1/Systems/system/LogServices/SystemDump/Entries/"+str(args.dumpNum)+"/Actions/Oem/OpenBmc/LogEntry.DownloadLog"
+        self.conn.request("POST",URI, headers={"X-Auth-Token":token})
+
+    def openTCPSocket(self):
+        # Create a TCP/IP socket
+        self.tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Connect the socket to the port where the server is listening
+        server_address = ('localhost', 1043)
+        self.tcp.connect(server_address)
+
+    def waitformessage(self):
+        inputs = [self.conn.sock,self.tcp]
+        outputs = []
+        message_queues = {}
+        while True:
+            readable, writable, exceptional = select.select(
+                    inputs, outputs, inputs)
+
+            for s in readable:
+                if s is self.conn.sock:
+
+                    data = self.conn.sock.recv(MAX_NBD_PACKET_SIZE)
+                    print("<<HTTP")
+                    #print(len(data))
+                    if data:
+                        self.tcp.send(data)
+                    else:
+                        print ("BMC Closed the connection")
+                        self.conn.close()
+                        self.tcp.close()
+                        sys.exit(1)
+                elif s is self.tcp:
+                    data = self.tcp.recv(MAX_NBD_PACKET_SIZE)
+                    print(">>TCP")
+                    #print(len(data));
+                    if data:
+                        self.conn.sock.send(data)
+                    else:
+                        print("NBD server closed the connection")
+                        self.conn.sock.close()
+                        self.tcp.close()
+                        sys.exit(1)
+            for s in exceptional:
+                inputs.remove(s)
+                print("Exceptional closing the socket")
+                s.close()
+
+def getsize(host,args,session):
+    url = "https://"+host+"/redfish/v1/Systems/system/LogServices/SystemDump/Entries/"+str(args.dumpNum)
+    print(url)
+    try:
+        resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
+        if resp.status_code==200:
+            size = resp.json()["Oem"]["OpenBmc"]['SizeInB']
+            print(size)
+            return size
+        else:
+            return "Failed get Size"
+    except(requests.exceptions.Timeout):
+        return connectionErrHandler(args.json, "Timeout", None)
+
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+def gettoken(args):
+   mysess = requests.session()
+   resp = mysess.post('https://'+args.host+'/login', headers=jsonHeader,json={"data":[args.user,args.PW]},verify=False)
+   if resp.status_code == 200:
+       cookie = resp.headers['Set-Cookie']
+       match = re.search('SESSION=(\w+);', cookie)
+       return match.group(1)
+
+
+
+def get_pid(name):
+    try:
+        pid = map(int, check_output(["pidof", "-s",name]))
+    except Exception:
+        pid = 0
+
+    return pid
+
+def findThisProcess( process_name ):
+  ps     = subprocess.Popen("ps -eaf | grep "+process_name, shell=True, stdout=subprocess.PIPE)
+  output = ps.stdout.read()
+  ps.stdout.close()
+  ps.wait()
+  pid = get_pid(process_name)
+  print(pid)
+  return output
+
+def isThisProcessRunning( process_name ):
+  pid = get_pid(process_name)
+  if (pid == 0 ):
+    return False
+  else:
+    return True
+
+def NBDSetup(host,args,session):
+    user=os.getenv("SUDO_USER")
+    if user is None:
+        path = os.getcwd()
+        nbdServerPath = path + "/nbd-server"
+        print(nbdServerPath,os.path.exists(nbdServerPath))
+        if not os.path.exists(nbdServerPath):
+            print("Error: this program did not run as sudo!\nplease copy nbd-server to  current directory and run script again")
+            exit()
+
+    if isThisProcessRunning('nbd-server') == True:
+        print("nbd-server already Running! killing the nbd-server")
+        os.system('killall nbd-server')
+
+    if (args.dumpSaveLoc is not None):
+        if(os.path.exists(args.dumpSaveLoc)):
+            print("Error: File already exists.")
+            exit()
+
+    fp= open(args.dumpSaveLoc,"w")
+    sizeInBytes = getsize(host,args,session)
+    #Round off size to mutiples of 1024
+    size = int(sizeInBytes)
+    print(size)
+    mod = size % 1024
+    if mod :
+        roundoff = 1024 - mod
+        size = size + roundoff
+
+    cmd = 'chmod 777 ' + args.dumpSaveLoc
+    os.system(cmd)
+
+    #Run truncate to create file with given size
+    cmd = 'truncate -s ' + str(size) + ' '+ args.dumpSaveLoc
+    os.system(cmd)
+
+    if user is None:
+        cmd = './nbd-server 1043 '+ args.dumpSaveLoc
+    else:
+        cmd = 'nbd-server 1043 '+ args.dumpSaveLoc
+    os.system(cmd)
+
 
 def hilight(textToColor, color, bold):
     """
@@ -1319,6 +1483,83 @@ def chassis(host, args, session):
         return "This feature is not yet implemented"
     return result
 
+def dumpRetrieve(host, args, session):
+    """
+         Downloads dump of given dump type
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    dumpType = args.dumpType
+    if (args.dumpType=="SystemDump"):
+        dumpResp=systemDumpRetrieve(host,args,session)
+    elif(args.dumpType=="bmc"):
+        dumpResp=bmcDumpRetrieve(host,args,session)
+    return dumpResp
+
+def dumpList(host, args, session):
+    """
+         Lists dump of the given dump type
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    if (args.dumpType=="SystemDump"):
+        dumpResp=systemDumpList(host,args,session)
+    elif(args.dumpType=="bmc"):
+        dumpResp=bmcDumpList(host,args,session)
+    return dumpResp
+
+def dumpDelete(host, args, session):
+    """
+         Deletes dump of the given dump type
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    if (args.dumpType=="SystemDump"):
+        dumpResp=systemDumpDelete(host,args,session)
+    elif(args.dumpType=="bmc"):
+        dumpResp=bmcDumpDelete(host,args,session)
+    return dumpResp
+
+def dumpDeleteAll(host, args, session):
+    """
+         Deletes all dumps of the given dump type
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    if (args.dumpType=="SystemDump"):
+        dumpResp=systemDumpDeleteAll(host,args,session)
+    elif(args.dumpType=="bmc"):
+        dumpResp=bmcDumpDeleteAll(host,args,session)
+    return dumpResp
+
+def dumpCreate(host, args, session):
+    """
+         Creates dump for the given dump type
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    if (args.dumpType=="SystemDump"):
+        dumpResp=systemDumpCreate(host,args,session)
+    elif(args.dumpType=="bmc"):
+        dumpResp=bmcDumpDelete(host,args,session)
+    return dumpResp
+
+
 def bmcDumpRetrieve(host, args, session):
     """
          Downloads a dump file from the bmc
@@ -1462,6 +1703,124 @@ def bmcDumpCreate(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
 
+def systemDumpRetrieve(host, args, session):
+    """
+         Downloads system dump
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    NBDSetup(host,args,session)
+    pipe = NBDPipe()
+    pipe.openHTTPSocket(args)
+    pipe.openTCPSocket()
+    pipe.waitformessage()
+
+def systemDumpList(host, args, session):
+    """
+         Lists system dumps
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    print("in systemDumpList")
+    url = "https://"+host+"/redfish/v1/Systems/system/LogServices/"+args.dumpType+"/Entries"
+    try:
+        r = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
+        dumpList = r.json()
+        return dumpList
+    except(requests.exceptions.Timeout):
+        return connectionErrHandler(args.json, "Timeout", None)
+
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+
+def systemDumpDelete(host, args, session):
+    """
+         Deletes system dump
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    dumpList = []
+    successList = []
+    failedList = []
+    if args.dumpNum is not None:
+        if isinstance(args.dumpNum, list):
+            dumpList = args.dumpNum
+        else:
+            dumpList.append(args.dumpNum)
+        for dumpNum in dumpList:
+            url = 'https://'+host+'/redfish/v1/Systems/system/LogServices/'+args.dumpType+'/Entries/'+ str(dumpNum)
+            try:
+                r = session.delete(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
+                if r.status_code == 200:
+                    successList.append(str(dumpNum))
+                else:
+                    failedList.append(str(dumpNum))
+            except(requests.exceptions.Timeout):
+                return connectionErrHandler(args.json, "Timeout", None)
+            except(requests.exceptions.ConnectionError) as err:
+                return connectionErrHandler(args.json, "ConnectionError", err)
+        output = "Successfully deleted dumps: " + ', '.join(successList)
+        if(len(failedList)>0):
+            output+= '\nFailed to delete dumps: ' + ', '.join(failedList)
+        return output
+    else:
+        return 'You must specify an entry number to delete'
+
+def systemDumpDeleteAll(host, args, session):
+    """
+         Deletes All system dumps
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    url = 'https://'+host+'/redfish/v1/Systems/system/LogServices/'+args.dumpType+'/Actions/LogService.ClearLog'
+    try:
+        r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
+        if(r.status_code == 200 and not args.json):
+            return ('Dumps successfully cleared')
+        elif(args.json):
+            return r.json()
+        else:
+            return ('Failed to clear dumps')
+    except(requests.exceptions.Timeout):
+        return connectionErrHandler(args.json, "Timeout", None)
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
+
+def systemDumpCreate(host, args, session):
+    """
+         Creates a system dump
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the collectServiceData sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    url =  'https://'+host+'/redfish/v1/Systems/system/LogServices/'+args.dumpType+'/Actions/Oem/Openbmc/LogService.CreateLog'
+    try:
+        r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
+        if(r.status_code == 200 and not args.json):
+            return ('Dump successfully created')
+        elif(args.json):
+            return r.json()
+        else:
+            return ('Failed to create dump')
+    except(requests.exceptions.Timeout):
+        return connectionErrHandler(args.json, "Timeout", None)
+    except(requests.exceptions.ConnectionError) as err:
+        return connectionErrHandler(args.json, "ConnectionError", err)
 
 def csdDumpInitiate(host, args, session):
     """
@@ -4295,28 +4654,29 @@ def createCommandParser():
     parser_healthChk = subparsers.add_parser("health_check", help="Work with platform sensors")
     parser_healthChk.set_defaults(func=healthCheck)
 
-    #work with bmc dumps
-    parser_bmcdump = subparsers.add_parser("dump", help="Work with bmc dump files")
+    #work with dumps
+    parser_bmcdump = subparsers.add_parser("dump", help="Work with dumps")
+    parser_bmcdump.add_argument("-t", "--dumpType", default='bmc', choices=['bmc','SystemDump'],help="Type of dump")
     bmcDump_sub = parser_bmcdump.add_subparsers(title='subcommands', description='valid subcommands',help="sub-command help", dest='command')
     bmcDump_sub.required = True
-    dump_Create = bmcDump_sub.add_parser('create', help="Create a bmc dump")
-    dump_Create.set_defaults(func=bmcDumpCreate)
+    dump_Create = bmcDump_sub.add_parser('create', help="Create a dump of given type")
+    dump_Create.set_defaults(func=dumpCreate)
 
-    dump_list = bmcDump_sub.add_parser('list', help="list all bmc dump files")
-    dump_list.set_defaults(func=bmcDumpList)
+    dump_list = bmcDump_sub.add_parser('list', help="list all dumps")
+    dump_list.set_defaults(func=dumpList)
 
-    parserdumpdelete = bmcDump_sub.add_parser('delete', help="Delete bmc dump files")
+    parserdumpdelete = bmcDump_sub.add_parser('delete', help="Delete dump")
     parserdumpdelete.add_argument("-n", "--dumpNum", nargs='*', type=int, help="The Dump entry to delete")
-    parserdumpdelete.set_defaults(func=bmcDumpDelete)
+    parserdumpdelete.set_defaults(func=dumpDelete)
 
     bmcDumpDelsub = parserdumpdelete.add_subparsers(title='subcommands', description='valid subcommands',help="sub-command help", dest='command')
-    deleteAllDumps = bmcDumpDelsub.add_parser('all', help='Delete all bmc dump files')
-    deleteAllDumps.set_defaults(func=bmcDumpDeleteAll)
+    deleteAllDumps = bmcDumpDelsub.add_parser('all', help='Delete all dumps')
+    deleteAllDumps.set_defaults(func=dumpDeleteAll)
 
     parser_dumpretrieve = bmcDump_sub.add_parser('retrieve', help='Retrieve a dump file')
-    parser_dumpretrieve.add_argument("dumpNum", type=int, help="The Dump entry to delete")
-    parser_dumpretrieve.add_argument("-s", "--dumpSaveLoc", help="The location to save the bmc dump file")
-    parser_dumpretrieve.set_defaults(func=bmcDumpRetrieve)
+    parser_dumpretrieve.add_argument("-n,", "--dumpNum", help="The Dump entry to retrieve")
+    parser_dumpretrieve.add_argument("-s", "--dumpSaveLoc", help="The location to save the bmc dump file or file path for system dump")
+    parser_dumpretrieve.set_defaults(func=dumpRetrieve)
 
     #bmc command for reseting the bmc
     parser_bmc = subparsers.add_parser('bmc', help="Work with the bmc")
