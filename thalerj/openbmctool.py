@@ -934,11 +934,14 @@ def parseAlerts(policyTable, selEntries, args):
     eselSeverity = None
 
     'prepare and sort the event entries'
+    sels = {}
     for key in selEntries:
+        if '/xyz/openbmc_project/logging/entry/' not in key: continue
         if 'callout' not in key:
-            selEntries[key]['logNum'] = key.split('/')[-1]
-            selEntries[key]['timestamp'] = selEntries[key]['Timestamp']
-    sortedEntries = sortSELs(selEntries)
+            sels[key] = selEntries[key]
+            sels[key]['logNum'] = key.split('/')[-1]
+            sels[key]['timestamp'] = selEntries[key]['Timestamp']
+    sortedEntries = sortSELs(sels)
     logNumList = sortedEntries[0]
     eventKeyDict = sortedEntries[1]
 
@@ -1007,7 +1010,7 @@ def parseAlerts(policyTable, selEntries, args):
                     fruCallout = str(addDataPiece[i]).split('=')[1].strip()
 
             if(calloutFound):
-                if fruCallout != "":
+                if fruCallout.strip() != "":
                     policyKey = messageID +"||" +  fruCallout
 
                     # Also use the severity for hostboot errors
