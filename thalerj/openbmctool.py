@@ -1559,7 +1559,7 @@ def dumpCreate(host, args, session):
     if (args.dumpType=="SystemDump"):
         dumpResp=systemDumpCreate(host,args,session)
     elif(args.dumpType=="bmc"):
-        dumpResp=bmcDumpDelete(host,args,session)
+        dumpResp=bmcDumpCreate(host,args,session)
     return dumpResp
 
 
