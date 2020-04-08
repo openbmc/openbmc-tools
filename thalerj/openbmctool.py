@@ -36,6 +36,7 @@ import socket
 import select
 import http.client
 from subprocess import check_output
+import traceback
 
 
 MAX_NBD_PACKET_SIZE = 131088
@@ -1856,6 +1857,10 @@ def csdDumpInitiate(host, args, session):
         d['json'] = True
     except Exception as e:
         errorInfo += "Failed to set the json flag to True \n Exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     try:
         for i in range(3):
@@ -1867,24 +1872,42 @@ def csdDumpInitiate(host, args, session):
                 errorInfo+= "Dump List Message returned: " + json.dumps(dumpInfo,indent=0, separators=(',', ':')).replace('\n','') +"\n"
     except Exception as e:
         errorInfo+= "Failed to collect the list of dumps.\nException: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     #Create a user initiated dump
+    dumpFailure = True
     try:
         for i in range(3):
             dumpcreated = bmcDumpCreate(host, args, session)
             if 'message' in dumpcreated:
                 if 'ok' in dumpcreated['message'].lower():
+                    dumpFailure = False
                     break
+                elif 'data' in dumpcreated:
+                    if 'QuotaExceeded' in dumpcreated['data']['description']:
+                        print('Not enough dump space on the BMC to create a new dump. Please delete the oldest entry (lowest number) and rerun the collect_service_data command.')
+                        errorInfo+='Dump Space is full. No new dump was created with this collection'
+                        break
+                    else:
+                        errorInfo+= "Dump create message returned: " + json.dumps(dumpcreated,indent=0, separators=(',', ':')).replace('\n','') +"\n"
                 else:
-                    errorInfo+= "Dump create message returned: " + json.dumps(dumpInfo,indent=0, separators=(',', ':')).replace('\n','') +"\n"
+                    errorInfo+= "Dump create message returned: " + json.dumps(dumpcreated,indent=0, separators=(',', ':')).replace('\n','') +"\n"
             else:
-                errorInfo+= "Dump create message returned: " + json.dumps(dumpInfo,indent=0, separators=(',', ':')).replace('\n','') +"\n"
+                errorInfo+= "Dump create message returned: " + json.dumps(dumpcreated,indent=0, separators=(',', ':')).replace('\n','') +"\n"
     except Exception as e:
         errorInfo+= "Dump create exception encountered: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     output = {}
     output['errors'] = errorInfo
     output['dumpcount'] = dumpcount
+    if dumpFailure: output['dumpFailure'] = True
     return output
 
 def csdInventory(host, args,session, fileDir):
@@ -1910,6 +1933,10 @@ def csdInventory(host, args,session, fileDir):
                 errorInfo += json.dumps(frulist, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
     except Exception as e:
         errorInfo += "Inventory collection exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
     if inventoryCollected:
         try:
             with open(fileDir +os.sep+'inventory.txt', 'w') as f:
@@ -1919,6 +1946,10 @@ def csdInventory(host, args,session, fileDir):
         except Exception as e:
             print("Failed to write inventory to file.")
             errorInfo += "Error writing inventory to the file. Exception: {eInfo}\n".format(eInfo=e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+            errorInfo += traceback.format_exc()
 
     output['errors'] = errorInfo
 
@@ -1942,6 +1973,10 @@ def csdSensors(host, args,session, fileDir):
         d['json'] = False
     except Exception as e:
         errorInfo += "Failed to set the json flag to False \n Exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     try:
         for i in range(3):
@@ -1953,6 +1988,10 @@ def csdSensors(host, args,session, fileDir):
                 errorInfo += sensorReadings
     except Exception as e:
         errorInfo += "Sensor reading collection exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
     if sensorsCollected:
         try:
             with open(fileDir +os.sep+'sensorReadings.txt', 'w') as f:
@@ -1962,6 +2001,10 @@ def csdSensors(host, args,session, fileDir):
         except Exception as e:
             print("Failed to write sensor readings to file system.")
             errorInfo += "Error writing sensor readings to the file. Exception: {eInfo}\n".format(eInfo=e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+            errorInfo += traceback.format_exc()
 
     output['errors'] = errorInfo
     return output
@@ -1984,6 +2027,10 @@ def csdLEDs(host,args, session, fileDir):
         d['json'] = True
     except Exception as e:
         errorInfo += "Failed to set the json flag to False \n Exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
     try:
         url="https://"+host+"/xyz/openbmc_project/led/enumerate"
         httpHeader = {'Content-Type':'application/json'}
@@ -2000,8 +2047,16 @@ def csdLEDs(host,args, session, fileDir):
                 errorInfo+=json.dumps( connectionErrHandler(args.json, "Timeout", None), sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
             except(requests.exceptions.ConnectionError) as err:
                 errorInfo += json.dumps(connectionErrHandler(args.json, "ConnectionError", err), sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+                errorInfo += traceback.format_exc()
     except Exception as e:
         errorInfo += "LED status collection exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     if ledsCollected:
         try:
@@ -2012,6 +2067,10 @@ def csdLEDs(host,args, session, fileDir):
         except Exception as e:
             print("Failed to write LED status to file system.")
             errorInfo += "Error writing LED status to the file. Exception: {eInfo}\n".format(eInfo=e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+            errorInfo += traceback.format_exc()
 
     output['errors'] = errorInfo
     return output
@@ -2034,6 +2093,10 @@ def csdSelShortList(host, args, session, fileDir):
         d['json'] = False
     except Exception as e:
         errorInfo += "Failed to set the json flag to False \n Exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     try:
         for i in range(3):
@@ -2045,6 +2108,10 @@ def csdSelShortList(host, args, session, fileDir):
                 errorInfo += sels + '\n'
     except Exception as e:
         errorInfo += "SEL short list collection exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     if selsCollected:
         try:
@@ -2055,6 +2122,10 @@ def csdSelShortList(host, args, session, fileDir):
         except Exception as e:
             print("Failed to write SEL short list to file system.")
             errorInfo += "Error writing SEL short list to the file. Exception: {eInfo}\n".format(eInfo=e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+            errorInfo += traceback.format_exc()
 
     output['errors'] = errorInfo
     return output
@@ -2078,6 +2149,10 @@ def csdParsedSels(host, args, session, fileDir):
         d['fullEsel'] = True
     except Exception as e:
         errorInfo += "Failed to set the json flag to True \n Exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     try:
         for i in range(3):
@@ -2089,6 +2164,10 @@ def csdParsedSels(host, args, session, fileDir):
                 errorInfo += parsedfullsels + '\n'
     except Exception as e:
         errorInfo += "Parsed full SELs collection exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     if selsCollected:
         try:
@@ -2108,6 +2187,10 @@ def csdParsedSels(host, args, session, fileDir):
         except Exception as e:
             print("Failed to write fully parsed SELs to file system.")
             errorInfo += "Error writing fully parsed SELs to the file. Exception: {eInfo}\n".format(eInfo=e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+            errorInfo += traceback.format_exc()
 
     output['errors'] = errorInfo
     return output
@@ -2130,6 +2213,10 @@ def csdFullEnumeration(host, args, session, fileDir):
         d['json'] = True
     except Exception as e:
         errorInfo += "Failed to set the json flag to False \n Exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
     try:
         print("Attempting to get a full BMC enumeration")
         url="https://"+host+"/xyz/openbmc_project/enumerate"
@@ -2147,8 +2234,16 @@ def csdFullEnumeration(host, args, session, fileDir):
                 errorInfo+=json.dumps( connectionErrHandler(args.json, "Timeout", None), sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
             except(requests.exceptions.ConnectionError) as err:
                 errorInfo += json.dumps(connectionErrHandler(args.json, "ConnectionError", err), sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False) + '\n'
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+                errorInfo += traceback.format_exc()
     except Exception as e:
         errorInfo += "RAW BMC data collection exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     if bmcFullCollected:
         try:
@@ -2159,6 +2254,10 @@ def csdFullEnumeration(host, args, session, fileDir):
         except Exception as e:
             print("Failed to write RAW BMC data  to file system.")
             errorInfo += "Error writing RAW BMC data collection to the file. Exception: {eInfo}\n".format(eInfo=e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+            errorInfo += traceback.format_exc()
 
     output['errors'] = errorInfo
     return output
@@ -2184,6 +2283,10 @@ def csdCollectAllDumps(host, args, session, fileDir):
         d['dumpSaveLoc'] = fileDir
     except Exception as e:
         errorInfo += "Failed to set the json flag to True, or failed to set the dumpSave Location \n Exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     print('Collecting bmc dump files')
 
@@ -2201,6 +2304,10 @@ def csdCollectAllDumps(host, args, session, fileDir):
                 errorInfo += "Invalid response received from the BMC while retrieving the list of dumps available.\n {resp}\n".format(resp=dumpResp)
     except Exception as e:
         errorInfo += "BMC dump list exception: {eInfo}\n".format(eInfo=e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
 
     if dumpListCollected:
         output['fileList'] = []
@@ -2214,6 +2321,10 @@ def csdCollectAllDumps(host, args, session, fileDir):
             except Exception as e:
                 print("Unable to collect dump: {dumpInfo}".format(dumpInfo=dump))
                 errorInfo += "Exception collecting a bmc dump {dumpInfo}\n {eInfo}\n".format(dumpInfo=dump, eInfo=e)
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+                errorInfo += traceback.format_exc()
     output['errors'] = errorInfo
     return output
 
@@ -2233,6 +2344,8 @@ def collectServiceData(host, args, session):
 
     #get current number of bmc dumps and create a new bmc dump
     dumpInitdata = csdDumpInitiate(host, args, session)
+    if 'dumpFailure' in dumpInitdata:
+        return 'Collect service data is stopping due to not being able to create a new dump. No service data was collected.'
     dumpcount = dumpInitdata['dumpcount']
     errorInfo += dumpInitdata['errors']
     #create the directory to put files
@@ -2243,6 +2356,10 @@ def collectServiceData(host, args, session):
 
     except Exception as e:
         print('Unable to create the temporary directory for data collection. Ensure sufficient privileges to create temporary directory. Aborting.')
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        errorInfo += "Exception: Error: {err}, Details: {etype}, {fname}, {lineno}\n".format(err=e, etype=exc_type, fname=fname, lineno=exc_tb.tb_lineno)
+        errorInfo += traceback.format_exc()
         return("Python exception: {eInfo}".format(eInfo = e))
 
     #Collect Inventory
@@ -2281,14 +2398,14 @@ def collectServiceData(host, args, session):
     #wait for new dump to finish being created
     waitingForNewDump = True
     count = 0;
-    print("Waiting for new BMC dump to finish being created.")
+    print("Waiting for new BMC dump to finish being created. Wait time could be up to 5 minutes")
     while(waitingForNewDump):
         dumpList = bmcDumpList(host, args, session)['data']
         if len(dumpList) > dumpcount:
             waitingForNewDump = False
             break;
-        elif(count>30):
-            print("Timed out waiting for bmc to make a new dump file. Dump space may be full.")
+        elif(count>150):
+            print("Timed out waiting for bmc to make a new dump file. Continuing without it.")
             break;
         else:
             time.sleep(2)
