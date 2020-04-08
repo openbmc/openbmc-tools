@@ -1703,16 +1703,23 @@ def bmcDumpCreate(host, args, session):
     url = 'https://'+host+'/xyz/openbmc_project/dump/action/CreateDump'
     try:
         r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
+        info = r.json()
         if(r.status_code == 200 and not args.json):
             return ('Dump successfully created')
         elif(args.json):
-            return r.json()
+            return info
+        elif 'data' in info:
+            if 'QuotaExceeded' in info['data']['description']:
+                return 'BMC dump space is full. Please delete at least one existing dump entry and try again.'
+            else:
+                return "Failed to create a BMC dump. BMC Response:\n {resp}".format(resp=info)
         else:
-            return ('Failed to create dump')
+            return "Failed to create a BMC dump. BMC Response:\n {resp}".format(resp=info)
     except(requests.exceptions.Timeout):
         return connectionErrHandler(args.json, "Timeout", None)
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
+
 
 def systemDumpRetrieve(host, args, session):
     """
