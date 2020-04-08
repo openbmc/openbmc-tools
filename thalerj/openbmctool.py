@@ -1616,6 +1616,14 @@ def bmcDumpList(host, args, session):
     try:
         r = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         dumpList = r.json()
+        formattedList = []
+        #remove items that aren't dump entries 'entry, internal, manager endpoints'
+        if 'data' in dumpList:
+            for entry in dumpList['data']:
+                if 'entry' in entry:
+                    if entry.split('/')[-1].isnumeric():
+                        formattedList.append(entry)
+            dumpList['data']= formattedList
         return dumpList
     except(requests.exceptions.Timeout):
         return connectionErrHandler(args.json, "Timeout", None)
