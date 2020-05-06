@@ -87,7 +87,6 @@ class NBDPipe:
 
                     data = self.conn.sock.recv(MAX_NBD_PACKET_SIZE)
                     print("<<HTTP")
-                    #print(len(data))
                     if data:
                         self.tcp.send(data)
                     else:
@@ -98,7 +97,6 @@ class NBDPipe:
                 elif s is self.tcp:
                     data = self.tcp.recv(MAX_NBD_PACKET_SIZE)
                     print(">>TCP")
-                    #print(len(data));
                     if data:
                         self.conn.sock.send(data)
                     else:
@@ -113,12 +111,10 @@ class NBDPipe:
 
 def getsize(host,args,session):
     url = "https://"+host+"/redfish/v1/Systems/system/LogServices/SystemDump/Entries/"+str(args.dumpNum)
-    print(url)
     try:
         resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         if resp.status_code==200:
             size = resp.json()["Oem"]["OpenBmc"]['SizeInB']
-            print(size)
             return size
         else:
             return "Failed get Size"
@@ -152,7 +148,6 @@ def findThisProcess( process_name ):
   ps.stdout.close()
   ps.wait()
   pid = get_pid(process_name)
-  print(pid)
   return output
 
 def isThisProcessRunning( process_name ):
@@ -167,7 +162,6 @@ def NBDSetup(host,args,session):
     if user is None:
         path = os.getcwd()
         nbdServerPath = path + "/nbd-server"
-        print(nbdServerPath,os.path.exists(nbdServerPath))
         if not os.path.exists(nbdServerPath):
             print("Error: this program did not run as sudo!\nplease copy nbd-server to  current directory and run script again")
             exit()
@@ -185,7 +179,6 @@ def NBDSetup(host,args,session):
     sizeInBytes = getsize(host,args,session)
     #Round off size to mutiples of 1024
     size = int(sizeInBytes)
-    print(size)
     mod = size % 1024
     if mod :
         roundoff = 1024 - mod
