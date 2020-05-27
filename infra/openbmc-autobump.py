@@ -48,7 +48,8 @@ def extract_sha_from_recipe(recipe):
             if 'SRCREV' in line:
                 sha = line.split('=')[-1].replace('"', '').strip()
             elif '_URI' in line and 'github.com/openbmc' in line:
-                uri = line.split(';')[0].split('=')[-1].replace('"', '').strip()
+                uri = line.split(';')[0]
+                uri = uri.split('=')[-1].replace('"', '').strip()
                 project = uri.split('/')[-1].replace('.git', '')
 
             if project and sha:
