@@ -39,18 +39,42 @@ def git_clone_or_reset(local_name, remote, args):
         git.reset('--hard', 'FETCH_HEAD', _cwd=local_name)
 
 
+def extract_project_from_uris(uris):
+    # remove SRC_URI = and quotes (does not handle escaped quotes)
+    uris = uris.split('"')[1]
+    for uri in uris.split():
+        if 'github.com/openbmc' not in uri:
+            continue
+
+        # remove fetcher arguments
+        uri = uri.split(';')[0]
+        # the project is the right-most path segment
+        return uri.split('/')[-1].replace('.git', '')
+
+    return None
+
+
 def extract_sha_from_recipe(recipe):
     with open(recipe) as fp:
+        uris = ''
         project = None
         sha = None
 
         for line in fp:
+            line = line.rstrip()
             if 'SRCREV' in line:
                 sha = line.split('=')[-1].replace('"', '').strip()
-            elif '_URI' in line and 'github.com/openbmc' in line:
-                uri = line.split(';')[0]
-                uri = uri.split('=')[-1].replace('"', '').strip()
-                project = uri.split('/')[-1].replace('.git', '')
+            elif not project and uris or '_URI' in line:
+                uris += line.split('\\')[0]
+                if '\\' not in line:
+                    # In uris we've gathered a complete (possibly multi-line)
+                    # assignment to a bitbake variable that ends with _URI.
+                    # Try to pull an OpenBMC project out of it.
+                    project = extract_project_from_uris(uris)
+                    if project is None:
+                        # We didn't find a project.  Unset uris and look for
+                        # another bitbake variable that ends with _URI.
+                        uris = ''
 
             if project and sha:
                 return (project, sha)
