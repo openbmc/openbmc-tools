@@ -151,7 +151,8 @@ def find_and_process_bumps(meta, args):
         git.commit(sh.echo(commit_msg), '-s', '-F', '-', _cwd=meta)
 
         push_args = ['origin', 'HEAD:refs/for/{}/autobump'.format(args.branch)]
-        git.push(*push_args, _cwd=meta)
+        if not args.dry_run:
+            git.push(*push_args, _cwd=meta)
 
 
 def main():
@@ -169,6 +170,9 @@ Push generated commits to the OpenBMC Gerrit instance for review.
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.set_defaults(branch='master')
+    parser.add_argument(
+        '-d', '--dry-run', dest='dry_run', action='store_true',
+        help='perform a dry run only')
     parser.add_argument(
         '-m', '--meta-repository', dest='meta_repository', action='append',
         help='meta repository to check for updates')
