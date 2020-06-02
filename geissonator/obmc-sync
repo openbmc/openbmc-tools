@@ -1,0 +1,78 @@
+#!/bin/sh
+
+set -euo pipefail
+
+USAGE="Usage: obmc-sync [-h] [--verbose] \
+[--source-dir=<source-dir>] \
+[--dest=<dest-uri>] \
+[--repo=<repo>]"
+
+# Print debug data to the console
+G_VERBOSE=
+
+G_SOURCE=
+G_DEST=
+G_REPO=
+
+print_help ()
+{
+    echo "obmc-sync is a tool to synchronize your OpenBMC source files over"
+    echo "to another machine. It uses rsync. It will do some OpenBMC specific"
+    echo "things like not synching over generated files and any build output"
+    echo ""
+    echo "$USAGE"
+    echo ""
+    echo "Examples:"
+    echo "obmc-sync --source-dir=/home/$USER/Code/"
+    echo "          --dest=$USER@<system.xyz>:/home/$USER/Code/"
+    echo "          --repo phosphor-state-manager"
+    echo ""
+    echo "optional arguments:"
+    echo "  -h, --help          show this help message and exit"
+    echo "  -v, --verbose       print the journal to stdout if --wait is supplied"
+}
+
+check_and_echo ()
+{
+    if [ -n "$G_VERBOSE" ]; then
+        echo $1
+    fi
+}
+
+do_rsync ()
+{
+    exclude=
+    if [ -f "$G_SOURCE/$G_REPO/meson.build" ]; then
+        exclude="--exclude build"
+    fi
+    rsync -avzhr $exclude $G_SOURCE/$G_REPO $G_DEST/ --delete
+}
+
+for arg in "$@"; do
+    case $arg in
+        -h|--help)
+            print_help
+            ;;
+        -v|--verbose)
+            G_VERBOSE=y
+            ;;
+        --source-dir=*)
+            G_SOURCE="${arg#*=}"
+            check_and_echo "source-dir = $G_SOURCE"
+            ;;
+        --dest=*)
+            G_DEST="${arg#*=}"
+            check_and_echo "dest = $G_DEST"
+            ;;
+        --repo=*)
+            G_REPO="${arg#*=}"
+            check_and_echo "repo = $G_REPO"
+            ;;
+        *)
+            echo "Invalid argument: $arg"
+            print_help
+            ;;
+    esac
+done
+
+do_rsync
