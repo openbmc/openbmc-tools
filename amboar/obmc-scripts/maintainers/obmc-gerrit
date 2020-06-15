@@ -37,14 +37,16 @@ def get_reviewers(root: Optional[str]=None, mname: str='MAINTAINERS') -> List[st
             reviewers.extend(i.email.address for i in rlist)
     return reviewers
 
-def gerrit_refspec_args(reviewers: Optional[List[str]]=None) -> str:
-    args = ""
+def gerrit_refspec_args(reviewers: Optional[List[str]]=None, topic: str=None) -> str:
+    argl = []
     if reviewers:
-        args += ",".join("r={}".format(addr) for addr in reviewers)
-    return args
+        argl.extend("r={}".format(addr) for addr in reviewers)
+    if topic:
+        argl.append("topic={}".format(topic));
+    return ",".join(argl)
 
-def decorate_refspec(refspec: str) -> str:
-    gargs = gerrit_refspec_args(get_reviewers())
+def decorate_refspec(refspec: str, topic: str) -> str:
+    gargs = gerrit_refspec_args(get_reviewers(), topic)
     if not gargs:
         return refspec
     if '%' in refspec:
@@ -52,7 +54,7 @@ def decorate_refspec(refspec: str) -> str:
     return "{}%{}".format(refspec, gargs)
 
 def do_push(args: argparse.Namespace) -> None:
-    git.push(args.remote, decorate_refspec(args.refspec),
+    git.push(args.remote, decorate_refspec(args.refspec, args.topic),
              _in=sys.stdin, _out=sys.stdout, _err=sys.stderr)
 
 parser = argparse.ArgumentParser()
@@ -61,6 +63,7 @@ subbies.required = True
 push = subbies.add_parser("push", help="Push changes to Gerrit with reviewers")
 push.add_argument("remote")
 push.add_argument("refspec")
+push.add_argument("topic")
 push.set_defaults(func=do_push)
 
 args = parser.parse_args()
