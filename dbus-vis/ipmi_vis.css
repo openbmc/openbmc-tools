@@ -1,0 +1,89 @@
+body {
+	font-family: "monospace";
+	font-size: 12px;
+}
+
+#div_title, #div_group_by, #div_canvas, #div_navi_and_replay, #ipmi_replay {
+  text-align: center
+}
+
+#my_canvas, #capture_info {
+  border: 1px grey dashed;
+}
+
+#capture_info {
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#ipmi_replay_output {
+  margin: auto
+}
+
+#title_capture, #title_open_file, #title_mode_select, #title_capture_info {
+	margin: auto;
+	text-align: center
+}
+
+#ipmi_replay {
+	display: none
+}
+
+#div_canvas {
+	margin-top: 2px
+}
+
+#my_canvas_sensors, #span_group_by_sensors {
+	border: 1px #888 solid
+}
+
+#my_canvas_dbus, #span_group_by_dbus {
+	border: 1px #008000 solid
+}
+
+#my_canvas_ipmi, #span_group_by_ipmi {
+	border: 1px #00c0c0 solid
+}
+
+#my_canvas_boost_asio_handler, #span_group_by_boost_asio_handler {
+	border: 1px #c03030 solid
+}
+
+#my_canvas_dbus, #my_canvas_ipmi, #my_canvas_boost_asio_handler, #my_canvas_sensors {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#blocker {
+	position: absolute;
+	top: 0; bottom: 0; display: block;
+	width: 100%; height: 100%;
+	background-color: rgba(128, 128, 128, 0.6);
+	display: none;
+}
+
+#blocker_caption {
+	position: absolute;
+	top: 44%;
+	width: 100%;
+	color: #00F;
+	background-color: #CCF;
+}
+
+#welcome_screen {
+	border: 1px dashed black;
+	height: 300px;
+	text-align: left;
+}
+
+#welcome_screen_content {
+	margin-left: auto;
+	margin-right: auto;
+	width: 500px;
+}
+
+#span_group_by_dbus, #span_group_by_ipmi, #span_group_by_boost_asio_handler,
+#div_navi_and_replay{
+  display: none;
+}
