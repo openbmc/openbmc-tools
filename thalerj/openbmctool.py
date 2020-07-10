@@ -16,7 +16,6 @@
 """
 import argparse
 import requests
-import simplejson
 import getpass
 import json
 import os
