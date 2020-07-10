@@ -3050,7 +3050,7 @@ def certificateUpdate(host, args, session):
     """
     httpHeader = {'Content-Type': 'application/octet-stream'}
     httpHeader.update(xAuthHeader)
-    data = open(args.fileloc, 'rb').read()
+    data = open(args.fileloc, 'r').read()
     try:
         if redfishSupportPresent(host, session):
             if(args.type.lower() == 'server' and args.service.lower() != "https"):
@@ -3129,7 +3129,7 @@ def certificateReplace(host, args, session):
                       replace sub command
          @param session: the active session to use
     """
-    cert = open(args.fileloc, 'rb').read()
+    cert = open(args.fileloc, 'r').read()
     try:
         if redfishSupportPresent(host, session):
             httpHeader = {'Content-Type': 'application/json'}
