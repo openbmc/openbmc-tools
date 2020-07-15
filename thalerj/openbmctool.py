@@ -64,8 +64,10 @@ class NBDPipe:
 
         token = gettoken(args)
         self.conn = http.client.HTTPSConnection(args.host,port=443)
-        URI = "/redfish/v1/Systems/system/LogServices/SystemDump/Entries/"+str(args.dumpNum)+"/Actions/Oem/OpenBmc/LogEntry.DownloadLog"
-        self.conn.request("POST",URI, headers={"X-Auth-Token":token})
+
+        uri = "/redfish/v1/Systems/system/LogServices/Dump/attachment/"+args.dumpNum
+
+        self.conn.request("GET",uri, headers={"X-Auth-Token":token})
 
     def openTCPSocket(self):
         # Create a TCP/IP socket
@@ -110,11 +112,11 @@ class NBDPipe:
                 s.close()
 
 def getsize(host,args,session):
-    url = "https://"+host+"/redfish/v1/Systems/system/LogServices/SystemDump/Entries/"+str(args.dumpNum)
+    url = "https://"+host+"/redfish/v1/Systems/system/LogServices/Dump/Entries/"+str(args.dumpNum)
     try:
         resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         if resp.status_code==200:
-            size = resp.json()["Oem"]["OpenBmc"]['SizeInB']
+            size = resp.json()["Oem"]["OpenBmc"]['AdditionalDataSizeBytes']
             return size
         else:
             return "Failed get Size"
@@ -1739,8 +1741,7 @@ def systemDumpList(host, args, session):
          @param session: the active session to use
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
     """
-    print("in systemDumpList")
-    url = "https://"+host+"/redfish/v1/Systems/system/LogServices/"+args.dumpType+"/Entries"
+    url = "https://"+host+"/redfish/v1/Systems/system/LogServices/Dump/Entries"
     try:
         r = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         dumpList = r.json()
@@ -1770,7 +1771,7 @@ def systemDumpDelete(host, args, session):
         else:
             dumpList.append(args.dumpNum)
         for dumpNum in dumpList:
-            url = 'https://'+host+'/redfish/v1/Systems/system/LogServices/'+args.dumpType+'/Entries/'+ str(dumpNum)
+            url = 'https://'+host+'/redfish/v1/Systems/system/LogServices/Dump/Entries/'+ str(dumpNum)
             try:
                 r = session.delete(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
                 if r.status_code == 200:
@@ -1797,7 +1798,7 @@ def systemDumpDeleteAll(host, args, session):
          @param session: the active session to use
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
     """
-    url = 'https://'+host+'/redfish/v1/Systems/system/LogServices/'+args.dumpType+'/Actions/LogService.ClearLog'
+    url = 'https://'+host+'/redfish/v1/Systems/system/LogServices/Dump/Actions/LogService.ClearLog'
     try:
         r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
         if(r.status_code == 200 and not args.json):
@@ -1820,7 +1821,7 @@ def systemDumpCreate(host, args, session):
          @param session: the active session to use
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
     """
-    url =  'https://'+host+'/redfish/v1/Systems/system/LogServices/'+args.dumpType+'/Actions/Oem/Openbmc/LogService.CreateLog'
+    url =  'https://'+host+'/redfish/v1/Systems/system/LogServices/Dump/Actions/Oem/OemLogService.CollectDiagnosticData'
     try:
         r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
         if(r.status_code == 200 and not args.json):
