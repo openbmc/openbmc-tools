@@ -42,7 +42,7 @@ def gerrit_refspec_args(reviewers: Optional[List[str]]=None, topic: str=None) ->
     if reviewers:
         argl.extend("r={}".format(addr) for addr in reviewers)
     if topic:
-        argl.append("topic={}".format(topic));
+        argl.append("topic={}".format(topic))
     return ",".join(argl)
 
 def decorate_refspec(refspec: str, topic: str) -> str:
@@ -63,7 +63,7 @@ subbies.required = True
 push = subbies.add_parser("push", help="Push changes to Gerrit with reviewers")
 push.add_argument("remote")
 push.add_argument("refspec")
-push.add_argument("topic")
+push.add_argument("topic", nargs='?', default=None)
 push.set_defaults(func=do_push)
 
 args = parser.parse_args()
