@@ -3641,8 +3641,7 @@ def setDomainName(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 403:
-        return "The specified Interface"+"("+args.Interface+")"+\
-        " doesn't exist"
+        return "Failed to set Domain Name"
 
     return res.text
 
@@ -3669,8 +3668,7 @@ def getMACAddress(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 404:
-        return "The specified Interface"+"("+args.Interface+")"+\
-        " doesn't exist"
+        return "Failed to get MACAddress"
 
     return res.text
 
@@ -3699,8 +3697,7 @@ def setMACAddress(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 403:
-        return "The specified Interface"+"("+args.Interface+")"+\
-        " doesn't exist"
+        return "Failed to set MACAddress"
 
     return res.text
 
@@ -3726,7 +3723,7 @@ def getDefaultGateway(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 404:
-        return "Failed to get Default Gateway info!!"
+        return "Failed to get Default Gateway info"
 
     return res.text
 
@@ -3754,7 +3751,7 @@ def setDefaultGateway(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 403:
-        return "Failed to set Default Gateway!!"
+        return "Failed to set Default Gateway"
 
     return res.text
 
@@ -3835,8 +3832,7 @@ def setDNS(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 403:
-        return "The specified Interface"+"("+args.Interface+")" +\
-            " doesn't exist"
+        return "Failed to set DNS"
 
     return res.text
 
@@ -3891,8 +3887,7 @@ def setNTP(host, args, session):
     except(requests.exceptions.ConnectionError) as err:
         return connectionErrHandler(args.json, "ConnectionError", err)
     if res.status_code == 403:
-        return "The specified Interface"+"("+args.Interface+")" +\
-            " doesn't exist"
+        return "Failed to set NTP"
 
     return res.text
 
