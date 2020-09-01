@@ -115,7 +115,7 @@ if [ -z "$ARG_IF" ]
 then
 	cat >> "$OF_FILE"
 else
-	cat < "$IF_FILE" >> "$OF_FILE"
+	cat < "$ARG_IF" >> "$OF_FILE"
 fi
 OF_SUFFIX_OFF=$(filesize "$OF_FILE")
 
