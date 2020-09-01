@@ -97,26 +97,48 @@ OF_FILE=$(mktemp)
 if [ -z "$ARG_SEEK" ]
 then
 	PREFIX_COUNT=
+	INSERT_SEEK=
 else
 	PREFIX_COUNT='count='$ARG_SEEK
+	INSERT_SEEK='seek='$ARG_SEEK
 fi
 
 if [ -z "$ARG_BS" ]
 then
 	PREFIX_BS=
+	INSERT_BS=
 else
 	PREFIX_BS='bs='$ARG_BS
+	INSERT_BS='bs='$ARG_BS
 fi
+
+if [ -z "$ARG_SKIP" ]
+then
+	INSERT_SKIP=
+else
+	INSERT_SKIP='skip='$ARG_SKIP
+fi
+
+if [ -z "$ARG_IF" ]
+then
+	INSERT_IF=
+else
+	INSERT_IF='if='$ARG_IF
+fi
+
+if [ -z "$ARG_COUNT" ]
+then
+	INSERT_COUNT=
+else
+	INSERT_COUNT='count='$ARG_COUNT
+fi
+
+# Create the prefix
 $DD $DATA_SOURCE of="$OF_FILE" $PREFIX_BS $PREFIX_COUNT $ARG_APPEND
 OF_UPDATE_OFF=$(filesize "$OF_FILE")
 
 # Append the source data
-if [ -z "$ARG_IF" ]
-then
-	cat >> "$OF_FILE"
-else
-	cat < "$ARG_IF" >> "$OF_FILE"
-fi
+dd "$INSERT_IF" of="$OF_FILE" $INSERT_BS $INSERT_COUNT $INSERT_SEEK $INSERT_SKIP
 OF_SUFFIX_OFF=$(filesize "$OF_FILE")
 
 if [ -z "$ARG_OF" ]
