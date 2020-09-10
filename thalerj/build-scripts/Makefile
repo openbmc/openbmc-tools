@@ -14,7 +14,7 @@ VER=1.18
 REL=1
 ARCH=noarch
 PROD=openbmctool
-RHEL_VER=7
+RHEL_VER=8
 NAME=$(PROD)-$(VER)-$(REL).$(ARCH)
 
 # Need to test RPMDIR to see if it is set. Otherwise set it.

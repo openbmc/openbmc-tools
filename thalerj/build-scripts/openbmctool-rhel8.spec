@@ -24,7 +24,7 @@ This package is to be applied to any linux machine that will be used to manage o
 It provides key functionality to easily work with the IBM OpenBMC RESTful API, making BMC management easy.
 
 %prep
-%setup -q -n %{name}-%{version}-%{release}
+%setup -q -n %{name}
 
 %install
 export DESTDIR=$RPM_BUILD_ROOT/opt/ibm/ras
