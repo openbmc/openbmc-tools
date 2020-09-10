@@ -290,15 +290,16 @@ def parse_fields(endian, stream):
 class MalformedPacketError(Exception):
     pass
 
-def parse_header(raw):
+def parse_header(raw, ignore_error):
     assert raw.endian in StructEndianLookup.keys()
     endian = StructEndianLookup[raw.endian]
     fixed = FixedHeader._make(struct.unpack("{}BBBBLL".format(endian), raw.header))
     astream = AlignedStream(raw.data, len(raw.header))
     fields = parse_fields(endian, astream)
     data, offset = astream.drain()
-    if fixed.length > len(data):
-        raise MalformedPacketError
+    if ignore_error == False:
+        if fixed.length > len(data):
+            raise MalformedPacketError
     return CookedHeader(fixed, fields), AlignedStream(data, offset)
 
 def parse_body(header, stream):
@@ -320,7 +321,7 @@ def parse_body(header, stream):
 
 def parse_message(raw):
     try:
-        header, data = parse_header(raw)
+        header, data = parse_header(raw, False)
         try:
             body = parse_body(header, data)
             return CookedMessage(header, body)
@@ -333,8 +334,16 @@ def parse_message(raw):
 
 def parse_packet(packet):
     data = bytes(packet)
-    msg = parse_message(RawMessage(data[0], data[:12], data[12:]))
-    return msg
+    raw = RawMessage(data[0], data[:12], data[12:])
+    try:
+        msg = parse_message(raw)
+        return msg
+    except MalformedPacketError as e:
+        # For a message that is so large that its payload data could not be parsed,
+        # only parse the header, then set its data field to empty.
+        header, data = parse_header(raw, True)
+        ret = CookedMessage(header, [])
+        return ret
 
 CallEnvelope = namedtuple("CallEnvelope", "cookie, origin")
 def parse_session(session, matchers, track_calls):
@@ -416,19 +425,33 @@ def main():
             help="Emit a JSON representation of the messages")
     parser.add_argument("--no-track-calls", action="store_true", default=False,
             help="Make a call response pass filters")
+    parser.add_argument("--progress", action="store_true",
+            help="Print progress in output")
     parser.add_argument("file", help="The pcap file")
     parser.add_argument("expressions", nargs="*",
             help="DBus message match expressions")
     args = parser.parse_args()
     stream = rdpcap(args.file)
     matchers = parse_match_rules(args.expressions)
+
+    idx = 0
+    N = len(stream)
+
     try:
         if args.json:
-            for (_, msg) in parse_session(stream, matchers, not args.no_track_calls):
-                print("{}".format(json.dumps(msg, default=packetconv)))
+            for (time, msg) in parse_session(stream, matchers, not args.no_track_calls):
+                if args.progress:
+                    print("{}/{} {}: {}".format(idx, N, time, json.dumps(msg, default=packetconv)))
+                    idx += 1
+                else:
+                    print("{}".format(json.dumps(msg, default=packetconv)))
         else:
             for (time, msg) in parse_session(stream, matchers, not args.no_track_calls):
-                print("{}: {}".format(time, msg))
+                if args.progress:
+                    print("{}/{} {}: {}".format(idx, N, time, msg))
+                    idx += 1
+                else:
+                    print("{}: {}".format(time, msg))
                 print()
     except BrokenPipeError:
         pass
