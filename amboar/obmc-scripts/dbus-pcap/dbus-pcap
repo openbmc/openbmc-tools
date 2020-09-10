@@ -290,15 +290,16 @@ def parse_fields(endian, stream):
 class MalformedPacketError(Exception):
     pass
 
-def parse_header(raw):
+def parse_header(raw, ignore_error):
     assert raw.endian in StructEndianLookup.keys()
     endian = StructEndianLookup[raw.endian]
     fixed = FixedHeader._make(struct.unpack("{}BBBBLL".format(endian), raw.header))
     astream = AlignedStream(raw.data, len(raw.header))
     fields = parse_fields(endian, astream)
     data, offset = astream.drain()
-    if fixed.length > len(data):
-        raise MalformedPacketError
+    if ignore_error == False:
+        if fixed.length > len(data):
+            raise MalformedPacketError
     return CookedHeader(fixed, fields), AlignedStream(data, offset)
 
 def parse_body(header, stream):
@@ -320,7 +321,7 @@ def parse_body(header, stream):
 
 def parse_message(raw):
     try:
-        header, data = parse_header(raw)
+        header, data = parse_header(raw, False)
         try:
             body = parse_body(header, data)
             return CookedMessage(header, body)
@@ -333,7 +334,14 @@ def parse_message(raw):
 
 def parse_packet(packet):
     data = bytes(packet)
-    msg = parse_message(RawMessage(data[0], data[:12], data[12:]))
+    raw = RawMessage(data[0], data[:12], data[12:])
+    try:
+        msg = parse_message(raw)
+    except MalformedPacketError as e:
+        # For a message that is so large that its payload data could not be parsed,
+        # just parse its header, then set its data field to empty.
+        header, data = parse_header(raw, True)
+        msg= CookedMessage(header, [])
     return msg
 
 CallEnvelope = namedtuple("CallEnvelope", "cookie, origin")
@@ -422,6 +430,10 @@ def main():
     args = parser.parse_args()
     stream = rdpcap(args.file)
     matchers = parse_match_rules(args.expressions)
+
+    idx = 0
+    N = len(stream)
+
     try:
         if args.json:
             for (_, msg) in parse_session(stream, matchers, not args.no_track_calls):
