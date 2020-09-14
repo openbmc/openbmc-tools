@@ -1,0 +1,73 @@
+#!/usr/bin/python3
+
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2020 IBM Corp.
+
+# https://en.wikipedia.org/wiki/Barometric_formula
+
+from math import exp, log
+import sys
+import argparse
+
+Pb = 101325.00
+Tb = 288.15
+Lb = -0.0065
+hb = 0
+Rstar = 8.3144598
+g0 = 9.80665
+M = 0.0289644
+C0 = 273.15
+
+def P(h):
+    return Pb * exp((-g0 * M * (h - hb)) / (Rstar * Tb))
+
+def T(h):
+    return (h - hb) * Lb + Tb
+
+def Hp(p):
+    return (log(p / Pb) * (Rstar * Tb)) / (-g0 * M) + hb
+
+def Ht(t):
+    return ((t - Tb) / Lb) + hb
+
+def K(c):
+    return C0 + c
+
+def C(k):
+    return k - C0
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--height", type=float, default=None)
+    parser.add_argument("--temperature", type=float, default=None)
+    parser.add_argument("--pressure", type=float, default=None)
+    args = parser.parse_args()
+    out = []
+    if args.height is not None:
+        local = []
+        local.append("Height")
+        p = P(args.height)
+        local.append("Pressure at {:.2f}m: {:.2f}Pa".format(args.height, p))
+        c = C(T(args.height))
+        local.append("Temperature at {:.2f}m: {:.2f}C".format(args.height, c))
+        out.append("\n\t".join(local))
+    if args.temperature is not None:
+        local = []
+        local.append("Temperature")
+        ht = Ht(K(args.temperature))
+        local.append("Height at {:.2f}C: {:.2f}m".format(args.temperature, ht))
+        p = P(ht)
+        local.append("Pressure at {:.2f}m: {:.2f}Pa".format(ht, p))
+        out.append("\n\t".join(local))
+    if args.pressure is not None:
+        local = []
+        local.append("Pressure")
+        hp = Hp(args.pressure)
+        local.append("Height at {:.2f}Pa: {:.2f}m".format(args.pressure, hp))
+        t = C(T(hp))
+        local.append("Temperature at {:.2f}m: {:.2f}C".format(hp, t))
+        out.append("\n\t".join(local))
+    print("\n\n".join(out))
+
+if __name__ == "__main__":
+    main()
