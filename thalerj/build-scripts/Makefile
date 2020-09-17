@@ -10,7 +10,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-VER=1.18
+VER=1.19
 REL=1
 ARCH=noarch
 PROD=openbmctool
