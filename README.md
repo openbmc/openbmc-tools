@@ -17,33 +17,6 @@ Then this repository aims to be the default destination for your otherwise
 un-homed scripts. As such we are setting the bar for submission pretty low,
 and we aim to make the process as easy as possible.
 
-## Catalogue of scripts
-
-### Users
-
-* [`openbmc-events`](geissonator/openbmc-events/): Query error events on the target server
-* [`openbmc-sensors`](geissonator/openbmc-events/): Query sensors on the target server
-* [`openbmc-sfw`](geissonator/openbmc-events/): Manage host and BMC firmware images on the target server
-* [`openbmctool`](thalerj/): A general purpose tool for user interactions with OpenBMC
-* [`pretty-journal`](post-process/): Convert journalctl's 'pretty' output to regular output
-* [`upload_and_update`](leiyu/): Upload a tarball to TFTP server and update BMC with it
-
-### Developers
-
-* [`netboot`](amboar/obmc-scripts/netboot/): Painless netboot of BMC kernels
-* [`obmc-gerrit`](amboar/obmc-scripts/maintainers/): Automagically add reviewers to changes pushed to Gerrit
-* [`reboot`](amboar/obmc-scripts/reboot/): Endlessly reboot OpenPOWER hosts
-* [`tracing`](amboar/obmc-scripts/tracing/): Enable and clean up kernel tracepoints remotely
-* [`witherspoon-debug`](amboar/obmc-scripts/witherspoon-debug/): Deploy the debug tools tarball to Witherspoon BMCs
-
-### Maintainers
-
-* [`cla-signers`](emilyshaffer/cla-signers): Check if a contributor has signed the OpenBMC CLA
-
-### Project Administrators
-
-* [`openbmc-autobump.py`](infra/): Update commit IDs in bitbake recipes to bring in new changes
-
 ## Sending patches
 
 Please use gerrit for all patches to this repository:
@@ -63,19 +36,14 @@ there are egregious issues.
 ## What you must have in your patches
 
 We don't ask for much, but you need to give us at least a
-[Signed-off-by](https://developercertificate.org/), and put your work under the
-Apache 2.0 license. Licensing everything under Apache 2.0 will just hurt our
-heads less. Lets keep the lawyers off our backs. ^
-
-^Any exceptions must be accompanied by a LICENSE file in the relevant
-subdirectory, and be compatible with Apache 2.0. You thought you would get away
-without any fine print?
+[Signed-off-by](https://developercertificate.org/), use SPDX markers in your
+source files and put your work under an Apache 2.0 compatible license.
 
 ## How you consume the repository
 
-There's no standard way to install the scripts housed in the here, so adding
-parts of the repository to your PATH might be a bit of a dice-roll. We may also
-move or remove scripts from time to time as part of housekeeping. It's probably
-best to copy things out if you need stability.
+There's no standard way to install the scripts housed here, and adding parts of
+the repository to your PATH might be a bit of a dice-roll. We may also move or
+remove scripts from time to time as part of housekeeping. It's probably best to
+copy things out if you need stability.
 
 [1]: https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#submitting-changes-via-gerrit-server
