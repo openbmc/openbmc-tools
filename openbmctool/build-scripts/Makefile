@@ -23,14 +23,14 @@ RPMDIR := $(if $(RPMDIR),$(RPMDIR),$(shell pwd)/build/rpm)
 # Need to test DEBDIR to see if it is set. Otherwise set it.
 DEBDIR := $(if $(DEBDIR),$(DEBDIR),$(shell pwd)/build/deb)
 
-default: 
+default:
 	mkdir -p ./build
 clean: ;rm -rf ./build
-remove: 
+remove:
 	rm -f /usr/bin/openbmctool
 	rm -f /opt/ibm/ras/bin/openbmctool.py
 	rm -f /opt/ibm/ras/lib/policyTable.json
-install: 
+install:
 	cp ../openbmctool.py $(DESTDIR)/opt/ibm/ras/bin
 	cp ../policyTable.json $(DESTDIR)/opt/ibm/ras/lib
 	ln -s -f $(DESTDIR)/opt/ibm/ras/bin/openbmctool.py $(DESTDIR)/usr/bin/openbmctool
