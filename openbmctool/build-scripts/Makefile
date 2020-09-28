@@ -11,7 +11,7 @@
 #    limitations under the License.
 
 VER=1.19
-REL=1
+REL=2
 ARCH=noarch
 PROD=openbmctool
 RHEL_VER=8
