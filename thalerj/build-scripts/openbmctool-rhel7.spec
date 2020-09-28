@@ -14,7 +14,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Requires: python36
 Requires: python36-requests
-Requires: python36-simplejson
 
 # Turn off the brp-python-bytecompile script
 %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
