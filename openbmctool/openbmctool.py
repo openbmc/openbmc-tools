@@ -115,7 +115,7 @@ def getsize(host,args,session):
     try:
         resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         if resp.status_code==200:
-            size = resp.json()["Oem"]["OpenBmc"]['AdditionalDataSizeBytes']
+            size = resp.json()['AdditionalDataSizeBytes']
             return size
         else:
             return "Failed get Size"
@@ -1481,6 +1481,33 @@ def chassis(host, args, session):
         return "This feature is not yet implemented"
     return result
 
+def getTask(host, args, session):
+    """
+         Get operation on the Task Monitor URI
+
+         @param host: string, the hostname or IP address of the bmc
+         @param args: contains additional arguments used by the task sub command
+         @param session: the active session to use
+         @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
+    """
+    if args.taskURI is not None:
+        url ='https://'+host+str(args.taskURI)
+        try:
+            r = session.post(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
+            if (r.status_code == 200 and not args.json):
+                return r.text
+            elif (r.status_code == 200 and args.json):
+                return r.json()
+            else:
+                return ('Failed to retrieve the data on Task Monitor URI')
+        except(requests.exceptions.Timeout):
+            return connectionErrHandler(args.json, "Timeout", None)
+        except(requests.exceptions.ConnectionError) as err:
+            return connectionErrHandler(args.json, "ConnectionError", err)
+    else:
+        return 'You must specify the Task Monitor URI'
+
+
 def dumpRetrieve(host, args, session):
     """
          Downloads dump of given dump type
@@ -1820,9 +1847,10 @@ def systemDumpCreate(host, args, session):
          @param session: the active session to use
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
     """
-    url =  'https://'+host+'/redfish/v1/Systems/system/LogServices/Dump/Actions/Oem/OemLogService.CollectDiagnosticData'
+    url =  'https://'+host+'/redfish/v1/Systems/system/LogServices/Dump/Actions/LogService.CollectDiagnosticData'
+    params = {'DiagnosticDataType':'OEM', 'OEMDiagnosticDataType':'System'}
     try:
-        r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
+        r = session.post(url, headers=jsonHeader, params=params, data = json.dumps(params), verify=False, timeout=baseTimeout)
         if(r.status_code == 200):
             return r.json()
         else:
@@ -4774,6 +4802,14 @@ def createCommandParser():
     #system quick health check
     parser_healthChk = subparsers.add_parser("health_check", help="Work with platform sensors")
     parser_healthChk.set_defaults(func=healthCheck)
+
+    #tasks
+    parser_tasks = subparsers.add_parser("task", help="Work with tasks")
+    tasks_sub = parser_tasks.add_subparsers(title='subcommands', description='valid subcommands',help="sub-command help", dest='command')
+    tasks_sub.required = True
+    get_Task = tasks_sub.add_parser('get', help="Get on Task Monitor URL")
+    get_Task.add_argument("-u", "--taskURI", help="Task Monitor URI")
+    get_Task.set_defaults(func=getTask)
 
     #work with dumps
     parser_bmcdump = subparsers.add_parser("dump", help="Work with dumps")
