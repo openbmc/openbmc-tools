@@ -115,7 +115,7 @@ def getsize(host,args,session):
     try:
         resp = session.get(url, headers=jsonHeader, verify=False, timeout=baseTimeout)
         if resp.status_code==200:
-            size = resp.json()["Oem"]["OpenBmc"]['AdditionalDataSizeBytes']
+            size = resp.json()['AdditionalDataSizeBytes']
             return size
         else:
             return "Failed get Size"
@@ -1820,9 +1820,10 @@ def systemDumpCreate(host, args, session):
          @param session: the active session to use
          @param args.json: boolean, if this flag is set to true, the output will be provided in json format for programmatic consumption
     """
-    url =  'https://'+host+'/redfish/v1/Systems/system/LogServices/Dump/Actions/Oem/OemLogService.CollectDiagnosticData'
+    url =  'https://'+host+'/redfish/v1/Systems/system/LogServices/Dump/Actions/LogService.CollectDiagnosticData'
+    params = {'DiagnosticDataType':'OEM', 'OEMDiagnosticDataType':'System'}
     try:
-        r = session.post(url, headers=jsonHeader, json = {"data": []}, verify=False, timeout=baseTimeout)
+        r = session.post(url, headers=jsonHeader, params=params, data = json.dumps(params), verify=False, timeout=baseTimeout)
         if(r.status_code == 200):
             return r.json()
         else:
