@@ -2980,6 +2980,28 @@ def deleteFWVersion(host, args, session):
     else:
         return ('Unable to delete the specified firmware version')
 
+def deleteFWAll(host, args, session):
+    """
+         deletes ALL contents for firmware software catalog
+
+         @param host: string, the hostname or IP address of the BMC
+         @param args: contains additional arguments used by the fwflash sub command
+         @param session: the active session to use
+    """
+
+    print("Deleting ALL firmware versions")
+    url="https://"+host+"/xyz/openbmc_project/software/action/DeleteAll"
+    data = "{\"data\": [] }"
+
+    try:
+        res = session.post(url, headers=jsonHeader, data=data, verify=False, timeout=baseTimeout)
+    except(requests.exceptions.Timeout):
+        return(connectionErrHandler(args.json, "Timeout", None))
+    if res.status_code == 200:
+        return ('All firmware versions were deleted')
+    else:
+        return ('Uspecified error while deleting All firmware versions')
+
 
 def restLogging(host, args, session):
     """
@@ -4885,6 +4907,9 @@ def createCommandParser():
     fwDelete = fwflash_subproc.add_parser('delete', help="Delete an existing firmware version")
     fwDelete.add_argument('versionID', help="The version ID to delete from the firmware list. Ex: 63c95399")
     fwDelete.set_defaults(func=deleteFWVersion)
+
+    fwDeleteAll = fwflash_subproc.add_parser('deleteAll', help="Delete ALL firmware versions")
+    fwDeleteAll.set_defaults(func=deleteFWAll)
 
     #logging
     parser_logging = subparsers.add_parser("logging", help="logging controls")
