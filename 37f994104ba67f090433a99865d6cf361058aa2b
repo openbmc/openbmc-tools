@@ -1,0 +1,572 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a0a7253_b6016253",
+        "filename": "mock-sensor-tool/README",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Please fill this section out.\n\nI think it\u0027d be good to give examples of how you used it in real life(how you get the PID of hwmon for instance).\n\nIt\u0027d also be beneficial for future developers (who may not be as familiar with PTRACE as you) for you to unravel what\u0027s happening in \"init\" as there\u0027s a lot in there, especially with what uregs refer to what. Bonus points for pointing to some documentation you followed as well.",
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0eb4731_983f163e",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Same with above:\n\nhttps://github.com/openbmc/docs/blob/master/cpp-style-and-conventions.md#variables\n\n\"Variables should all be lowerCamelCase, including class members, with no underscores.\"",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 37
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02af08f8_3897d6e5",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "I think it\u0027d be good to back this up with a reference.\n\nSomething like: \nhttps://www-numi.fnal.gov/offline_software/srt_public_context/WebDocs/Errors/unix_system_errors.html",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 24
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8085800c_59b8718a",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "I think it\u0027d be good to note that the error codes should be in positive (as sometimes, we may think of error codes as being negative).",
+      "range": {
+        "startLine": 71,
+        "startChar": 30,
+        "endLine": 71,
+        "endChar": 58
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06c021ef_bc0360cb",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Should there also be a limit?",
+      "range": {
+        "startLine": 91,
+        "startChar": 0,
+        "endLine": 93,
+        "endChar": 30
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ccd3d9a3_c3ca915c",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "What does wstatus stand for? wait status? If it is, I think it\u0027d be better if it was written as waitStatus",
+      "range": {
+        "startLine": 120,
+        "startChar": 8,
+        "endLine": 120,
+        "endChar": 15
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ede97962_d01187ee",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "I think a brief comment explaining what this code block is doing will help with future debugging.",
+      "range": {
+        "startLine": 121,
+        "startChar": 0,
+        "endLine": 132,
+        "endChar": 5
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0c7932c7_29de310f",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Same with above:\n\nhttps://github.com/openbmc/docs/blob/master/cpp-style-and-conventions.md#variables\n\n\"Variables should all be lowerCamelCase, including class members, with no underscores.\"",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 138,
+        "endChar": 68
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8b8fb25_f362ed3d",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "I usually prefer to have logs or comments at early exits like this, but since we don\u0027t want to fill the logs, I think it\u0027d be good to have a short comment explaining what it means for \"_is_active\" to not be true (since the reader maybe too lazy to scroll up to the header for what \"_is_active\" is for).",
+      "range": {
+        "startLine": 141,
+        "startChar": 12,
+        "endLine": 141,
+        "endChar": 17
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2286f396_374041ee",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Same here (although I guess it\u0027s somewhat obvious).",
+      "range": {
+        "startLine": 148,
+        "startChar": 12,
+        "endLine": 148,
+        "endChar": 17
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1a96071_f944d55e",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "If you\u0027re going to break with the \"if\", I think it\u0027s cleaner to read if you just take out the else here (saves on indentation).",
+      "range": {
+        "startLine": 148,
+        "startChar": 11,
+        "endLine": 151,
+        "endChar": 9
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6e70a45_4eaf2267",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Same with above:\n\nhttps://github.com/openbmc/docs/blob/master/cpp-style-and-conventions.md#variables\n\n\"Variables should all be lowerCamelCase, including class members, with no underscores.\"",
+      "range": {
+        "startLine": 152,
+        "startChar": 0,
+        "endLine": 152,
+        "endChar": 33
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3124792e_eecae4ea",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Same as above, a brief comment on what\u0027s going on here (and why we\u0027re continuing early after doing PTRACE_SYSCALL)",
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82078eae_41aa98dd",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Same with above:\n\nhttps://github.com/openbmc/docs/blob/master/cpp-style-and-conventions.md#variables\n\n\"Variables should all be lowerCamelCase, including class members, with no underscores.\"",
+      "range": {
+        "startLine": 168,
+        "startChar": 0,
+        "endLine": 168,
+        "endChar": 42
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d639578_c411f6ba",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "What are we trying to do here?",
+      "range": {
+        "startLine": 187,
+        "startChar": 24,
+        "endLine": 188,
+        "endChar": 71
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07d322af_99a63ca3",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Could this be factored out to a separate method?",
+      "range": {
+        "startLine": 166,
+        "startChar": 0,
+        "endLine": 198,
+        "endChar": 17
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70bc32e0_986ac1bd",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "I think I may need some explanation of what math is going on here.",
+      "range": {
+        "startLine": 252,
+        "startChar": 30,
+        "endLine": 253,
+        "endChar": 47
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a52d514f_9efa0f55",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Let\u0027s use a constant instead of a magic number here. You\u0027ll want to update the comment description of `init` as well as it references 5 seconds.",
+      "range": {
+        "startLine": 296,
+        "startChar": 53,
+        "endLine": 296,
+        "endChar": 54
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "103c222e_fea89b6a",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "duration",
+      "range": {
+        "startLine": 322,
+        "startChar": 32,
+        "endLine": 322,
+        "endChar": 38
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8f01c9a_fe502951",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "maybe uint32_t or uint64_t since we can\u0027t have this be negative?",
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "400f3910_0271b82a",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "maybe uint8_t?",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 35,
+        "endChar": 7
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d6256ed_8d2ecf5d",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "https://github.com/openbmc/docs/blob/master/cpp-style-and-conventions.md#variables\n\n\"Variables should all be lowerCamelCase, including class members, with no underscores.\"",
+      "range": {
+        "startLine": 31,
+        "startChar": 1,
+        "endLine": 36,
+        "endChar": 32
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ea17d26_904b1f31",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Maybe clarify that you\u0027re referring to sys open",
+      "range": {
+        "startLine": 97,
+        "startChar": 36,
+        "endLine": 97,
+        "endChar": 42
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f39cbbfc_e01242a1",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "Same with above (ditto to everything below as well):\n\nhttps://github.com/openbmc/docs/blob/master/cpp-style-and-conventions.md#variables\n\n\"Variables should all be lowerCamelCase, including class members, with no underscores.\"",
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d3bc3f8_9597a2a7",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "I believe int is sufficient for file descriptor",
+      "range": {
+        "startLine": 132,
+        "startChar": 23,
+        "endLine": 132,
+        "endChar": 27
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13968207_ed812a6f",
+        "filename": "mock-sensor-tool/test/README",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-08T05:14:30Z",
+      "side": 1,
+      "message": "You don\u0027t really need a README for the test directory.",
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
