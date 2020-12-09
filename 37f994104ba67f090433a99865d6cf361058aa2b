@@ -864,6 +864,24 @@
     },
     {
       "key": {
+        "uuid": "b622d65c_697771b2",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-09T21:58:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d8133b07_b3fbe1dc",
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "400f3910_0271b82a",
         "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
         "patchSetId": 4
@@ -911,6 +929,30 @@
     },
     {
       "key": {
+        "uuid": "8961f936_d8beb3c6",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-09T21:58:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "22abffef_cf7a786f",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 35,
+        "endChar": 7
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1d6256ed_8d2ecf5d",
         "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
         "patchSetId": 4
@@ -955,6 +997,30 @@
       "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c4883549_55e3e467",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-09T21:58:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1003e0da_7d46e44f",
+      "range": {
+        "startLine": 31,
+        "startChar": 1,
+        "endLine": 36,
+        "endChar": 32
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
@@ -1084,6 +1150,30 @@
       "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b3b3bf2_af2555ee",
+        "filename": "mock-sensor-tool/mock-sensor-tool.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-09T21:58:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8088d7b2_835a679b",
+      "range": {
+        "startLine": 132,
+        "startChar": 23,
+        "endLine": 132,
+        "endChar": 27
+      },
+      "revId": "37f994104ba67f090433a99865d6cf361058aa2b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     },
     {
       "key": {
