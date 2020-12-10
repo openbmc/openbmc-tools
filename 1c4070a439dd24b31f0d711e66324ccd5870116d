@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bc21f3a8_079d5c6e",
+        "filename": "mock-sensor-tool/README",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-10T23:07:38Z",
+      "side": 1,
+      "message": "I think we should name this README.md so that it is parsed as a markdown document - would recommend following the markdown format as well. https://www.markdownguide.org/basic-syntax/",
+      "revId": "1c4070a439dd24b31f0d711e66324ccd5870116d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "788b89fa_2193e81a",
+        "filename": "mock-sensor-tool/README",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-10T23:07:38Z",
+      "side": 1,
+      "message": "It would be nice if you could include what command you ran to figure out this systemctl instance name.",
+      "range": {
+        "startLine": 10,
+        "startChar": 17,
+        "endLine": 10,
+        "endChar": 101
+      },
+      "revId": "1c4070a439dd24b31f0d711e66324ccd5870116d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f1580feb_740c419f",
+        "filename": "mock-sensor-tool/README",
+        "patchSetId": 8
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-10T23:07:38Z",
+      "side": 1,
+      "message": "(via ctrl+z and bg command)\n\nI believe is how you do it?",
+      "range": {
+        "startLine": 21,
+        "startChar": 12,
+        "endLine": 21,
+        "endChar": 22
+      },
+      "revId": "1c4070a439dd24b31f0d711e66324ccd5870116d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee6b1841_883c829a",
+        "filename": "mock-sensor-tool/README",
+        "patchSetId": 8
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-10T23:07:38Z",
+      "side": 1,
+      "message": "time constraints of the internship*",
+      "range": {
+        "startLine": 22,
+        "startChar": 64,
+        "endLine": 22,
+        "endChar": 80
+      },
+      "revId": "1c4070a439dd24b31f0d711e66324ccd5870116d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7253d543_e3594c58",
+        "filename": "mock-sensor-tool/README",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-10T23:07:38Z",
+      "side": 1,
+      "message": "use",
+      "range": {
+        "startLine": 29,
+        "startChar": 30,
+        "endLine": 29,
+        "endChar": 34
+      },
+      "revId": "1c4070a439dd24b31f0d711e66324ccd5870116d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
