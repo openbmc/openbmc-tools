@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4290304e_d1d3c2df",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000948
+      },
+      "writtenOn": "2020-12-10T22:32:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "388702f0_34bd6319",
+      "range": {
+        "startLine": 70,
+        "startChar": 16,
+        "endLine": 70,
+        "endChar": 119
+      },
+      "revId": "7e42841ae07ec2f5926e58abec53da00ee8e38bc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a2b4be38_8d7b307a",
         "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
         "patchSetId": 5
@@ -39,6 +63,24 @@
       "revId": "7e42841ae07ec2f5926e58abec53da00ee8e38bc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be337495_2c013a9f",
+        "filename": "mock-sensor-tool/mock-sensor-tool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1000948
+      },
+      "writtenOn": "2020-12-10T22:32:48Z",
+      "side": 1,
+      "message": "Put an explicit inline because it was inlined previously but I removed it since the compiler is probably doing it anyways",
+      "parentUuid": "a2b4be38_8d7b307a",
+      "revId": "7e42841ae07ec2f5926e58abec53da00ee8e38bc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
