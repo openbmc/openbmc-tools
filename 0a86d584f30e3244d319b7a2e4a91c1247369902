@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c4971dc5_01f7e18e",
+        "filename": "mock-sensor-tool/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-11T00:30:35Z",
+      "side": 1,
+      "message": "nit: I think it\u0027d be good to give an example grep filter after this line.\nSomething like: \n\nFor example: `systemctl | grep xyz.openbmc_project.Hwmon@`",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 49
+      },
+      "revId": "0a86d584f30e3244d319b7a2e4a91c1247369902",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9c247ea_e7df959a",
+        "filename": "mock-sensor-tool/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-11T00:30:35Z",
+      "side": 1,
+      "message": "For markdown, it\u0027s good to wrap the individual lines with `` to indicate that it\u0027s code.",
+      "range": {
+        "startLine": 12,
+        "startChar": 1,
+        "endLine": 13,
+        "endChar": 101
+      },
+      "revId": "0a86d584f30e3244d319b7a2e4a91c1247369902",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2483008f_fae4fc31",
+        "filename": "mock-sensor-tool/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1000388
+      },
+      "writtenOn": "2020-12-11T00:30:35Z",
+      "side": 1,
+      "message": "Wrap this in ``",
+      "range": {
+        "startLine": 25,
+        "startChar": 16,
+        "endLine": 25,
+        "endChar": 23
+      },
+      "revId": "0a86d584f30e3244d319b7a2e4a91c1247369902",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
