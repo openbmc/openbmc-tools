@@ -174,7 +174,7 @@ def find_and_process_bumps(meta, args):
 
         git.commit(sh.echo(commit_msg), '-s', '-F', '-', _cwd=meta)
 
-        push_args = ['origin', 'HEAD:refs/for/{}/autobump'.format(args.branch)]
+        push_args = ['origin', 'HEAD:refs/for/{}%topic=autobump'.format(args.branch)]
         if not args.dry_run:
             git.push(*push_args, _cwd=meta)
 
