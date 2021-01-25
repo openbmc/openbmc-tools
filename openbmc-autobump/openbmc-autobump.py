@@ -91,7 +91,10 @@ def find_candidate_recipes(meta, args):
         log('{}'.format(e), args)
         return []
 
-    grep_args = ['-l', '-e', '_URI', '--and', '-e', 'github.com/openbmc']
+    match_suffixes = ('bb', 'bbclass', 'inc')
+    pathspecs = ('*.{}'.format(x) for x in match_suffixes)
+    grep_args = ('-l', '-e', '_URI', '--and', '-e', 'github.com/openbmc')
+    grep_args = (*grep_args, *pathspecs)
     try:
         return git.grep(*grep_args, _cwd=meta).stdout.decode('utf-8').split()
     except sh.ErrorReturnCode_1:
