@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package bmcmetrics.metricproto;
+
+message BmcMemoryMetric {
+  int32 mem_available = 1;
+  int32 slab = 2;
+  int32 kernel_stack = 3;
+}
+
+message BmcUptimeMetric {
+  float uptime = 1;             // Uptime (wall clock time)
+  float idle_process_time = 2;  // Idle process time across all cores
+}
+
+message BmcDiskSpaceMetric {
+  int32 rwfs_kib_available = 1;  // Free space in RWFS in KiB
+}
+
+// The following messages use string tables to save space
+message BmcProcStatMetric {
+  message BmcProcStat {
+    int32 sidx_cmdline = 1;  // complete command line
+    float utime = 2;         // Time (seconds) in user mode
+    float stime = 3;         // Time (seconds) in kernel mode
+  }
+  repeated BmcProcStat stats = 10;
+}
+
+message BmcFdStatMetric {
+  message BmcFdStat {
+    int32 sidx_cmdline = 1;  // complete command line
+    int32 fd_count = 2;      // count of open FD's
+  }
+  repeated BmcFdStat stats = 10;
+}
+
+message BmcStringTable {
+  message StringEntry {
+    string value = 1;
+  }
+  repeated StringEntry entries = 10;
+}
+
+message BmcMetricSnapshot {
+  BmcStringTable string_table = 1;
+  BmcMemoryMetric memory_metric = 2;
+  BmcUptimeMetric uptime_metric = 3;
+  BmcDiskSpaceMetric storage_space_metric = 4;
+  BmcProcStatMetric procstat_metric = 5;
+  BmcFdStatMetric fdstat_metric = 6;
+}
