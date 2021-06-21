@@ -10,6 +10,7 @@ from enum import Enum, unique
 from typing import (
     Dict,
     NamedTuple,
+    Tuple,
     Iterator,
     Sequence,
     Union,
@@ -182,6 +183,23 @@ def parse_maintainers(src: Iterator[str]) -> Dict[D, B]:
             break
         maintainers[repo[LineType.REPO]] = repo
     return maintainers
+
+
+def get_reviewers(mfile: str) -> Tuple[List[str], List[str]]:
+    maintainers: List[str] = list()
+    reviewers: List[str] = list()
+
+    with open(mfile) as mstream:
+        trash_preamble(mstream)
+        block = parse_block(mstream)
+        if not block:
+            return (maintainers, reviewers)
+        mlist = cast(List[Identity], block[LineType.MAINTAINER])
+        maintainers.extend(i.email.address for i in mlist)
+        if LineType.REVIEWER in block:
+            rlist = cast(List[Identity], block[LineType.REVIEWER])
+            reviewers.extend(i.email.address for i in rlist)
+    return (maintainers, reviewers)
 
 
 def assemble_name(name: str, dst: IO[str]) -> None:
