@@ -8,7 +8,7 @@
 # it exists).
 
 from obmc import maintainers
-from typing import cast, Callable, List, Optional
+from typing import cast, Callable, List, Optional, Tuple
 import argparse
 import os
 import sh  # type: ignore
@@ -17,43 +17,51 @@ import sys
 git: Callable[..., str] = sh.git.bake()
 
 
-def get_reviewers(root: Optional[str] = None, mname: str = "MAINTAINERS") -> List[str]:
+def get_reviewers(
+    root: Optional[str] = None, mname: str = "MAINTAINERS"
+) -> Tuple[List[str], List[str]]:
+    maints: List[str] = list()
     reviewers: List[str] = list()
     if not root:
         root = git("rev-parse", "--show-toplevel").strip()
     mfile = os.path.join(root, mname)
     if not os.path.exists(mfile):
-        return reviewers
+        return (maints, reviewers)
     with open(mfile, "r") as mstream:
         maintainers.trash_preamble(mstream)
         block = maintainers.parse_block(mstream)
         if not block:
-            return reviewers
+            return (maints, reviewers)
         mlist = cast(
             List[maintainers.Identity], block[maintainers.LineType.MAINTAINER]
         )
-        reviewers.extend(i.email.address for i in mlist)
+        maints.extend(i.email.address for i in mlist)
         if maintainers.LineType.REVIEWER in block:
             rlist = cast(
                 List[maintainers.Identity], block[maintainers.LineType.REVIEWER]
             )
             reviewers.extend(i.email.address for i in rlist)
-    return reviewers
+    return (maints, reviewers)
 
 
 def gerrit_refspec_args(
-    reviewers: Optional[List[str]] = None, topic: str = None
+    maintainers: Optional[List[str]] = None,
+    reviewers: Optional[List[str]] = None,
+    topic: str = None,
 ) -> str:
     argl: List[str] = []
+    if maintainers:
+        argl.extend("r={}".format(addr) for addr in maintainers)
     if reviewers:
-        argl.extend("r={}".format(addr) for addr in reviewers)
+        argl.extend("cc={}".format(addr) for addr in reviewers)
     if topic:
         argl.append("topic={}".format(topic))
     return ",".join(argl)
 
 
 def decorate_refspec(refspec: str, topic: str) -> str:
-    gargs = gerrit_refspec_args(get_reviewers(), topic)
+    (maintainers, reviewers) = get_reviewers()
+    gargs = gerrit_refspec_args(maintainers, reviewers, topic)
     if not gargs:
         return refspec
     if "%" in refspec:
