@@ -24,23 +24,11 @@ def get_reviewers(
     reviewers: List[str] = list()
     if not root:
         root = git("rev-parse", "--show-toplevel").strip()
+
     mfile = os.path.join(root, mname)
-    if not os.path.exists(mfile):
-        return (maints, reviewers)
-    with open(mfile, "r") as mstream:
-        maintainers.trash_preamble(mstream)
-        block = maintainers.parse_block(mstream)
-        if not block:
-            return (maints, reviewers)
-        mlist = cast(
-            List[maintainers.Identity], block[maintainers.LineType.MAINTAINER]
-        )
-        maints.extend(i.email.address for i in mlist)
-        if maintainers.LineType.REVIEWER in block:
-            rlist = cast(
-                List[maintainers.Identity], block[maintainers.LineType.REVIEWER]
-            )
-            reviewers.extend(i.email.address for i in rlist)
+    if os.path.exists(mfile):
+        return maintainers.get_reviewers(mfile)
+
     return (maints, reviewers)
 
 
