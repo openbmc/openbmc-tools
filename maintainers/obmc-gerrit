@@ -8,7 +8,8 @@
 # it exists).
 
 from obmc import maintainers
-from typing import cast, Callable, List, Optional, Tuple
+from obmc.reviewlist import ReviewList
+from typing import cast, Callable, List, Optional
 import argparse
 import os
 import sh  # type: ignore
@@ -19,9 +20,8 @@ git: Callable[..., str] = sh.git.bake()
 
 def get_reviewers(
     root: Optional[str] = None, mname: str = "MAINTAINERS"
-) -> Tuple[List[str], List[str]]:
-    maints: List[str] = list()
-    reviewers: List[str] = list()
+) -> ReviewList:
+
     if not root:
         root = git("rev-parse", "--show-toplevel").strip()
 
@@ -29,7 +29,7 @@ def get_reviewers(
     if os.path.exists(mfile):
         return maintainers.get_reviewers(mfile)
 
-    return (maints, reviewers)
+    return ReviewList()
 
 
 def gerrit_refspec_args(
@@ -48,8 +48,8 @@ def gerrit_refspec_args(
 
 
 def decorate_refspec(refspec: str, topic: str) -> str:
-    (maintainers, reviewers) = get_reviewers()
-    gargs = gerrit_refspec_args(maintainers, reviewers, topic)
+    revlist = get_reviewers()
+    gargs = gerrit_refspec_args(revlist.maintainers, revlist.reviewers, topic)
     if not gargs:
         return refspec
     if "%" in refspec:
@@ -69,8 +69,8 @@ def do_push(args: argparse.Namespace) -> None:
 
 
 def do_reviewers(args: argparse.Namespace) -> None:
-    (maintainers, reviewers) = get_reviewers()
-    print(gerrit_refspec_args(maintainers, reviewers))
+    revlist = get_reviewers()
+    print(gerrit_refspec_args(revlist.maintainers, revlist.reviewers))
 
 
 parser = argparse.ArgumentParser()
