@@ -8,17 +8,17 @@
 # it exists).
 
 from obmc import maintainers
-from typing import cast, List, Optional
+from typing import cast, Callable, List, Optional
 import argparse
 import os
-import sh
+import sh  # type: ignore
 import sys
 
-git = sh.git.bake()
+git: Callable[..., str] = sh.git.bake()
 
 
 def get_reviewers(root: Optional[str] = None, mname: str = "MAINTAINERS") -> List[str]:
-    reviewers = cast(List[str], list())
+    reviewers: List[str] = list()
     if not root:
         root = git("rev-parse", "--show-toplevel").strip()
     mfile = os.path.join(root, mname)
@@ -44,7 +44,7 @@ def get_reviewers(root: Optional[str] = None, mname: str = "MAINTAINERS") -> Lis
 def gerrit_refspec_args(
     reviewers: Optional[List[str]] = None, topic: str = None
 ) -> str:
-    argl = []
+    argl: List[str] = []
     if reviewers:
         argl.extend("r={}".format(addr) for addr in reviewers)
     if topic:
@@ -62,7 +62,8 @@ def decorate_refspec(refspec: str, topic: str) -> str:
 
 
 def do_push(args: argparse.Namespace) -> None:
-    git.push(
+    git(
+        "push",
         args.remote,
         decorate_refspec(args.refspec, args.topic),
         _in=sys.stdin,
