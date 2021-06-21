@@ -80,14 +80,23 @@ def do_push(args: argparse.Namespace) -> None:
     )
 
 
+def do_reviewers(args: argparse.Namespace) -> None:
+    (maintainers, reviewers) = get_reviewers()
+    print(gerrit_refspec_args(maintainers, reviewers))
+
+
 parser = argparse.ArgumentParser()
 subbies = parser.add_subparsers(dest="subcommand")
 subbies.required = True
+
 push = subbies.add_parser("push", help="Push changes to Gerrit with reviewers")
 push.add_argument("remote")
 push.add_argument("refspec")
 push.add_argument("topic", nargs="?", default=None)
 push.set_defaults(func=do_push)
+
+reviewers = subbies.add_parser("reviewers", help="Get the reviewer list.")
+reviewers.set_defaults(func=do_reviewers)
 
 args = parser.parse_args()
 args.func(args)
