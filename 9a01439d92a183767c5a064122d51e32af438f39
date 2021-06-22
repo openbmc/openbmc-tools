@@ -22,6 +22,30 @@
       "revId": "9a01439d92a183767c5a064122d51e32af438f39",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81a069d3_5c9b0584",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-06-22T01:28:49Z",
+      "side": 1,
+      "message": "black is slightly more opinionated than autopep8 and generally makes formatting more consistent.  autopep8 just ensures it passes the pep8 rules.\n\nhttps://black.readthedocs.io/en/stable/",
+      "parentUuid": "c738c21f_e00632a5",
+      "range": {
+        "startLine": 10,
+        "startChar": 32,
+        "endLine": 10,
+        "endChar": 39
+      },
+      "revId": "9a01439d92a183767c5a064122d51e32af438f39",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
