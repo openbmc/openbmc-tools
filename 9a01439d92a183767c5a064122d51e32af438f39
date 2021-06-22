@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c738c21f_e00632a5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-06-22T00:08:31Z",
+      "side": 1,
+      "message": "What\u0027s black? Is it like autopep8?\n\nAs for why autopep8 isn\u0027t part of the pep8 package, I have no idea.",
+      "range": {
+        "startLine": 10,
+        "startChar": 32,
+        "endLine": 10,
+        "endChar": 39
+      },
+      "revId": "9a01439d92a183767c5a064122d51e32af438f39",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
