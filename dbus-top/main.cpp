@@ -14,20 +14,98 @@
 
 #include <ncurses.h>
 
-void PrintHello()
+#include <ctime>
+#include <sstream>
+#include <string>
+#include <vector>
+
+#include "views.hpp"
+
+std::vector<std::string> g_sensor_list;
+
+int maxx, maxy, halfx, halfy;
+
+constexpr int NUM_WINDOWS = 4;
+// [0]: summary and history
+// [1]: detail info for 1 sensor
+// [2]: list of traffic
+// [3]: status bar
+
+WINDOW *g_windows[NUM_WINDOWS];
+
+Rect g_window_rects[NUM_WINDOWS];
+
+void CreateWindows()
 {
-    border('|', '|', '-', '-', '+', '+', '+', '+');
-    mvaddstr(1, 1, "Hello World");
-    mvaddstr(2, 1, "This is the beginning of the proposed dbus-top tool.");
-    mvaddstr(3, 1, "Thank you.");
+    for (int i = 0; i < NUM_WINDOWS; i++)
+    {
+        g_windows[i] = newwin(maxy, maxx, 0, 0);
+    }
 }
+
+void InitColorPairs()
+{
+    init_pair(1, COLOR_BLACK, COLOR_WHITE);
+    init_pair(2, COLOR_WHITE, COLOR_BLACK);
+}
+
+SummaryView *g_summary_window;
+SensorDetailView *g_sensor_detail_window;
+DBusStatListView *g_dbus_stat_list_view;
+FooterView *g_footer_view;
+std::vector<DBusTopWindow *> g_views;
+
+void UpdateWindowSizes()
+{
+    /* calculate window sizes and locations */
+    getmaxyx(stdscr, maxy, maxx);
+    halfx = maxx >> 1;
+    halfy = maxy >> 1;
+    for (DBusTopWindow *v : g_views)
+    {
+        v->OnResize(maxx, maxy);
+    }
+}
+
+// Refresh all views, but do not touch data
+void DBusTopRefresh()
+{
+    UpdateWindowSizes();
+    for (DBusTopWindow *v : g_views)
+    {
+        v->Render();
+    }
+}
+
 int main()
 {
-    initscr(); /* Start curses mode*/
-    PrintHello();
-    refresh(); /* Print it on to the real screen */
-    getch();   /* Wait for user input */
-    endwin();  /* End curses mode*/
+    // ncurses initialization
+    initscr();
+    use_default_colors();
+    start_color();
+    noecho();
+
+    // dbus-top initialization
+    InitColorPairs();
+    CreateWindows();
+
+    // Initialize views
+    g_summary_window = new SummaryView();
+    g_sensor_detail_window = new SensorDetailView();
+    g_dbus_stat_list_view = new DBusStatListView();
+    g_footer_view = new FooterView();
+    g_views.push_back(g_summary_window);
+    g_views.push_back(g_sensor_detail_window);
+    g_views.push_back(g_dbus_stat_list_view);
+    g_views.push_back(g_footer_view);
+    UpdateWindowSizes();
+    DBusTopRefresh();
 
     return 0;
+}
+
+__attribute__((destructor)) void ResetWindowMode()
+{
+    endwin();
+    echo();
 }
