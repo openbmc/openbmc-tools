@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "42add9ee_3061cfc8",
+        "filename": "dbus-top/views.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-07-27T02:00:41Z",
+      "side": 1,
+      "message": "MARGIN_BOTTOM?",
+      "range": {
+        "startLine": 141,
+        "startChar": 17,
+        "endLine": 141,
+        "endChar": 18
+      },
+      "revId": "d4d7b864440f239cc9fcb3e6b2c550171870a3fc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5fc9c68e_c3f79738",
+        "filename": "dbus-top/views.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-07-27T02:00:41Z",
+      "side": 1,
+      "message": "MARGIN_BOTTOM?",
+      "range": {
+        "startLine": 144,
+        "startChar": 25,
+        "endLine": 144,
+        "endChar": 26
+      },
+      "revId": "d4d7b864440f239cc9fcb3e6b2c550171870a3fc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
