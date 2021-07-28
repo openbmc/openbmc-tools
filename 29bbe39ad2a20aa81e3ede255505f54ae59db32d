@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fd8887c_ec19faac",
+        "filename": "pldm/pdrdump.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-07-28T22:22:57Z",
+      "side": 1,
+      "message": "Needs a subshell:\n\n timestamp\u003d\"$(date \u0027+%s\u0027)\"",
+      "range": {
+        "startLine": 2,
+        "startChar": 10,
+        "endLine": 2,
+        "endChar": 20
+      },
+      "revId": "29bbe39ad2a20aa81e3ede255505f54ae59db32d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fcee876b_ceb4f916",
+        "filename": "pldm/pdrdump.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-07-28T22:22:57Z",
+      "side": 1,
+      "message": "Use mktemp or take the path as an argument to the script (i.e. $1)",
+      "revId": "29bbe39ad2a20aa81e3ede255505f54ae59db32d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "019dc7a6_d786180a",
+        "filename": "pldm/pdrdump.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-07-28T22:22:57Z",
+      "side": 1,
+      "message": "Use mktemp: https://linux.die.net/man/1/mktemp",
+      "revId": "29bbe39ad2a20aa81e3ede255505f54ae59db32d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e95d35fd_7e0a54cd",
+        "filename": "pldm/pdrdump.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-07-28T22:22:57Z",
+      "side": 1,
+      "message": "Why not just append to $pdrdump_file without the intermediate $pdrtmp_file?",
+      "revId": "29bbe39ad2a20aa81e3ede255505f54ae59db32d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "22d1d9de_297a42b2",
+        "filename": "pldm/pdrdump.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-07-28T22:22:57Z",
+      "side": 1,
+      "message": "Do this with `trap cleanup EXIT`:\n\n cleanup() {\n  rm -f $pdrtmp_file\n }\n\n trap cleanup EXIT\n\n printf \"Dumping PDRs to $pdrdump_file\"\n ...",
+      "revId": "29bbe39ad2a20aa81e3ede255505f54ae59db32d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
