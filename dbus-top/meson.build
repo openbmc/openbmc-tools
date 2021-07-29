@@ -12,23 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(
-  'dbus-top',
-  'cpp',
-  version: '0.1',
-  default_options: [
-    'cpp_std=c++17',
-  ],
-)
+project('dbus-top', 'cpp', version
+    : '0.1', default_options
+    :
+    [
+        'cpp_std=c++17',
+    ], )
 bindir = get_option('prefix') / get_option('bindir')
-executable(
-  'dbus-top',
-  [ 'main.cpp' ],
-  dependencies: [
-    dependency('systemd'),
-    dependency('sdbusplus'),
-    dependency('ncurses'),
-  ],
-  install: true,
-  install_dir: bindir
-)
+executable('dbus-top',
+           [
+               'menu.cpp',
+               'analyzer.cpp',
+               'dbus_capture.cpp',
+               'sensorhelper.cpp',
+               'xmlparse.cpp',
+               'views.cpp',
+               'main.cpp',
+           ],
+           dependencies
+           :
+           [
+               dependency('systemd'),
+               dependency('sdbusplus'),
+               dependency('ncurses'),
+               dependency('threads'),
+           ],
+           install
+           : true, install_dir
+           : bindir)
