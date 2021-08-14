@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 #pragma once
 
 #include "histogram.hpp"
@@ -29,13 +28,13 @@ enum DBusTopSortField
     kInterface,
     kPath,
     kMember,
-    kSenderPID
+    kSenderPID,
+    kSenderCMD,
 };
 
-const std::string FieldNames[] = {"Sender", "Destination", "Interface",
-                                  "Path",   "Member",      "Sender PID"};
-const int FieldPreferredWidths[] = {12, 20, 12, 10, 10, 10};
-
+const std::string FieldNames[] = {"Sender", "Destination", "Interface", "Path",
+                                  "Member", "Sender PID",  "Sender CMD"};
+const int FieldPreferredWidths[] = {18, 20, 12, 10, 10, 10, 25};
 class DBusTopStatistics
 {
   public:
@@ -48,7 +47,7 @@ class DBusTopStatistics
         num_messages_(0), num_mc_(0), num_mr_(0), num_sig_(0), num_error_(0),
         seconds_since_last_sample_(0)
     {
-        fields_ = {kSender, kDestination};
+        fields_ = {kSender, kDestination, kSenderPID, kSenderCMD};
         stats_.clear();
     }
 
@@ -134,10 +133,11 @@ int GetSummaryIntervalInMillises();
 // typedef void (*SetDBusTopConnection)(const char* conn);
 namespace dbus_top_analyzer
 {
+
     void Process();
     void Finish();
     typedef void (*DBusTopStatisticsCallback)(DBusTopStatistics*,
-                                              Histogram<float>*);
+                                            Histogram<float>*);
     void SetDBusTopStatisticsCallback(DBusTopStatisticsCallback cb);
     void AnalyzerThread();
     // Methods for sending Object Mapper queries
