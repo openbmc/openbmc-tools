@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+<<<<<<< HEAD
 #include "main.hpp"
 
 #include "analyzer.hpp"
@@ -20,15 +21,17 @@
 #include "menu.hpp"
 #include "sensorhelper.hpp"
 #include "views.hpp"
+=======
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
 
 #include <ncurses.h>
-#include <stdio.h>
-#include <unistd.h>
 
-#include <iomanip>
+#include <ctime>
 #include <sstream>
-#include <thread>
+#include <string>
+#include <vector>
 
+<<<<<<< HEAD
 DBusTopWindow* g_current_active_view;
 SummaryView* g_summary_window;
 SensorDetailView* g_sensor_detail_view;
@@ -130,19 +133,23 @@ void UpdateWindowSizes()
         }
     }
 }
+=======
+#include "views.hpp"
 
-std::string FloatToString(float value)
-{
-    std::ostringstream temp;
-    // Set Fixed -Point Notation
-    temp << std::fixed;
-    temp << std::setprecision(2);
-    // Add double to stream
-    temp << value;
-    // Get string from output string stream
-    return temp.str();
-}
+std::vector<std::string> g_sensor_list;
 
+int maxx, maxy, halfx, halfy;
+
+constexpr int NUM_WINDOWS = 4;
+// [0]: summary and history
+// [1]: detail info for 1 sensor
+// [2]: list of traffic
+// [3]: status bar
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
+
+WINDOW *g_windows[NUM_WINDOWS];
+
+<<<<<<< HEAD
 void DBusTopRefresh()
 {
     UpdateWindowSizes();
@@ -171,59 +178,47 @@ void DBusTopStatisticsCallback(DBusTopStatistics* stat, Histogram<float>* hist)
     hist->Assign(g_histogram);
     float interval_secs = stat->seconds_since_last_sample_;
     if (interval_secs == 0)
+=======
+Rect g_window_rects[NUM_WINDOWS];
+
+void CreateWindows()
+{
+    for (int i = 0; i < NUM_WINDOWS; i++)
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
     {
-        interval_secs = GetSummaryIntervalInMillises() / 1000.0f;
+        g_windows[i] = newwin(maxy, maxx, 0, 0);
     }
+<<<<<<< HEAD
     g_summary_window->UpdateDBusTopStatistics(stat);
     stat->SetSortFieldsAndReset(g_dbus_stat_list_view->GetSortFields());
     // ReinitializeUI(); // Don't do it here, only when user presses [R]
     DBusTopRefresh();
    
+=======
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
 }
 
-void CycleHighlightedView()
+void InitColorPairs()
 {
-    int new_index = 0;
-    if (g_highlighted_view_index == -999)
-    {
-        new_index = 0;
-    }
-    else
-    {
-        new_index = g_highlighted_view_index + 1;
-    }
-    while (new_index < static_cast<int>(g_views.size()) &&
-           g_views[new_index]->selectable_ == false)
-    {
-        new_index++;
-    }
-    if (new_index >= static_cast<int>(g_views.size()))
-    {
-        new_index = -999;
-    }
-    // Un-highlight all
-    for (DBusTopWindow* v : g_views)
-    {
-        v->focused_ = false;
-    }
-    if (new_index != -999)
-    {
-        g_views[new_index]->focused_ = true;
-        g_current_active_view = g_views[new_index];
-    }
-    else
-    {
-        g_current_active_view = nullptr;
-    }
-    g_highlighted_view_index = new_index;
-    DBusTopRefresh();
+    init_pair(1, COLOR_BLACK, COLOR_WHITE);
+    init_pair(2, COLOR_WHITE, COLOR_BLACK);
 }
 
-int UserInputThread()
+SummaryView *g_summary_window;
+SensorDetailView *g_sensor_detail_window;
+DBusStatListView *g_dbus_stat_list_view;
+FooterView *g_footer_view;
+std::vector<DBusTopWindow *> g_views;
+
+void UpdateWindowSizes()
 {
-    bool needs_refresh = false;
-    while (true)
+    /* calculate window sizes and locations */
+    getmaxyx(stdscr, maxy, maxx);
+    halfx = maxx >> 1;
+    halfy = maxy >> 1;
+    for (DBusTopWindow *v : g_views)
     {
+<<<<<<< HEAD
         int c = getch();
         DBusTopWindow* curr_view = g_current_active_view;
         switch (c)
@@ -353,21 +348,30 @@ int UserInputThread()
         {
             DBusTopRefresh();
         }
+=======
+        v->OnResize(maxx, maxy);
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
     }
-    exit(0);
 }
 
-void ReinitializeUI()
+// Refresh all views, but do not touch data
+void DBusTopRefresh()
 {
+<<<<<<< HEAD
     endwin();
     initscr();
     use_default_colors();
     noecho();
 
     for (int i = 0; i < static_cast<int>(g_views.size()); i++)
+=======
+    UpdateWindowSizes();
+    for (DBusTopWindow *v : g_views)
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
     {
-        g_views[i]->RecreateWindow();
+        v->Render();
     }
+<<<<<<< HEAD
     refresh();
 }
 
@@ -384,23 +388,51 @@ int main(int argc, char** argv)
     dbus_top_analyzer::ListAllSensors();
     g_bargraph = new BarGraph<float>(300);
     g_histogram = new Histogram<float>();
+=======
+}
+
+int main()
+{
+    // ncurses initialization
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
     initscr();
     use_default_colors();
     start_color();
     noecho();
+<<<<<<< HEAD
     clear();
     g_dbus_statistics = new DBusTopStatistics();
+=======
+
+    // dbus-top initialization
+    InitColorPairs();
+    CreateWindows();
+
+    // Initialize views
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
     g_summary_window = new SummaryView();
-    g_sensor_detail_view = new SensorDetailView();
+    g_sensor_detail_window = new SensorDetailView();
     g_dbus_stat_list_view = new DBusStatListView();
+    g_footer_view = new FooterView();
     g_views.push_back(g_summary_window);
-    g_views.push_back(g_sensor_detail_view);
+    g_views.push_back(g_sensor_detail_window);
     g_views.push_back(g_dbus_stat_list_view);
-    g_sensor_detail_view->UpdateSensorSnapshot(g_sensor_snapshot);
+    g_views.push_back(g_footer_view);
     UpdateWindowSizes();
+<<<<<<< HEAD
     dbus_top_analyzer::SetDBusTopStatisticsCallback(&DBusTopStatisticsCallback);
     std::thread capture_thread(DbusCaptureThread);
     std::thread user_input_thread(UserInputThread);
     capture_thread.join();
+=======
+    DBusTopRefresh();
+
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
     return 0;
+}
+
+__attribute__((destructor)) void ResetWindowMode()
+{
+    endwin();
+    echo();
 }

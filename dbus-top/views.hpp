@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,13 +21,39 @@
 #include "main.hpp"
 #include "menu.hpp"
 #include "sensorhelper.hpp"
+=======
+/*
+ * Copyright 2021 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#pragma once
+
+#include "rect.hpp"
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
 
 #include <ncurses.h>
 
 #include <string>
 #include <vector>
+
 constexpr int MARGIN_BOTTOM = 1;
 
+// A warpper of the ncurses WINDOW with the following added:
+// - A method to render its contents
+// - Function to accept keystrokes   :todo
+// - Code path to deal with the window's specific data  :todo
 class DBusTopWindow
 {
   public:
@@ -34,15 +61,17 @@ class DBusTopWindow
     {
         win = newwin(25, 80, 0, 0); // Default to 80x25, will be updated
         has_border_ = true;
+<<<<<<< HEAD
         focused_ = false;
         selectable_ = true;
         visible_ = true;
         maximaize_= false;
+=======
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
     }
 
     virtual ~DBusTopWindow()
     {}
-    virtual void OnKeyDown(const std::string& key) = 0;
     virtual void Render() = 0;
     virtual void OnResize(int win_w, int win_h) = 0;
    
@@ -54,31 +83,21 @@ class DBusTopWindow
 
     void DrawBorderIfNeeded()
     {
-        if (focused_)
-        {
-            wborder(win, '*', '*', '*', '*', '*', '*', '*', '*');
-        }
-        else
-        {
-            wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
-        }
+        wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
+        wattrset(win, 0);
         wrefresh(win);
-    }
-
-    virtual void RecreateWindow()
-    {
-        delwin(win);
-        win = newwin(25, 80, 0, 0);
-        UpdateWindowSizeAndPosition();
     }
 
     WINDOW* win;
     Rect rect;
     bool has_border_;
+<<<<<<< HEAD
     bool focused_;
     bool selectable_;
     bool visible_;
     bool maximaize_;
+=======
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
 };
 
 class SummaryView : public DBusTopWindow
@@ -86,7 +105,14 @@ class SummaryView : public DBusTopWindow
   public:
     SummaryView() : DBusTopWindow()
     {}
-    void Render() override;
+    void Render() override
+    {
+        werase(win);
+        mvwaddstr(win, 1, 1, "This is window A");
+        DrawBorderIfNeeded();
+        wrefresh(win);
+    }
+
     void OnResize(int win_w, int win_h) override
     {
         rect.h = 8;
@@ -95,6 +121,7 @@ class SummaryView : public DBusTopWindow
         rect.y = 0;
         UpdateWindowSizeAndPosition();
     }
+<<<<<<< HEAD
     
     void UpdateDBusTopStatistics(DBusTopStatistics* stat);
     void OnKeyDown(const std::string& key) override
@@ -102,279 +129,21 @@ class SummaryView : public DBusTopWindow
 
   private:
     float method_call_, method_return_, signal_, error_, total_;
+=======
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
 };
 
 class SensorDetailView : public DBusTopWindow
 {
   public:
     SensorDetailView() : DBusTopWindow()
+    {}
+    void Render() override
     {
-        choice_ = -999; // -999 means invalid
-        h_padding = 2;
-        h_spacing = 3;
-        col_width = 15;
-        idx0 = idx1 = -999;
-        state = SensorList;
-    }
-
-    void Render() override;
-    int DispSensorsPerColumn()
-    {
-        return rect.h - 3;
-    }
-
-    int DispSensorsPerRow()
-    {
-        int ncols = 0;
-        while (true)
-        {
-            int next = ncols + 1;
-            int w = 2 * h_padding + col_width * next;
-            if (next > 1)
-                w += (next - 1) * h_spacing;
-            if (w <= rect.w - 2)
-            {
-                ncols = next;
-            }
-            else
-            {
-                break;
-            }
-        }
-        return ncols;
-    }
-
-    void OnKeyDown(const std::string& key) override
-    {
-        if (state == SensorList)
-        { // Currently in sensor list
-            if (key == "right")
-            {
-                MoveChoiceCursorHorizontally(1);
-            }
-            else if (key == "left")
-            {
-                MoveChoiceCursorHorizontally(-1);
-            }
-            else if (key == "up")
-            {
-                MoveChoiceCursor(-1, true);
-            }
-            else if (key == "down")
-            {
-                MoveChoiceCursor(1, true);
-            }
-            else if (key == "enter")
-            {
-                if (choice_ != -999)
-                {
-                    state = SensorDetail;
-                }
-            }
-            else if (key == "escape")
-            {
-                choice_ = -999;
-            }
-        }
-        else if (state == SensorDetail)
-        { // Currently focusing on a sensor
-            if (key == "right" || key == "down")
-            {
-                MoveChoiceCursor(1, true);
-            }
-            else if (key == "left" || key == "up")
-            {
-                MoveChoiceCursor(-1, true);
-            }
-            else if (key == "escape")
-            {
-                state = SensorList;
-            }
-        }
-        Render(); // This window is already on top, redrawing won't corrupt
-    }
-
-    void MoveChoiceCursor(int delta, bool wrap_around = true)
-    {
-        const int ns = sensor_ids_.size();
-        if (ns < 1)
-            return;
-        // First of all, if cursor is inactive, activate it
-        if (choice_ == -999)
-        {
-            if (delta > 0)
-            {
-                choice_ = 0;
-                curr_sensor_id_ = sensor_ids_[0];
-                return;
-            }
-            else
-            {
-                choice_ = ns - 1;
-                curr_sensor_id_ = sensor_ids_.back();
-                return;
-            }
-        }
-        int choice_next = choice_ + delta;
-        while (choice_next >= ns)
-        {
-            if (wrap_around)
-            {
-                choice_next -= ns;
-            }
-            else
-            {
-                choice_next = ns - 1;
-            }
-        }
-        while (choice_next < 0)
-        {
-            if (wrap_around)
-            {
-                choice_next += ns;
-            }
-            else
-            {
-                choice_next = 0;
-            }
-        }
-        choice_ = choice_next;
-        curr_sensor_id_ = sensor_ids_[choice_];
-    }
-
-    void MoveChoiceCursorHorizontally(int delta)
-    {
-        if (delta != 0 && delta != -1 && delta != 1)
-            return;
-        const int ns = sensor_ids_.size();
-        if (ns < 1)
-            return;
-        if (choice_ == -999)
-        {
-            if (delta > 0)
-            {
-                choice_ = 0;
-                curr_sensor_id_ = sensor_ids_[0];
-                return;
-            }
-            else
-            {
-                curr_sensor_id_ = sensor_ids_.back();
-                choice_ = ns - 1;
-                return;
-            }
-        }
-        const int nrows = DispSensorsPerColumn();
-        int tot_columns = (ns - 1) / nrows + 1;
-        int num_rows_last_column = ns - nrows * (tot_columns - 1);
-        int y = choice_ % nrows, x = choice_ / nrows;
-        if (delta == 1)
-        {
-            x++;
-        }
-        else
-        {
-            x--;
-        }
-        bool overflow_to_right = false;
-        if (y < num_rows_last_column)
-        {
-            if (x >= tot_columns)
-            {
-                overflow_to_right = true;
-            }
-        }
-        else
-        {
-            if (x >= tot_columns - 1)
-            {
-                overflow_to_right = true;
-            }
-        }
-        bool overflow_to_left = false;
-        if (x < 0)
-        {
-            overflow_to_left = true;
-        }
-        {
-            if (overflow_to_right)
-            {
-                y++;
-                // overflow past the right of window
-                // Start probing next line
-                if (y >= nrows)
-                {
-                    choice_ = 0;
-                    return;
-                }
-                else
-                {
-                    choice_ = y;
-                    return;
-                }
-            }
-            else if (overflow_to_left)
-            { // overflow past the left of window
-                y--;
-                if (y < 0)
-                { // overflow past the top of window
-                    // Focus on the visually bottom-right entry
-                    if (num_rows_last_column == nrows)
-                    { // last col fully populated
-                        choice_ = ns - 1;
-                    }
-                    else
-                    { // last column is not fully populated
-                        choice_ = ns - num_rows_last_column - 1;
-                    }
-                    return;
-                }
-                else
-                {
-                    if (y < num_rows_last_column)
-                    {
-                        choice_ = nrows * (tot_columns - 1) + y;
-                    }
-                    else
-                    {
-                        choice_ = nrows * (tot_columns - 2) + y;
-                    }
-                }
-            }
-            else
-            {
-                choice_ = y + x * nrows;
-            }
-        }
-        curr_sensor_id_ = sensor_ids_[choice_];
-    }
-
-    // Cache the sensor list in the sensor snapshot
-    void UpdateSensorSnapshot(SensorSnapshot* snapshot)
-    {
-        std::string old_sensor_id = "";
-        if (choice_ != -999)
-        {
-            old_sensor_id = sensor_ids_[choice_];
-        }
-        std::vector<std::string> new_sensors =
-            snapshot->GetDistinctSensorNames();
-        if (new_sensors == sensor_ids_)
-        {
-            return; // Nothing is changed
-        }
-        // Assume changed
-        sensor_ids_ = new_sensors;
-        choice_ = -999;
-        for (int i = 0; i < static_cast<int>(new_sensors.size()); i++)
-        {
-            if (new_sensors[i] == old_sensor_id)
-            {
-                choice_ = i;
-                break;
-                curr_sensor_id_ = sensor_ids_[choice_];
-            }
-        }
+        werase(win);
+        mvwaddstr(win, 1, 1, "This is window B");
+        DrawBorderIfNeeded();
+        wrefresh(win);
     }
 
     void OnResize(int win_w, int win_h) override
@@ -385,28 +154,37 @@ class SensorDetailView : public DBusTopWindow
         rect.h = win_h - rect.y - MARGIN_BOTTOM;
         UpdateWindowSizeAndPosition();
     }
-
-    std::vector<std::string> sensor_ids_;
-    // We need to keep track of the currently-selected sensor ID because
-    // the sensor ID might theoretically become invalidated at any moment, and
-    // we should allow the UI to show an error gracefully in that case.
-    std::string curr_sensor_id_;
-    int choice_;
-    int h_padding;
-    int h_spacing;
-    int col_width;
-    int idx0, idx1; // Range of sensors on display
-    enum State
-    {
-        SensorList,
-        SensorDetail,
-    };
-    State state;
 };
 
 class DBusStatListView : public DBusTopWindow
 {
   public:
+    DBusStatListView() : DBusTopWindow()
+    {}
+    void Render() override
+    {
+        werase(win);
+        // Write print statement here
+        mvwaddstr(win, 1, 1, "This is window C");
+        DrawBorderIfNeeded();
+        wrefresh(win);
+    }
+
+    void OnResize(int win_w, int win_h) override
+    {
+        rect.y = 8 - MARGIN_BOTTOM;
+        rect.w =
+            win_w - (win_w / 2) + 1; // Perfectly overlap on the vertical edge
+        rect.x = win_w - rect.w;
+        rect.h = win_h - rect.y - MARGIN_BOTTOM;
+        UpdateWindowSizeAndPosition();
+    }
+};
+
+class FooterView : public DBusTopWindow
+{
+  public:
+<<<<<<< HEAD
     DBusStatListView();
     void Render() override;
     void OnResize(int win_w, int win_h) override;
@@ -427,56 +205,30 @@ class DBusStatListView : public DBusTopWindow
     std::vector<DBusTopSortField> GetSortFields();
     MenuState curr_menu_state_, last_menu_state_;
     void RecreateWindow()
+=======
+    FooterView() : DBusTopWindow()
+    {}
+    void OnResize(int win_w, int win_h) override
+>>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
     {
-        delwin(win);
-        win = newwin(25, 80, 0, 0);
-        menu1_->win_ = win;
-        menu2_->win_ = win;
+        rect.h = 1;
+        rect.w = win_w;
+        rect.x = 0;
+        rect.y = win_h - 1;
         UpdateWindowSizeAndPosition();
     }
 
-  private:
-    void SetMenuState(MenuState s)
+    void Render() override
     {
-        last_menu_state_ = curr_menu_state_;
-        // Moving out from a certain side: save the last choice of that side
-        switch (curr_menu_state_)
-        {
-            case LeftSide:
-                if (s == RightSide)
-                {
-                    last_choices_[0] = menu1_->Choice();
-                    menu1_->Deselect();
-                }
-                break;
-            case RightSide:
-                if (s == LeftSide)
-                {
-                    last_choices_[1] = menu2_->Choice();
-                    menu2_->Deselect();
-                }
-                break;
-            default:
-                break;
-        }
-        // Moving into a certain side: save the cursor
-        switch (s)
-        {
-            case LeftSide:
-                if (!menu1_->Empty())
-                {
-                    menu1_->SetChoiceAndConstrain(last_choices_[0]);
-                }
-                break;
-            case RightSide:
-                if (!menu2_->Empty())
-                {
-                    menu2_->SetChoiceAndConstrain(last_choices_[1]);
-                }
-                break;
-            default:
-                break;
-        }
-        curr_menu_state_ = s;
+        werase(win);
+        const time_t now = time(nullptr);
+        const char* date_time = ctime(&now);
+        const std::string help_info = "PRESS ? FOR HELP";
+        wbkgd(win, COLOR_PAIR(1));
+        wattrset(win, COLOR_PAIR(1));
+        mvwaddstr(win, 0, 1, date_time);
+        mvwaddstr(win, 0, rect.w - int(help_info.size()) - 1,
+                  help_info.c_str());
+        wrefresh(win);
     }
 };
