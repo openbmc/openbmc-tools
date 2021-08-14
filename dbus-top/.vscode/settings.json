@@ -1,0 +1,8 @@
+{
+    "C_Cpp.errorSquiggles": "Disabled",
+    "files.associations": {
+        "filesystem": "cpp",
+        "*.ipp": "cpp",
+        "iosfwd": "cpp"
+    }
+}
