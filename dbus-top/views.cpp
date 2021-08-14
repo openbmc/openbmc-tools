@@ -11,20 +11,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include "views.hpp"
 
+#include "views.hpp"
 #include "bargraph.hpp"
 #include "histogram.hpp"
 #include "menu.hpp"
-
 #include <string.h>
-
 #include <algorithm>
+
 extern SensorSnapshot* g_sensor_snapshot;
 extern BarGraph<float>* g_bargraph;
 extern DBusTopStatistics* g_dbus_statistics;
 extern Histogram<float>* g_histogram;
-
+extern DBusTopWindow* g_current_active_view;
+extern const std::string FieldNames[];
+extern const int FieldPreferredWidths[];
 namespace dbus_top_analyzer
 {
 extern DBusTopStatistics g_dbus_statistics;
@@ -315,13 +316,10 @@ std::string Ellipsize(const std::string& s, int len_limit)
 
 void SummaryView::Render()
 {
-    
     // Draw text
     werase(win);
-    if(!visible_)
-    {
+    if (!visible_)
         return;
-    }
     wattron(win, A_BOLD | A_UNDERLINE);
     mvwaddstr(win, 1, 1, "Message Type          | msg/s");
     wattrset(win, 0);
@@ -368,12 +366,9 @@ void SummaryView::Render()
 
 void SensorDetailView::Render()
 {
-    
     werase(win);
-    if(!visible_)
-    {
+    if (!visible_)
         return;
-    }
     // If some sensor is focused, show details regarding that sensor
     if (state == SensorList)
     { // Otherwise show the complete list
@@ -499,9 +494,25 @@ void SensorDetailView::Render()
     wrefresh(win);
 }
 
+std::string SensorDetailView::GetStatusString()
+{
+    if (state == SensorList)
+    {
+        return "[Arrow Keys]=Move Cursor [Q]=Deselect [Enter]=Show Sensor "
+               "Detail";
+    }
+    else
+    {
+        return "[Arrow Keys]=Cycle Through Sensors [Esc/Q]=Exit";
+    }
+}
 DBusStatListView::DBusStatListView() : DBusTopWindow()
 {
-    horizontal_pan = 0;
+    // highlight_col_idx_ = 0;
+    horizontal_pan_ = 0;
+    // row_idx_ = -999;
+    // disp_row_idx_ = 0;
+    horizontal_pan_ = 0;
     menu1_ = new ArrowKeyNavigationMenu(this);
     menu2_ = new ArrowKeyNavigationMenu(this);
     // Load all available field names
@@ -531,6 +542,162 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
     menu_h_ = 6;
     menu_w_ = 24; // Need at least 2*padding + 15 for enough space, see menu.hpp
     menu_margin_ = 6;
+    // Populate preferred column widths
+    for (int i = 0; i < N; i++)
+    {
+        column_widths_[FieldNames[i]] = FieldPreferredWidths[i];
+    }
+    column_widths_["Msg/s"] = 8;
+}
+
+std::pair<int, int> DBusStatListView::GetXSpanForColumn(const int col_idx)
+{
+    std::vector<int> cw = ColumnWidths();
+    if (col_idx < 0 || col_idx >= static_cast<int>(cw.size()))
+    {
+        return std::make_pair(-999, -999);
+    }
+    int x0 = 0, x1 = 0;
+    for (int i = 0; i < col_idx; i++)
+    {
+        if (i > 0)
+        {
+            x0 += cw[i];
+        }
+    }
+    x1 = x0 + cw[col_idx] - 1;
+    return std::make_pair(x0, x1);
+}
+
+// If tolerance > 0, consider overlap before 2 intervals intersect
+// If tolerance ==0, consider overlap if 2 intervals exactly intersect
+// If tolerance < 0, consider overlap if Minimal Translate Distance is >=
+// -threshold
+bool IsSpansOverlap(const std::pair<int, int>& s0,
+                    const std::pair<int, int>& s1, int tolerance)
+{
+    if (tolerance >= 0)
+    {
+        if (s0.second < s1.first - tolerance)
+            return false;
+        else if (s1.second < s0.first - tolerance)
+            return false;
+        else
+            return true;
+    }
+    else
+    {
+        // Compute overlapping distance
+        std::vector<std::pair<int, int>> tmp(
+            4); // [x, 1] means the start of interval
+                // [x,-1] means the end of interval
+        tmp[0] = std::make_pair(s0.first, 1);
+        tmp[1] = std::make_pair(s0.second, -1);
+        tmp[2] = std::make_pair(s1.first, 1);
+        tmp[3] = std::make_pair(s1.second, -1);
+        std::sort(tmp.begin(), tmp.end());
+        int overlap_x0 = -999, overlap_x1 = -999;
+        int idx = 0;
+        const int N = static_cast<int>(tmp.size());
+        int level = 0;
+        while (idx < N)
+        {
+            const int x = tmp[idx].first;
+            while (idx < N && x == tmp[idx].first)
+            {
+                level += tmp[idx].second;
+                idx++;
+            }
+            // The starting position of the overlap
+            if (level == 2)
+            {
+                overlap_x0 = idx - 1;
+            }
+            // The ending position of the overlap
+            if (overlap_x0 != -999 && level < 2 && overlap_x1 == -999)
+            {
+                overlap_x1 = idx - 1;
+            }
+        }
+        const int overlap_length = overlap_x1 - overlap_x0 + 1;
+        if (overlap_length >= -tolerance)
+            return true;
+        else
+            return false;
+    }
+}
+
+bool DBusStatListView::IsXSpanVisible(const std::pair<int, int>& xs,
+                                      int tolerance)
+{
+    const std::pair<int, int> vxs = {horizontal_pan_, horizontal_pan_ + rect.w};
+    return IsSpansOverlap(xs, vxs, tolerance);
+}
+
+std::vector<std::string> DBusStatListView::ColumnHeaders()
+{
+    std::vector<std::string> headers = {"Msg/s"}; // Msg's is always present
+    std::vector<std::string> agg_headers = visible_columns_;
+    headers.insert(headers.end(), visible_columns_.begin(),
+                   visible_columns_.end());
+    return headers;
+}
+
+std::vector<int> DBusStatListView::ColumnWidths()
+{
+    std::vector<int> widths = {8}; // for "Msg/s"
+    std::vector<std::string> agg_headers = visible_columns_;
+    std::vector<int> agg_widths(agg_headers.size(), 0);
+    for (int i = 0; i < static_cast<int>(agg_headers.size()); i++)
+    {
+        agg_widths[i] = column_widths_[agg_headers[i]];
+    }
+    widths.insert(widths.end(), agg_widths.begin(), agg_widths.end());
+    return widths;
+}
+
+// Coordinate systems are in world space, +x faces to the right
+// Viewport:            [horizontal_pan_,   horizontal_pan_ + rect.w]
+// Contents:  [  column_width[0]  ][  column_width[1] ][  column_width[2]  ]
+void DBusStatListView::PanViewportOrMoveHighlightedColumn(const int delta_x)
+{
+    // If the column to the left is visible, highlight it
+    const int N = static_cast<int>(ColumnHeaders().size());
+    bool col_idx_changed = false;
+    if (delta_x < 0)
+    { // Pan left
+        if (highlight_col_idx_ > 0)
+        {
+            std::pair<int, int> xs_left =
+                GetXSpanForColumn(highlight_col_idx_ - 1);
+            if (IsXSpanVisible(xs_left, -1))
+            {
+                highlight_col_idx_--;
+                col_idx_changed = true;
+            }
+        }
+        if (!col_idx_changed)
+        {
+            horizontal_pan_ += delta_x;
+        }
+    }
+    else if (delta_x > 0)
+    { // Pan right
+        if (highlight_col_idx_ < N - 1)
+        {
+            std::pair<int, int> xs_right =
+                GetXSpanForColumn(highlight_col_idx_ + 1);
+            if (IsXSpanVisible(xs_right, -1))
+            {
+                highlight_col_idx_++;
+                col_idx_changed = true;
+            }
+        }
+        if (!col_idx_changed)
+        {
+            horizontal_pan_ += delta_x;
+        }
+    }
 }
 
 void DBusStatListView::OnKeyDown(const std::string& key)
@@ -610,12 +777,29 @@ void DBusStatListView::OnKeyDown(const std::string& key)
                     }
                 }
                 else if (key == "left")
-                { // scroll the "scroll bar" to the left
-                    --horizontal_pan;
+                {
+                    PanViewportOrMoveHighlightedColumn(-2);
                 }
                 else if (key == "right")
                 {
-                    ++horizontal_pan;
+                    PanViewportOrMoveHighlightedColumn(2);
+                }
+                else if (key == "up")
+                {
+                    disp_row_idx_--;
+                    if (disp_row_idx_ < 0)
+                    {
+                        disp_row_idx_ = 0;
+                    }
+                }
+                else if (key == "down")
+                {
+                    disp_row_idx_++;
+                    const int N = static_cast<int>(stats_snapshot_.size());
+                    if (disp_row_idx_ >= N)
+                    {
+                        disp_row_idx_ = N - 1;
+                    }
                 }
                 break;
             }
@@ -645,12 +829,9 @@ void DBusStatListView::OnKeyDown(const std::string& key)
 
 void DBusStatListView::Render()
 {
-    
     werase(win);
-    if(!visible_)
-    {
+    if (!visible_)
         return;
-    }
     int num_lines_shown = rect.h - 3;
     if (curr_menu_state_ == LeftSide || curr_menu_state_ == RightSide)
     {
@@ -699,24 +880,45 @@ void DBusStatListView::Render()
     }
     std::vector<std::string> headers = {"Msg/s"}; // Mug's is always present
     std::vector<int> widths = {8};
-    std::vector<std::string> agg_headers = g_dbus_statistics->GetFieldNames();
-    std::vector<int> agg_widths = g_dbus_statistics->GetFieldPreferredWidths();
+    visible_columns_ = g_dbus_statistics->GetFieldNames();
+    std::vector<std::string> agg_headers = visible_columns_;
+    std::vector<int> agg_widths(agg_headers.size(), 0);
+    for (int i = 0; i < static_cast<int>(agg_headers.size()); i++)
+    {
+        agg_widths[i] = column_widths_[agg_headers[i]];
+    }
     headers.insert(headers.end(), agg_headers.begin(), agg_headers.end());
     widths.insert(widths.end(), agg_widths.begin(), agg_widths.end());
     std::vector<int> xs;
-    int curr_x = 2 - horizontal_pan;
+    int curr_x = 2 - horizontal_pan_;
     for (const int w : widths)
     {
         xs.push_back(curr_x);
         curr_x += w;
     }
     const int N = headers.size();
-    wattron(win, A_BOLD | A_UNDERLINE);
+    // Bound col_idx_
+    if (highlight_col_idx_ >= N)
+    {
+        highlight_col_idx_ = N - 1;
+    }
+    // Render column headers
     for (int i = 0; i < N; i++)
     {
         std::string s = headers[i];
         // 1 char outside boundary = start printing from the second character,
         // etc
+        // Highlight the "currently-selected column"
+        if (highlight_col_idx_ == i)
+        {
+            wattrset(win, 0);
+            wattron(win, A_REVERSE);
+        }
+        else
+        {
+            wattrset(win, 0);
+            wattron(win, A_UNDERLINE);
+        }
         int x = xs[i];
         if (x < 0)
         {
@@ -732,11 +934,10 @@ void DBusStatListView::Render()
     }
     wattrset(win, 0);
     std::vector<std::vector<std::string>> all_keys;
-    std::map<std::vector<std::string>, int> stats_snapshot =
-        g_dbus_statistics->StatsSnapshot();
+    stats_snapshot_ = g_dbus_statistics->StatsSnapshot();
     for (std::map<std::vector<std::string>, int>::iterator itr =
-             stats_snapshot.begin();
-         itr != stats_snapshot.end(); itr++)
+             stats_snapshot_.begin();
+         itr != stats_snapshot_.end(); itr++)
     {
         all_keys.push_back(itr->first);
     }
@@ -750,11 +951,13 @@ void DBusStatListView::Render()
     }
     // Key is sender, destination, interface, path, etc
     for (int i = 0, j = 0;
-         i < static_cast<int>(all_keys.size()) && j < num_lines_shown; i++, j++)
+         i + disp_row_idx_ < static_cast<int>(all_keys.size()) &&
+         j < num_lines_shown;
+         i++, j++)
     {
         std::string s;
         int x;
-        const std::vector<std::string> key = all_keys[i];
+        const std::vector<std::string> key = all_keys[i + disp_row_idx_];
         for (int j = 0; j < num_fields; j++)
         {
             x = xs[j + 1];
@@ -782,7 +985,7 @@ void DBusStatListView::Render()
             mvwaddstr(win, 2 + i, x, s.c_str());
         }
         // Number of messages per second
-        int num_msgs = stats_snapshot[key];
+        int num_msgs = stats_snapshot_[key];
         float num_msgs_per_sec = num_msgs / interval_secs;
         x = xs[0];
         s = FloatToString(num_msgs_per_sec);
@@ -832,4 +1035,37 @@ std::vector<DBusTopSortField> DBusStatListView::GetSortFields()
         }
     }
     return ret;
+}
+
+std::string DBusStatListView::GetStatusString()
+{
+    if (curr_menu_state_ == LeftSide || curr_menu_state_ == RightSide)
+    {
+        return "[Enter]=Hide Panel [Space]=Choose Entry [Arrow Keys]=Move "
+               "Cursor";
+    }
+    else
+    {
+        return "[Enter]=Show Column Select Panel [Arrow Keys]=Pan View";
+    }
+}
+
+void FooterView::Render()
+{
+    werase(win);
+    const time_t now = time(nullptr);
+    const char* date_time = ctime(&now);
+    wattrset(win, 0);
+    std::string help_info;
+    if (g_current_active_view == nullptr)
+    {
+        help_info = "Press [Tab] to cycle through views";
+    }
+    else
+    {
+        help_info = g_current_active_view->GetStatusString();
+    }
+    mvwaddstr(win, 0, 1, date_time);
+    mvwaddstr(win, 0, rect.w - int(help_info.size()) - 1, help_info.c_str());
+    wrefresh(win);
 }

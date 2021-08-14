@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 <<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+>>>>>>> cf7590f (Revert "dbus-top: WIP of all currently-implemented features")
 #include "main.hpp"
 
 #include "analyzer.hpp"
@@ -36,6 +40,7 @@ DBusTopWindow* g_current_active_view;
 SummaryView* g_summary_window;
 SensorDetailView* g_sensor_detail_view;
 DBusStatListView* g_dbus_stat_list_view;
+FooterView* g_footer_view;
 BarGraph<float>* g_bargraph = nullptr;
 Histogram<float>* g_histogram;
 std::vector<DBusTopWindow*> g_views;
@@ -48,44 +53,14 @@ DBusTopStatistics* g_dbus_statistics; // At every update interval,
                                       // value is copied to this one for display
 void ReinitializeUI();
 int maxx, maxy, halfx, halfy;
-
-void ActivateWindowA()
-{
-    g_views[0]->visible_=true;
-    g_views[0]->maximaize_=true;
-    g_views[1]->visible_=false;
-    g_views[2]->visible_=false;
-}
-
-void ActivateWindowB()
-{
-    g_views[1]->visible_=true;
-    g_views[1]->maximaize_=true;
-    g_views[0]->visible_=false;
-    g_views[2]->visible_=false;
-}
-void ActivateWindowC()
-{
-    g_views[2]->visible_=true;
-    g_views[2]->maximaize_=true;
-    g_views[0]->visible_=false;
-    g_views[1]->visible_=false;
-}
-void ActivateAllWindows()
-{
-    g_views[0]->maximaize_ = false;
-    g_views[1]->maximaize_=false;
-    g_views[2]->maximaize_=false;
-    g_views[0]->visible_=true;
-    g_views[1]->visible_=true;
-    g_views[2]->visible_= true;
-}
+int WIN_W, WIN_H;
 
 void InitColorPairs()
 {
     init_pair(1, COLOR_WHITE, COLOR_BLACK); // Does not work on actual machine
     init_pair(2, COLOR_BLACK, COLOR_WHITE);
 }
+
 // Returns number of lines drawn
 int DrawTextWithWidthLimit(WINDOW* win, std::string txt, int y, int x,
                            int width, const std::string& delimiters)
@@ -127,10 +102,6 @@ void UpdateWindowSizes()
     for (DBusTopWindow* v : g_views)
     {
         v->OnResize(maxx, maxy);
-        if(v->maximaize_){
-            v->rect={0,0,maxx,maxy-MARGIN_BOTTOM};
-            v->UpdateWindowSizeAndPosition();
-        }
     }
 }
 =======
@@ -155,16 +126,14 @@ void DBusTopRefresh()
     UpdateWindowSizes();
     for (DBusTopWindow* v : g_views)
     {
-            v->Render();
-    } 
+        v->Render();
+    }
     DBusTopWindow* focused_view = g_current_active_view;
     if (focused_view)
     {
         focused_view->DrawBorderIfNeeded(); // focused view border: on top
-    } 
+    }
     refresh();
-
-    
 }
 
 // This function is called by the Capture thread
@@ -193,9 +162,12 @@ void CreateWindows()
     stat->SetSortFieldsAndReset(g_dbus_stat_list_view->GetSortFields());
     // ReinitializeUI(); // Don't do it here, only when user presses [R]
     DBusTopRefresh();
+<<<<<<< HEAD
+=======
    
 =======
 >>>>>>> parent of 6fe55b9 (dbus-top: WIP of all currently-implemented features)
+>>>>>>> cf7590f (Revert "dbus-top: WIP of all currently-implemented features")
 }
 
 void InitColorPairs()
@@ -314,33 +286,6 @@ void UpdateWindowSizes()
                 DBusTopRefresh();
                 break;
             }
-            case 'x':
-            case 'X':
-            {
-                clear();
-                ActivateWindowA();
-                break;
-            }
-            case 'y':
-            case 'Y':
-            {
-                clear();
-                ActivateWindowB();
-                break;
-            }
-            case 'z':
-            case 'Z':
-            {
-                clear();
-                ActivateWindowC();
-                break;
-            }
-            case 'h':
-            case 'H':
-            {
-                ActivateAllWindows();
-                DBusTopRefresh();
-            }
             default:
                 break;
         }
@@ -362,7 +307,6 @@ void DBusTopRefresh()
     initscr();
     use_default_colors();
     noecho();
-
     for (int i = 0; i < static_cast<int>(g_views.size()); i++)
 =======
     UpdateWindowSizes();
@@ -372,7 +316,10 @@ void DBusTopRefresh()
         v->Render();
     }
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
     refresh();
+>>>>>>> cf7590f (Revert "dbus-top: WIP of all currently-implemented features")
 }
 
 int main(int argc, char** argv)
@@ -418,6 +365,10 @@ int main()
     g_views.push_back(g_sensor_detail_window);
     g_views.push_back(g_dbus_stat_list_view);
     g_views.push_back(g_footer_view);
+<<<<<<< HEAD
+    g_sensor_detail_view->UpdateSensorSnapshot(g_sensor_snapshot);
+=======
+>>>>>>> cf7590f (Revert "dbus-top: WIP of all currently-implemented features")
     UpdateWindowSizes();
 <<<<<<< HEAD
     dbus_top_analyzer::SetDBusTopStatisticsCallback(&DBusTopStatisticsCallback);

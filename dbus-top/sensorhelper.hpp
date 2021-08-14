@@ -23,12 +23,10 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-
 // Where is this sensor seen?
 constexpr int VISIBILITY_OBJECT_MAPPER = 0;
 constexpr int VISIBILITY_HWMON = 1;
 constexpr int VISIBILITY_IPMITOOL_SDR = 2;
-
 class DBusConnection
 {
   public:
@@ -58,6 +56,7 @@ class DBusConnection
         connection = _c;
         pid = _pid;
     }
+    
 };
 
 class DBusConnectionSnapshot
@@ -106,6 +105,7 @@ class DBusConnectionSnapshot
         return nullptr;
     }
 
+
     // Only when service is known (during playback)
     void AddConnection(const std::string& _s)
     {
@@ -117,8 +117,10 @@ class DBusConnectionSnapshot
                        const std::string& _cmd, const std::string& _unit,
                        int _pid)
     {
-        connections_.push_back(
-            new DBusConnection(_s, _connection, _cmd, _unit, _pid));
+        DBusConnection* cxn =
+            new DBusConnection(_s, _connection, _cmd, _unit, _pid);
+        connections_.push_back(cxn);
+        unique_name_to_cxn[_connection] = cxn;
     }
 
     int GetConnectionPIDFromNameOrUniqueName(const std::string& key)
@@ -130,6 +132,18 @@ class DBusConnectionSnapshot
         else
         {
             return unique_name_to_cxn[key]->pid;
+        }
+    }
+
+    std::string GetConnectionCMDFromNameOrUniqueName(const std::string& key)
+    {
+        if (unique_name_to_cxn.find(key) == unique_name_to_cxn.end())
+        {
+            return "(unknown)";
+        }
+        else
+        {
+            return unique_name_to_cxn[key]->cmd;
         }
     }
 };
@@ -268,7 +282,7 @@ class SensorSnapshot
         Sensor* s = FindOrCreateSensorByServiceAndObject(service, object);
         s->visibility_flags_.set(VISIBILITY_OBJECT_MAPPER);
     }
-
+    
     // This sensor is visible from Hwmon
     void SetSensorVisibleFromHwmon(const std::string& service,
                                    const std::string& object)
@@ -315,4 +329,3 @@ class SensorSnapshot
 bool IsSensorObjectPath(const std::string& s);
 bool IsUniqueName(const std::string& x);
 std::string Trim(const std::string& s);
-
