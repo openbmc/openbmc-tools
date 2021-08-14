@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "analyzer.hpp"
-
 #include "histogram.hpp"
 #include "sensorhelper.hpp"
 #include "views.hpp"
@@ -21,7 +20,6 @@
 
 #include <systemd/sd-bus.h>
 #include <unistd.h>
-
 #include <atomic>
 #include <filesystem>
 #include <fstream>
@@ -34,7 +32,6 @@ extern SensorSnapshot* g_sensor_snapshot;
 extern DBusConnectionSnapshot* g_connection_snapshot;
 extern sd_bus* g_bus;
 extern SensorDetailView* g_sensor_detail_view;
-
 int g_update_interval_millises = 2000;
 int GetSummaryIntervalInMillises()
 {
@@ -133,7 +130,6 @@ namespace dbus_top_analyzer
                         strerror(-r));
                 }
                 const char* sig = sd_bus_message_get_signature(reply, 0);
-
                 if (!strcmp(sig, "s"))
                 {
                     const char* s;
@@ -177,7 +173,6 @@ namespace dbus_top_analyzer
         printf("1. Getting names\n");
         char** names;
         int r = sd_bus_list_names(g_bus, &names, nullptr);
-
         std::vector<std::string> services;
         std::vector<int> pids;
         std::vector<std::string> comms;
@@ -291,7 +286,6 @@ namespace dbus_top_analyzer
                     printf("Could not append a string parameter to m\n");
                     continue;
                 }
-
                 // empty array
                 r = sd_bus_message_open_container(m, 'a', "s");
                 if (r < 0)
@@ -387,6 +381,7 @@ namespace dbus_top_analyzer
             {}
             }
         }
+
         printf("4. Check Hwmon's DBus objects\n");
         for (int i = 0; i < int(comms.size()); i++)
         {
@@ -410,14 +405,22 @@ namespace dbus_top_analyzer
         // Call `ipmitool sdr list` and see which sensors exist.
         printf("5. Checking ipmitool SDR List\n");
         std::string out;
-        constexpr int MAX_BUFFER = 255;
-        char buffer[MAX_BUFFER];
-        FILE* stream = popen("ipmitool sdr list", "r");
-        while (fgets(buffer, MAX_BUFFER, stream) != NULL)
+        bool skip_sdr_list = false;
+        if (getenv("SKIP"))
         {
-            out.append(buffer);
+            skip_sdr_list = true;
         }
-        pclose(stream);
+        if (!skip_sdr_list)
+        {
+            constexpr int MAX_BUFFER = 255;
+            char buffer[MAX_BUFFER];
+            FILE* stream = popen("ipmitool sdr list", "r");
+            while (fgets(buffer, MAX_BUFFER, stream) != NULL)
+            {
+                out.append(buffer);
+            }
+            pclose(stream);
+        }
         std::stringstream ss(out);
         while (true)
         {
@@ -436,9 +439,10 @@ namespace dbus_top_analyzer
         }
         printf("=== Sensors snapshot summary: ===\n");
         g_sensor_snapshot->PrintSummary();
-}
+    }
 
 } // namespace dbus_top_analyzer
+
 void DBusTopStatistics::OnNewDBusMessage(const char* sender,
                                          const char* destination,
                                          const char* interface,
@@ -467,6 +471,7 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
                 keys.push_back(CheckAndFixNullString(member));
                 break;
             case kSenderPID:
+            {
                 const int pid =
                     g_connection_snapshot->GetConnectionPIDFromNameOrUniqueName(
                         sender);
@@ -479,6 +484,14 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
                     keys.push_back("(unknown)");
                 }
                 break;
+            }
+            case kSenderCMD:
+            {
+                keys.push_back(
+                    g_connection_snapshot->GetConnectionCMDFromNameOrUniqueName(
+                        sender));
+                break;
+            }
         }
     }
     stats_[keys]++;

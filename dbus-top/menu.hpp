@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #pragma once
-
 #include "main.hpp"
 
 #include <ncurses.h>

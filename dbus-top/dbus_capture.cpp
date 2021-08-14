@@ -15,35 +15,39 @@
 #include "analyzer.hpp"
 #include "histogram.hpp"
 
+#include <ncurses.h>
 #include <stdlib.h>
 #include <systemd/sd-bus.h>
-#include <ncurses.h>
+
 #include <unordered_map>
 bool IS_USER_BUS = false; // User bus or System bus?
 extern sd_bus* g_bus;
 static std::unordered_map<uint64_t, uint64_t> in_flight_methodcalls;
-uint64_t Microseconds() {
-  long            us; // usec
-  time_t          s;  // Seconds
-  struct timespec spec;
-  clock_gettime(CLOCK_REALTIME, &spec);
-  s  = spec.tv_sec;
-  us = round(spec.tv_nsec / 1000); // Convert nanoseconds to milliseconds
-  if (us > 999999) {
-      s++;
-      us = 0;
-  }
-  return s*1000000 + us;
+
+uint64_t Microseconds()
+{
+    long us;  // usec
+    time_t s; // Seconds
+    struct timespec spec;
+    clock_gettime(CLOCK_REALTIME, &spec);
+    s = spec.tv_sec;
+    us = round(spec.tv_nsec / 1000); // Convert nanoseconds to milliseconds
+    if (us > 999999)
+    {
+        s++;
+        us = 0;
+    }
+    return s * 1000000 + us;
 }
 
 namespace dbus_top_analyzer
 {
-    extern DBusTopStatistics g_dbus_statistics;
-    extern Histogram<float> g_mc_time_histogram;
-}
-static void TrackMessage(sd_bus_message* m) {    
-}
+extern DBusTopStatistics g_dbus_statistics;
+extern Histogram<float> g_mc_time_histogram;
+} // namespace dbus_top_analyzer
 
+static void TrackMessage(sd_bus_message* m)
+{}
 // Obtain a Monitoring DBus connection
 int AcquireBus(sd_bus** ret)
 {
@@ -165,7 +169,8 @@ void DbusCaptureThread()
     {
         struct sd_bus_message* m = nullptr;
         r = sd_bus_process(g_bus, &m);
-        if (m != nullptr) {
+        if (m != nullptr)
+        {
             if (r < 0)
             {
                 printf("Failed to call sd_bus_process: %s\n", strerror(-r));
@@ -182,25 +187,30 @@ void DbusCaptureThread()
             TrackMessage(m);
             // This is for the bottom-right window
             dbus_top_analyzer::g_dbus_statistics.OnNewDBusMessage(
-                sender, destination, interface, path, member, type
-            );
+                sender, destination, interface, path, member, type);
             // For method call latency
-            if (type == 1) {  // DBUS_MESSAGE_TYPE_METHOD_CALL
-                uint64_t serial;  // serial == cookie
+            if (type == 1)
+            {                    // DBUS_MESSAGE_TYPE_METHOD_CALL
+                uint64_t serial; // serial == cookie
                 r = sd_bus_message_get_cookie(m, &serial);
                 in_flight_methodcalls[serial] = Microseconds();
-            } else {
-                uint64_t reply_serial;  // serial == cookie
+            }
+            else
+            {
+                uint64_t reply_serial; // serial == cookie
                 r = sd_bus_message_get_reply_cookie(m, &reply_serial);
-                if (in_flight_methodcalls.count(reply_serial) > 0) {
-                    float dt_usec = Microseconds() - in_flight_methodcalls[reply_serial];
+                if (in_flight_methodcalls.count(reply_serial) > 0)
+                {
+                    float dt_usec =
+                        Microseconds() - in_flight_methodcalls[reply_serial];
                     in_flight_methodcalls.erase(reply_serial);
                     dbus_top_analyzer::g_mc_time_histogram.AddSample(dt_usec);
                 }
             }
             sd_bus_message_unref(m);
         }
-        r = sd_bus_wait(g_bus, (uint64_t)(GetSummaryIntervalInMillises() * 1000));
+        r = sd_bus_wait(g_bus,
+                        (uint64_t)(GetSummaryIntervalInMillises() * 1000));
         if (r < 0)
         {
             printf("Failed to wait on bus: %s\n", strerror(-r));
