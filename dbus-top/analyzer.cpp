@@ -18,7 +18,6 @@
 #include "views.hpp"
 #include "xmlparse.hpp"
 
-#include <systemd/sd-bus.h>
 #include <unistd.h>
 #include <atomic>
 #include <filesystem>
@@ -32,6 +31,25 @@ extern SensorSnapshot* g_sensor_snapshot;
 extern DBusConnectionSnapshot* g_connection_snapshot;
 extern sd_bus* g_bus;
 extern SensorDetailView* g_sensor_detail_view;
+
+static std::unordered_map<uint64_t, uint64_t>
+    in_flight_methodcalls; // serial => microseconds
+uint64_t Microseconds()
+{
+    long us;  // usec
+    time_t s; // Seconds
+    struct timespec spec;
+    clock_gettime(CLOCK_REALTIME, &spec);
+    s = spec.tv_sec;
+    us = round(spec.tv_nsec / 1000); // Convert nanoseconds to milliseconds
+    if (us > 999999)
+    {
+        s++;
+        us = 0;
+    }
+    return s * 1000000 + us;
+}
+
 int g_update_interval_millises = 2000;
 int GetSummaryIntervalInMillises()
 {
@@ -381,7 +399,6 @@ namespace dbus_top_analyzer
             {}
             }
         }
-
         printf("4. Check Hwmon's DBus objects\n");
         for (int i = 0; i < int(comms.size()); i++)
         {
@@ -440,14 +457,13 @@ namespace dbus_top_analyzer
         printf("=== Sensors snapshot summary: ===\n");
         g_sensor_snapshot->PrintSummary();
     }
-
 } // namespace dbus_top_analyzer
 
 void DBusTopStatistics::OnNewDBusMessage(const char* sender,
                                          const char* destination,
                                          const char* interface,
                                          const char* path, const char* member,
-                                         const char type)
+                                         const char type, sd_bus_message* m)
 {
     num_messages_++;
     std::vector<std::string> keys;
@@ -494,7 +510,51 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
             }
         }
     }
-    stats_[keys]++;
+    // keys = combination of fields of user's choice
+    // Update computed metrics
+    bool has_msg_per_sec = false;
+    bool has_avg_latency = false;
+    for (DBusTopSortField field : fields_)
+    {
+        if (field == kMsgPerSec)
+        {
+            has_msg_per_sec = true;
+        }
+        else if (field == kAverageLatency)
+        {
+            has_avg_latency = true;
+        }
+    }
+    if (stats_.count(keys) == 0)
+    {
+        stats_[keys] = DBusTopComputedMetrics();
+    }
+    // Need to update msg/s
+    if (has_msg_per_sec || has_avg_latency)
+    {
+        stats_[keys].num_messages++;
+    }
+    // Update global latency histogram
+    // For method call latency
+    if (type == 1) // DBUS_MESSAGE_TYPE_METHOD_CALL
+    {
+        uint64_t serial; // serial == cookie
+        sd_bus_message_get_cookie(m, &serial);
+        in_flight_methodcalls[serial] = Microseconds();
+    }
+    else
+    {
+        uint64_t reply_serial; // serial == cookie
+        sd_bus_message_get_reply_cookie(m, &reply_serial);
+        if (in_flight_methodcalls.count(reply_serial) >
+            0) // if (reply_serial in in_flight_methodcalls) in JS
+        {
+            float dt_usec =
+                Microseconds() - in_flight_methodcalls[reply_serial];
+            in_flight_methodcalls.erase(reply_serial);
+            dbus_top_analyzer::g_mc_time_histogram.AddSample(dt_usec);
+        }
+    }
     // For meaning of type see here
     // https://dbus.freedesktop.org/doc/api/html/group__DBusProtocol.html#ga4a9012edd7f22342f845e98150aeb858
     switch (type)

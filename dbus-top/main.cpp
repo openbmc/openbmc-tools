@@ -343,6 +343,6 @@ int main(int argc, char** argv)
     std::thread capture_thread(DbusCaptureThread);
     std::thread user_input_thread(UserInputThread);
     capture_thread.join();
-    
+
     return 0;
 }
