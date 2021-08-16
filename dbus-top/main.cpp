@@ -48,6 +48,38 @@ DBusTopStatistics* g_dbus_statistics; // At every update interval,
 void ReinitializeUI();
 int maxx, maxy, halfx, halfy;
 
+void ActivateWindowA()
+{
+    g_views[0]->visible_=true;
+    g_views[0]->maximize_=true;
+    g_views[1]->visible_=false;
+    g_views[2]->visible_=false;
+}
+
+void ActivateWindowB()
+{
+    g_views[1]->visible_=true;
+    g_views[1]->maximize_=true;
+    g_views[0]->visible_=false;
+    g_views[2]->visible_=false;
+}
+void ActivateWindowC()
+{
+    g_views[2]->visible_=true;
+    g_views[2]->maximize_=true;
+    g_views[0]->visible_=false;
+    g_views[1]->visible_=false;
+}
+void ActivateAllWindows()
+{
+    g_views[0]->maximize_ = false;
+    g_views[1]->maximize_=false;
+    g_views[2]->maximize_=false;
+    g_views[0]->visible_=true;
+    g_views[1]->visible_=true;
+    g_views[2]->visible_= true;
+}
+
 void InitColorPairs()
 {
     init_pair(1, COLOR_WHITE, COLOR_BLACK); // Does not work on actual machine
@@ -95,7 +127,12 @@ void UpdateWindowSizes()
     for (DBusTopWindow* v : g_views)
     {
         v->OnResize(maxx, maxy);
+        if(v->maximize_){
+            v->rect={0,0,maxx,maxy-MARGIN_BOTTOM};
+            v->UpdateWindowSizeAndPosition();
+        }
     }
+    
 }
 
 std::string FloatToString(float value)
@@ -282,6 +319,33 @@ int UserInputThread()
                 ReinitializeUI();
                 DBusTopRefresh();
                 break;
+            }
+            case 'x':
+            case 'X':
+            {
+                clear();
+                ActivateWindowA();
+                break;
+            }
+            case 'y':
+            case 'Y':
+            {
+                clear();
+                ActivateWindowB();
+                break;
+            }
+            case 'z':
+            case 'Z':
+            {
+                clear();
+                ActivateWindowC();
+                break;
+            }
+            case 'h':
+            case 'H':
+            {
+                ActivateAllWindows();
+                DBusTopRefresh();
             }
             default:
                 break;
