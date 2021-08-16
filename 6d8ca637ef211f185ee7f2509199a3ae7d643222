@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d22c62a6_012a38d8",
+        "filename": "dbus-top/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1000539
+      },
+      "writtenOn": "2021-08-16T19:49:53Z",
+      "side": 1,
+      "message": "Use fmt::printf library.",
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d0e49036_0a06d4df",
+        "filename": "dbus-top/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1000539
+      },
+      "writtenOn": "2021-08-16T19:49:53Z",
+      "side": 1,
+      "message": "-999 seems to be a magic number? Define a constant.",
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c87b97d_9825d5e1",
+        "filename": "dbus-top/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1000539
+      },
+      "writtenOn": "2021-08-16T19:49:53Z",
+      "side": 1,
+      "message": "Replace these numbers with proper escape characters if possible.\nhttps://en.wikipedia.org/wiki/Escape_sequences_in_C#Table_of_escape_sequences",
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88c4bf24_444c8e33",
+        "filename": "dbus-top/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1000539
+      },
+      "writtenOn": "2021-08-16T19:49:53Z",
+      "side": 1,
+      "message": "Duplicated getch()? I don\u0027t understand this part. Is this a bug, or could you clarify?",
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1cad8ec1_2e85d10b",
+        "filename": "dbus-top/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1000539
+      },
+      "writtenOn": "2021-08-16T19:49:53Z",
+      "side": 1,
+      "message": "Can you think of a nicer program structure so that we don\u0027t have to if(curr_view) in so many places?",
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
