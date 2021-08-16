@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-<<<<<<< HEAD
+
 project('dbus-top', 'cpp', version
     : '0.1', default_options
     :
@@ -40,26 +40,3 @@ executable('dbus-top',
            install
            : true, install_dir
            : bindir)
-=======
-
-project(
-  'dbus-top',
-  'cpp',
-  version: '0.1',
-  default_options: [
-    'cpp_std=c++17',
-  ],
-)
-bindir = get_option('prefix') / get_option('bindir')
-executable(
-  'dbus-top',
-  [ 'main.cpp' ],
-  dependencies: [
-    dependency('systemd'),
-    dependency('sdbusplus'),
-    dependency('ncurses'),
-  ],
-  install: true,
-  install_dir: bindir
-)
->>>>>>> cf7590f (Revert "dbus-top: WIP of all currently-implemented features")

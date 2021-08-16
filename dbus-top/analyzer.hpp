@@ -11,9 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #pragma once
 
 #include "histogram.hpp"
+
+#include <systemd/sd-bus.h>
 
 #include <atomic>
 #include <map>
@@ -23,6 +26,7 @@
 
 enum DBusTopSortField
 {
+    // DBus Message properties
     kSender,
     kDestination,
     kInterface,
@@ -30,11 +34,26 @@ enum DBusTopSortField
     kMember,
     kSenderPID,
     kSenderCMD,
+    // Computed metrics
+    kMsgPerSec,
+    kAverageLatency,
 };
 
-const std::string FieldNames[] = {"Sender", "Destination", "Interface", "Path",
-                                  "Member", "Sender PID",  "Sender CMD"};
-const int FieldPreferredWidths[] = {18, 20, 12, 10, 10, 10, 25};
+const std::string FieldNames[] = {"Sender",     "Destination", "Interface",
+                                  "Path",       "Member",      "Sender PID",
+                                  "Sender CMD", "Msg/s",       "Avg Latency"};
+const int FieldPreferredWidths[] = {18, 20, 12, 10, 10, 10, 25, 8, 12};
+struct DBusTopComputedMetrics
+{
+    DBusTopComputedMetrics()
+    {
+        num_messages = 0;
+        total_latency_usec = 0;
+    }
+    int num_messages;
+    uint64_t total_latency_usec;
+};
+
 class DBusTopStatistics
 {
   public:
@@ -42,13 +61,18 @@ class DBusTopStatistics
     int num_mc_, num_mr_, num_sig_, num_error_;
     float seconds_since_last_sample_;
     std::vector<DBusTopSortField> fields_;
-    std::map<std::vector<std::string>, int> stats_;
+    std::map<std::vector<std::string>, DBusTopComputedMetrics> stats_;
     DBusTopStatistics() :
         num_messages_(0), num_mc_(0), num_mr_(0), num_sig_(0), num_error_(0),
         seconds_since_last_sample_(0)
     {
         fields_ = {kSender, kDestination, kSenderPID, kSenderCMD};
         stats_.clear();
+    }
+
+    std::vector<DBusTopSortField> GetFields()
+    {
+        return fields_;
     }
 
     std::vector<std::string> GetFieldNames()
@@ -82,7 +106,7 @@ class DBusTopStatistics
         num_error_ = 0;
         stats_.clear();
     }
-
+    
     void SetSortFieldsAndReset(const std::vector<DBusTopSortField>& f)
     {
         num_messages_ = 0;
@@ -108,7 +132,8 @@ class DBusTopStatistics
 
     void OnNewDBusMessage(const char* sender, const char* destination,
                           const char* interface, const char* path,
-                          const char* message, const char type);
+                          const char* message, const char type,
+                          sd_bus_message* m);
     std::string CheckAndFixNullString(const char* x)
     {
         if (x == nullptr)
@@ -117,9 +142,9 @@ class DBusTopStatistics
             return std::string(x);
     }
 
-    std::map<std::vector<std::string>, int> StatsSnapshot()
+    std::map<std::vector<std::string>, DBusTopComputedMetrics> StatsSnapshot()
     {
-        std::map<std::vector<std::string>, int> ret;
+        std::map<std::vector<std::string>, DBusTopComputedMetrics> ret;
         ret = stats_;
         return ret;
     }
@@ -133,7 +158,6 @@ int GetSummaryIntervalInMillises();
 // typedef void (*SetDBusTopConnection)(const char* conn);
 namespace dbus_top_analyzer
 {
-
     void Process();
     void Finish();
     typedef void (*DBusTopStatisticsCallback)(DBusTopStatistics*,

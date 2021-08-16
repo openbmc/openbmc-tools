@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #pragma once
 
 #include "analyzer.hpp"
@@ -442,7 +443,7 @@ class DBusStatListView : public DBusTopWindow
         menu2_->win_ = win;
         UpdateWindowSizeAndPosition();
     }
-
+    
   private:
     void SetMenuState(MenuState s)
     {
@@ -487,7 +488,6 @@ class DBusStatListView : public DBusTopWindow
         }
         curr_menu_state_ = s;
     }
-
     void PanViewportOrMoveHighlightedColumn(const int delta_x);
     // ColumnHeaders and ColumnWidths are the actual column widths used for
     // display. They are "msg/s" or "I2c/s" prepended to the chosen set of
@@ -500,7 +500,7 @@ class DBusStatListView : public DBusTopWindow
                         const int tolerance); // uses horizontal_pan_
     std::vector<std::string> visible_columns_;
     std::unordered_map<std::string, int> column_widths_;
-    std::map<std::vector<std::string>, int> stats_snapshot_;
+    std::map<std::vector<std::string>, DBusTopComputedMetrics> stats_snapshot_;
 };
 
 class FooterView : public DBusTopWindow
@@ -527,4 +527,5 @@ class FooterView : public DBusTopWindow
     {
         return "";
     }
+
 };

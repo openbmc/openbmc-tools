@@ -26,9 +26,10 @@ extern Histogram<float>* g_histogram;
 extern DBusTopWindow* g_current_active_view;
 extern const std::string FieldNames[];
 extern const int FieldPreferredWidths[];
+
 namespace dbus_top_analyzer
 {
-extern DBusTopStatistics g_dbus_statistics;
+    extern DBusTopStatistics g_dbus_statistics;
 }
 
 // Linear interpolation
@@ -506,12 +507,13 @@ std::string SensorDetailView::GetStatusString()
         return "[Arrow Keys]=Cycle Through Sensors [Esc/Q]=Exit";
     }
 }
+
 DBusStatListView::DBusStatListView() : DBusTopWindow()
 {
-    // highlight_col_idx_ = 0;
+    highlight_col_idx_ = 0;
     horizontal_pan_ = 0;
-    // row_idx_ = -999;
-    // disp_row_idx_ = 0;
+    row_idx_ = -999;
+    disp_row_idx_ = 0;
     horizontal_pan_ = 0;
     menu1_ = new ArrowKeyNavigationMenu(this);
     menu2_ = new ArrowKeyNavigationMenu(this);
@@ -633,7 +635,6 @@ bool DBusStatListView::IsXSpanVisible(const std::pair<int, int>& xs,
     const std::pair<int, int> vxs = {horizontal_pan_, horizontal_pan_ + rect.w};
     return IsSpansOverlap(xs, vxs, tolerance);
 }
-
 std::vector<std::string> DBusStatListView::ColumnHeaders()
 {
     std::vector<std::string> headers = {"Msg/s"}; // Msg's is always present
@@ -827,6 +828,7 @@ void DBusStatListView::OnKeyDown(const std::string& key)
     Render();
 }
 
+// Window C
 void DBusStatListView::Render()
 {
     werase(win);
@@ -878,8 +880,8 @@ void DBusStatListView::Render()
                       "Press [Space] to move to the left");
         }
     }
-    std::vector<std::string> headers = {"Msg/s"}; // Mug's is always present
-    std::vector<int> widths = {8};
+    std::vector<std::string> headers;
+    std::vector<int> widths;
     visible_columns_ = g_dbus_statistics->GetFieldNames();
     std::vector<std::string> agg_headers = visible_columns_;
     std::vector<int> agg_widths(agg_headers.size(), 0);
@@ -933,40 +935,81 @@ void DBusStatListView::Render()
         mvwaddstr(win, 1, x, s.c_str());
     }
     wattrset(win, 0);
-    std::vector<std::vector<std::string>> all_keys;
-    stats_snapshot_ = g_dbus_statistics->StatsSnapshot();
-    for (std::map<std::vector<std::string>, int>::iterator itr =
-             stats_snapshot_.begin();
-         itr != stats_snapshot_.end(); itr++)
-    {
-        all_keys.push_back(itr->first);
-    }
-    std::sort(all_keys.begin(), all_keys.end());
-    // Minus 2 because of "msgs/s" and "+"
-    const int num_fields = N - 1;
+    // Time since the last update of Window C
     float interval_secs = g_dbus_statistics->seconds_since_last_sample_;
     if (interval_secs == 0)
     {
         interval_secs = GetSummaryIntervalInMillises() / 1000.0f;
     }
+    std::vector<std::vector<std::string>>
+        all_cells; // as in cells in a spreadsheet
+    stats_snapshot_ = g_dbus_statistics->StatsSnapshot();
+    const int nrows = static_cast<int>(stats_snapshot_.size());
+    const std::vector<DBusTopSortField> fields = g_dbus_statistics->GetFields();
+    const int ncols = static_cast<int>(fields.size());
+    // Merge the list of DBus Message properties & computed metrics together
+    std::map<std::vector<std::string>, DBusTopComputedMetrics>::iterator itr =
+        stats_snapshot_.begin();
+    for (int i = 0; i < nrows; i++) // One row of cells
+    {
+        int idx0 = 0; // indexing into the std::vector<string> of each row
+        std::vector<std::string> row;
+        for (int j = 0; j < ncols; j++) // one column in the row
+        {
+            DBusTopSortField field = fields[j];
+            switch (field)
+            {
+                case kSender:
+                case kDestination:
+                case kInterface:
+                case kPath:
+                case kMember:
+                case kSenderPID:
+                case kSenderCMD:
+                    row.push_back(itr->first[idx0]);
+                    idx0++;
+                    break;
+                case kMsgPerSec:
+                {
+                    float num_msgs_per_sec =
+                        itr->second.num_messages / interval_secs;
+                    row.push_back(FloatToString(num_msgs_per_sec));
+                    break;
+                }
+                case kAverageLatency:
+                    row.push_back("todo");
+                    break;
+            }
+        }
+        all_cells.push_back(row);
+        itr++;
+    }
+    std::sort(all_cells.begin(), all_cells.end());
+    char buf[100];
+    sprintf(buf, "cell size: %zu\n", all_cells.size());
+    mvwaddstr(win, 5, 5, buf);
+    // Minus 2 because of "msgs/s" and "+"
+    const int num_fields = N;
+    // The Y span of the area for rendering the "spreadsheet"
+    const int y0 = 2, y1 = y0 + num_lines_shown - 1;
     // Key is sender, destination, interface, path, etc
-    for (int i = 0, j = 0;
-         i + disp_row_idx_ < static_cast<int>(all_keys.size()) &&
-         j < num_lines_shown;
-         i++, j++)
+    for (int i = 0, shown = 0;
+         i + disp_row_idx_ < static_cast<int>(all_cells.size()) &&
+         shown < num_lines_shown;
+         i++, shown++)
     {
         std::string s;
-        int x;
-        const std::vector<std::string> key = all_keys[i + disp_row_idx_];
+        int x = 0;
+        const std::vector<std::string> key = all_cells[i + disp_row_idx_];
         for (int j = 0; j < num_fields; j++)
         {
-            x = xs[j + 1];
+            x = xs[j];
             s = key[j];
             // Determine column width limit for this particular column
             int col_width = 100;
             if (j < num_fields - 1)
             {
-                col_width = xs[j + 2] - xs[j + 1] - 1;
+                col_width = xs[j + 1] - xs[j] - 1;
             }
             s = Ellipsize(s, col_width);
             if (x < 0)
@@ -984,20 +1027,20 @@ void DBusStatListView::Render()
             }
             mvwaddstr(win, 2 + i, x, s.c_str());
         }
-        // Number of messages per second
-        int num_msgs = stats_snapshot_[key];
-        float num_msgs_per_sec = num_msgs / interval_secs;
-        x = xs[0];
-        s = FloatToString(num_msgs_per_sec);
-        if (x < 0)
-        {
-            if (-x < static_cast<int>(s.size()))
-                s = s.substr(-x);
-            else
-                s = "";
-            x = 0;
-        }
-        mvwaddstr(win, 2 + i, x, s.c_str());
+    }
+    // Overflows to the top ..
+    if (disp_row_idx_ > 0)
+    {
+        std::string x = " [+" + std::to_string(disp_row_idx_) + " rows above]";
+        mvwaddstr(win, y0, rect.w - static_cast<int>(x.size()) - 1, x.c_str());
+    }
+    const int last_disp_row_idx = disp_row_idx_ + num_lines_shown - 1;
+    if (last_disp_row_idx < nrows - 1)
+    {
+        std::string x = " [+" +
+                        std::to_string((nrows - 1) - last_disp_row_idx) +
+                        " rows below]";
+        mvwaddstr(win, y1, rect.w - static_cast<int>(x.size()) - 1, x.c_str());
     }
     DrawBorderIfNeeded();
     wrefresh(win);
