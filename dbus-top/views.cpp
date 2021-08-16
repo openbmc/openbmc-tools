@@ -969,15 +969,25 @@ void DBusStatListView::Render()
                     row.push_back(itr->first[idx0]);
                     idx0++;
                     break;
-                case kMsgPerSec:
+                case kMsgPerSec: // Compute "messages per second"
                 {
                     float num_msgs_per_sec =
                         itr->second.num_messages / interval_secs;
                     row.push_back(FloatToString(num_msgs_per_sec));
                     break;
                 }
-                case kAverageLatency:
-                    row.push_back("todo");
+                case kAverageLatency: // Compute "average Method Call latency"
+                    const DBusTopComputedMetrics& m = itr->second;
+                    if (m.num_method_calls == 0)
+                    {
+                        row.push_back("n/a");
+                    }
+                    else
+                    {
+                        float avg_latency_usec =
+                            m.total_latency_usec / m.num_method_calls;
+                        row.push_back(FloatToString(avg_latency_usec));
+                    }
                     break;
             }
         }

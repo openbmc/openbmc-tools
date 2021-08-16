@@ -553,6 +553,10 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
                 Microseconds() - in_flight_methodcalls[reply_serial];
             in_flight_methodcalls.erase(reply_serial);
             dbus_top_analyzer::g_mc_time_histogram.AddSample(dt_usec);
+
+            // Add method call count and total latency to the corresponding key
+            stats_[keys].num_method_calls++;
+            stats_[keys].total_latency_usec += dt_usec;
         }
     }
     // For meaning of type see here
