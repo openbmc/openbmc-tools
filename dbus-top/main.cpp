@@ -289,6 +289,24 @@ int UserInputThread()
                 }
                 break;
             }
+            case 'a':
+            case 'A':
+            {
+                if (curr_view)
+                {
+                    curr_view->OnKeyDown("a");
+                }
+                break;
+            }
+            case 'd':
+            case 'D':
+            {
+                if (curr_view)
+                {
+                    curr_view->OnKeyDown("d");
+                }
+                break;
+            }
             case 33:
             { // page up
                 if (curr_view)

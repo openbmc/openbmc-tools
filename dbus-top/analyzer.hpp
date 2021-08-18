@@ -43,6 +43,8 @@ const std::string FieldNames[] = {"Sender",     "Destination", "Interface",
                                   "Path",       "Member",      "Sender PID",
                                   "Sender CMD", "Msg/s",       "Avg Latency"};
 const int FieldPreferredWidths[] = {18, 20, 12, 10, 10, 10, 25, 8, 12};
+bool DBusTopSortFieldIsNumeric(DBusTopSortField field);
+
 struct DBusTopComputedMetrics
 {
     DBusTopComputedMetrics()
