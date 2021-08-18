@@ -56,6 +56,24 @@ int GetSummaryIntervalInMillises()
     return g_update_interval_millises;
 }
 
+bool DBusTopSortFieldIsNumeric(DBusTopSortField field)
+{
+    switch (field)
+    {
+        case kSender:
+        case kDestination:
+        case kInterface:
+        case kPath:
+        case kMember:
+        case kSenderCMD:
+            return false;
+        case kSenderPID:
+        case kMsgPerSec:
+        case kAverageLatency:
+            return true;
+    }
+}
+
 namespace dbus_top_analyzer
 {
     DBusTopStatistics g_dbus_statistics;
@@ -508,6 +526,9 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
                         sender));
                 break;
             }
+            case kMsgPerSec:
+            case kAverageLatency:
+                break; // Don't populate "keys" using these 2 fields
         }
     }
     // keys = combination of fields of user's choice
@@ -542,12 +563,11 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
         sd_bus_message_get_cookie(m, &serial);
         in_flight_methodcalls[serial] = Microseconds();
     }
-    else
+    else if (type == 2) // DBUS_MESSAGE_TYPE_MEHOTD_RETURN
     {
         uint64_t reply_serial; // serial == cookie
         sd_bus_message_get_reply_cookie(m, &reply_serial);
-        if (in_flight_methodcalls.count(reply_serial) >
-            0) // if (reply_serial in in_flight_methodcalls) in JS
+        if (in_flight_methodcalls.count(reply_serial) > 0)
         {
             float dt_usec =
                 Microseconds() - in_flight_methodcalls[reply_serial];

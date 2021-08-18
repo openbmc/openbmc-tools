@@ -421,9 +421,17 @@ class DBusStatListView : public DBusTopWindow
     ArrowKeyNavigationMenu* menu2_;
     int highlight_col_idx_; // Currently highlighted column
     int row_idx_;           // Currently highlighted row
+
+    int sort_col_idx_; // Column used for sorting
+    enum SortOrder
+    {
+        Ascending,
+        Descending,
+    };
+    SortOrder sort_order_;
+
     int disp_row_idx_; // From which row to start displaying? (essentially a
                        // vertical scroll bar)
-    bool is_showing_menu_;
     int last_choices_[2]; // Last choice index on either side
     enum MenuState
     {

@@ -511,6 +511,8 @@ std::string SensorDetailView::GetStatusString()
 DBusStatListView::DBusStatListView() : DBusTopWindow()
 {
     highlight_col_idx_ = 0;
+    sort_col_idx_ = 0;
+    sort_order_ = SortOrder::Ascending;
     horizontal_pan_ = 0;
     row_idx_ = -999;
     disp_row_idx_ = 0;
@@ -520,6 +522,8 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
     // Load all available field names
     std::set<std::string> inactive_fields;
     std::set<std::string> active_fields;
+
+    // Default choice of field names
     const int N = static_cast<int>(sizeof(FieldNames) / sizeof(FieldNames[0]));
     for (int i = 0; i < N; i++)
     {
@@ -531,15 +535,19 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
         inactive_fields.erase(s);
         active_fields.insert(s);
     }
-    for (const std::string& s : inactive_fields)
+    for (int i = 0; i < N; i++)
     {
-        menu1_->AddItem(s);
+    const std::string s = FieldNames[i];
+        if (inactive_fields.count(s) > 0)
+        {
+            menu1_->AddItem(s);
+        }
+        else
+        {
+            menu2_->AddItem(s);
+        }
     }
-    for (const std::string& s : active_fields)
-    {
-        menu2_->AddItem(s);
-    }
-    is_showing_menu_ = false;
+    
     curr_menu_state_ = LeftSide;
     menu_h_ = 6;
     menu_w_ = 24; // Need at least 2*padding + 15 for enough space, see menu.hpp
@@ -704,7 +712,6 @@ void DBusStatListView::PanViewportOrMoveHighlightedColumn(const int delta_x)
 void DBusStatListView::OnKeyDown(const std::string& key)
 {
     {
-        ArrowKeyNavigationMenu* m = nullptr;
         switch (curr_menu_state_)
         {
             case LeftSide:
@@ -802,26 +809,19 @@ void DBusStatListView::OnKeyDown(const std::string& key)
                         disp_row_idx_ = N - 1;
                     }
                 }
+                else if (key == "a")
+                {
+                    sort_order_ = SortOrder::Ascending;
+                    sort_col_idx_ = highlight_col_idx_;
+                    break;
+                }
+                else if (key == "d")
+                {
+                    sort_order_ = SortOrder::Descending;
+                    sort_col_idx_ = highlight_col_idx_;
+                    break;
+                }
                 break;
-            }
-        }
-        if (m)
-        {
-            if (key == "up")
-            {
-                m->OnKeyDown(key);
-            }
-            else if (key == "down")
-            {
-                m->OnKeyDown(key);
-            }
-            else if (key == "left")
-            {
-                m->OnKeyDown("left");
-            }
-            else if (key == "right")
-            {
-                m->OnKeyDown("right");
             }
         }
     }
@@ -910,6 +910,21 @@ void DBusStatListView::Render()
         std::string s = headers[i];
         // 1 char outside boundary = start printing from the second character,
         // etc
+
+        // Print ">" for Descending order (meaning: row 0 > row 1 > row 2 ... )
+        // Print "<" for Ascending order (meaning: row 0 < row 1 < row 2 ... )
+        if (sort_col_idx_ == i)
+        {
+            if (sort_order_ == SortOrder::Ascending)
+            {
+                s.push_back('>');
+            }
+            else
+            {
+                s.push_back('<');
+            }
+        }
+
         // Highlight the "currently-selected column"
         if (highlight_col_idx_ == i)
         {
@@ -941,8 +956,7 @@ void DBusStatListView::Render()
     {
         interval_secs = GetSummaryIntervalInMillises() / 1000.0f;
     }
-    std::vector<std::vector<std::string>>
-        all_cells; // as in cells in a spreadsheet
+
     stats_snapshot_ = g_dbus_statistics->StatsSnapshot();
     const int nrows = static_cast<int>(stats_snapshot_.size());
     const std::vector<DBusTopSortField> fields = g_dbus_statistics->GetFields();
@@ -950,30 +964,76 @@ void DBusStatListView::Render()
     // Merge the list of DBus Message properties & computed metrics together
     std::map<std::vector<std::string>, DBusTopComputedMetrics>::iterator itr =
         stats_snapshot_.begin();
+    struct StringOrFloat
+    { // Cannot use union so using struct
+        std::string s;
+        float f;
+    };
+
+    // "Stage" the snapshot for displaying in the form of a spreadsheet
+    std::vector<std::pair<StringOrFloat, std::vector<std::string>>>
+        stats_snapshot_staged;
+    const DBusTopSortField sort_field = fields[sort_col_idx_];
+    const bool is_sort_key_numeric = DBusTopSortFieldIsNumeric(sort_field);
+
     for (int i = 0; i < nrows; i++) // One row of cells
     {
         int idx0 = 0; // indexing into the std::vector<string> of each row
         std::vector<std::string> row;
+
+        StringOrFloat sort_key; // The key used for sorting
         for (int j = 0; j < ncols; j++) // one column in the row
         {
+            bool is_sort_key =
+                (j == sort_col_idx_); // Is the column used for sorting?
             DBusTopSortField field = fields[j];
+            // Populate the content of stats_snapshot_staged
+
+            StringOrFloat sof; // Represents this column
+            
+            // When we haven't used up all
+            if (idx0 < static_cast<int>(itr->first.size()))
+            {
+                sof.s = itr->first[idx0];
+            }
             switch (field)
             {
-                case kSender:
-                case kDestination:
-                case kInterface:
-                case kPath:
-                case kMember:
-                case kSenderPID:
-                case kSenderCMD:
+                case kSender:      // string
+                case kDestination: // string
+                case kInterface:   // string
+                case kPath:        // string
+                case kMember:      // string
+                case kSenderPID:   // numeric
+                case kSenderCMD:   // string
                     row.push_back(itr->first[idx0]);
                     idx0++;
+                    if (field == kSenderPID)
+                    {
+                        // Note: attempting to std::atof("(unknown)") on the BMC
+                        // will cause hang. And GDB won't show backtrace.
+                        if (sof.s == "(unknown)")
+                        {
+                            if (sort_order_ == Ascending)
+                            {
+                                sof.f = -1;
+                            }
+                            else
+                            {
+                                sof.f = 1e20;
+                            }
+                        }
+                        else
+                        {
+                            sof.f = std::atof(sof.s.c_str());
+                        }
+                    }
                     break;
                 case kMsgPerSec: // Compute "messages per second"
                 {
                     float num_msgs_per_sec =
                         itr->second.num_messages / interval_secs;
                     row.push_back(FloatToString(num_msgs_per_sec));
+                    sof.f = num_msgs_per_sec;
                     break;
                 }
                 case kAverageLatency: // Compute "average Method Call latency"
@@ -981,36 +1041,73 @@ void DBusStatListView::Render()
                     if (m.num_method_calls == 0)
                     {
                         row.push_back("n/a");
+                        if (sort_order_ == Ascending)
+                        {
+                            sof.f = -1; // Put to the top
+                        }
+                        else
+                        {
+                            sof.f = 1e20; // Put to the top
+                        }
                     }
                     else
                     {
                         float avg_latency_usec =
                             m.total_latency_usec / m.num_method_calls;
                         row.push_back(FloatToString(avg_latency_usec));
+                        sof.f = avg_latency_usec;
                     }
                     break;
             }
+            if (j == sort_col_idx_)
+            {
+                sort_key = sof;
+            }
         }
-        all_cells.push_back(row);
+        stats_snapshot_staged.push_back(std::make_pair(sort_key, row));
         itr++;
     }
-    std::sort(all_cells.begin(), all_cells.end());
-    char buf[100];
-    sprintf(buf, "cell size: %zu\n", all_cells.size());
-    mvwaddstr(win, 5, 5, buf);
+    
+    // Sort the "staged snapshot" using the sort_key, using different functions
+    // depending on whether sort key is numeric or string
+    if (is_sort_key_numeric)
+    {
+        std::sort(
+            stats_snapshot_staged.begin(), stats_snapshot_staged.end(),
+            [](const std::pair<StringOrFloat, std::vector<std::string>>& a,
+               const std::pair<StringOrFloat, std::vector<std::string>>& b) {
+                return a.first.f < b.first.f;
+            });
+    }
+    else
+    {
+        std::sort(
+            stats_snapshot_staged.begin(), stats_snapshot_staged.end(),
+            [](const std::pair<StringOrFloat, std::vector<std::string>>& a,
+               const std::pair<StringOrFloat, std::vector<std::string>>& b) {
+                return a.first.s < b.first.s;
+            });
+    }
+    
+    if (sort_order_ == Descending)
+    {
+        std::reverse(stats_snapshot_staged.begin(),
+                     stats_snapshot_staged.end());
+    }
     // Minus 2 because of "msgs/s" and "+"
     const int num_fields = N;
     // The Y span of the area for rendering the "spreadsheet"
     const int y0 = 2, y1 = y0 + num_lines_shown - 1;
     // Key is sender, destination, interface, path, etc
     for (int i = 0, shown = 0;
-         i + disp_row_idx_ < static_cast<int>(all_cells.size()) &&
-         shown < num_lines_shown;
-         i++, shown++)
+        i + disp_row_idx_ < static_cast<int>(stats_snapshot_staged.size()) &&
+        shown < num_lines_shown;
+        i++, shown++)
     {
         std::string s;
         int x = 0;
-        const std::vector<std::string> key = all_cells[i + disp_row_idx_];
+        const std::vector<std::string> key =
+            stats_snapshot_staged[i + disp_row_idx_].second;
         for (int j = 0; j < num_fields; j++)
         {
             x = xs[j];
@@ -1038,12 +1135,13 @@ void DBusStatListView::Render()
             mvwaddstr(win, 2 + i, x, s.c_str());
         }
     }
-    // Overflows to the top ..
+    // Overflows past the top ...
     if (disp_row_idx_ > 0)
     {
         std::string x = " [+" + std::to_string(disp_row_idx_) + " rows above]";
         mvwaddstr(win, y0, rect.w - static_cast<int>(x.size()) - 1, x.c_str());
     }
+    // Overflows past the bottom ...
     const int last_disp_row_idx = disp_row_idx_ + num_lines_shown - 1;
     if (last_disp_row_idx < nrows - 1)
     {
