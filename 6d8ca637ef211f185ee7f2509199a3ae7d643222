@@ -2,6 +2,86 @@
   "comments": [
     {
       "key": {
+        "uuid": "6d916f71_e7964da5",
+        "filename": "dbus-top/analyzer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:08:26Z",
+      "side": 1,
+      "message": "Is it necessary for all of these to be public? Class code can access the private members of instances of the type.",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 51
+      },
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a3f282e_d097aeca",
+        "filename": "dbus-top/analyzer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:08:26Z",
+      "side": 1,
+      "message": "Feels like a copy-constructor?",
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "838b4af0_f08010da",
+        "filename": "dbus-top/bargraph.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:08:26Z",
+      "side": 1,
+      "message": "Can this exceed the ring size?",
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c8fd7fd_a710b6de",
+        "filename": "dbus-top/histogram.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:08:26Z",
+      "side": 1,
+      "message": "Should this not be done as an initialiser list?",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 29
+      },
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d22c62a6_012a38d8",
         "filename": "dbus-top/main.cpp",
         "patchSetId": 2
@@ -81,6 +161,63 @@
       "writtenOn": "2021-08-16T19:49:53Z",
       "side": 1,
       "message": "Can you think of a nicer program structure so that we don\u0027t have to if(curr_view) in so many places?",
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ea24c65b_ce7e9d66",
+        "filename": "dbus-top/meson.build",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:08:26Z",
+      "side": 1,
+      "message": "This is a little unsightly. Can you tidy it up to look more like the left?",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 8
+      },
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76bf3eec_8cbf80aa",
+        "filename": "dbus-top/meson.build",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:08:26Z",
+      "side": 1,
+      "message": "As above.",
+      "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef3c02f5_770cea52",
+        "filename": "dbus-top/xmlparse.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:08:26Z",
+      "side": 1,
+      "message": "Why not use an existing XML parsing library?",
       "revId": "6d8ca637ef211f185ee7f2509199a3ae7d643222",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
