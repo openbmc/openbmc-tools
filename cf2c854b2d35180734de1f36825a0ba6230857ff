@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e9fe97cb_4911020c",
+        "filename": "dbus-top/views.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:17:04Z",
+      "side": 1,
+      "message": "You really must resolve this merge conflict properly :)\n\nBy the way `git merge-tool` is very helpful for this kind of problem (as it forces you to at least view all the merge conflicts).\n\nAnd of course if you\u0027re generating and resolving merge conflicts you should turn on `git rerere` which will also help you out by applying known resolutions automatically.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 79
+      },
+      "revId": "cf2c854b2d35180734de1f36825a0ba6230857ff",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3fd66b2_95c0fcdf",
+        "filename": "dbus-top/views.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:17:04Z",
+      "side": 1,
+      "message": "Another merge conflict.",
+      "revId": "cf2c854b2d35180734de1f36825a0ba6230857ff",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b31d65c_dc55804d",
+        "filename": "dbus-top/views.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:17:04Z",
+      "side": 1,
+      "message": "Merge conflict.",
+      "revId": "cf2c854b2d35180734de1f36825a0ba6230857ff",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2361612e_a216a2c7",
+        "filename": "dbus-top/views.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:17:04Z",
+      "side": 1,
+      "message": "Merge conflict.",
+      "revId": "cf2c854b2d35180734de1f36825a0ba6230857ff",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6faf18fb_9620859b",
+        "filename": "dbus-top/views.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:17:04Z",
+      "side": 1,
+      "message": "Merge conflict.",
+      "revId": "cf2c854b2d35180734de1f36825a0ba6230857ff",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
