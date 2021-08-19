@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3455ea05_30cc2c15",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:19:20Z",
+      "side": 1,
+      "message": "Do we have a name that\u0027s more descriptive than \"Window C\"? I have no idea what Window C represents.",
+      "range": {
+        "startLine": 7,
+        "startChar": 19,
+        "endLine": 7,
+        "endChar": 27
+      },
+      "revId": "8effc10e82ed21c5970eb40a030b615d2f775432",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ae061af_5f2004c8",
+        "filename": "dbus-top/analyzer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:19:20Z",
+      "side": 1,
+      "message": "I recommend separating out unrelated whitespace changes into a separate patch. They tend to be distractions, or if we (as reviewers) assume they are, can hide unintentional (or intentional) changes in behaviour.",
+      "revId": "8effc10e82ed21c5970eb40a030b615d2f775432",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbbf91f3_25bfad96",
+        "filename": "dbus-top/main.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:19:20Z",
+      "side": 1,
+      "message": "Again, this whitespace change is a distraction and shouldn\u0027t be part of this commit.",
+      "revId": "8effc10e82ed21c5970eb40a030b615d2f775432",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3ed9eee_10ea30ce",
+        "filename": "dbus-top/xmlparse.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-08-19T01:19:20Z",
+      "side": 1,
+      "message": "More unrelated whitespace changes, but again, I\u0027d consider using an existing XML parser library.",
+      "revId": "8effc10e82ed21c5970eb40a030b615d2f775432",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
