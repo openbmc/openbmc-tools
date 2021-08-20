@@ -57,7 +57,6 @@ class DBusConnection
         connection = _c;
         pid = _pid;
     }
-    
 };
 
 class DBusConnectionSnapshot

@@ -504,7 +504,7 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
     const int sender_orig_pid =
         g_connection_snapshot->GetConnectionPIDFromNameOrUniqueName(
             sender_orig);
-    
+
     if (sender_orig_pid == 1)
     {
         sender_orig = "systemd";
@@ -560,7 +560,7 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
         }
     }
     // keys = combination of fields of user's choice
-    
+
     if (stats_.count(keys) == 0)
     {
         stats_[keys] = DBusTopComputedMetrics();
