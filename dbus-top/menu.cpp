@@ -17,14 +17,9 @@
 #include "views.hpp"
 
 ArrowKeyNavigationMenu::ArrowKeyNavigationMenu(DBusTopWindow* view) :
-    win_(view->win), parent_(view)
-{
-    idx0_ = idx1_ = -999;
-    h_padding_ = 2;
-    col_width_ = 15;
-    h_spacing_ = 2;
-    choice_ = -999;
-}
+    win_(view->win), parent_(view), idx0_(INVALID), idx1_(INVALID),
+    h_padding_(2), col_width_(15), h_spacing_(2), choice_(INVALID)
+{}
 
 void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
 {
@@ -41,7 +36,7 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
     {
         is_cursor_out_of_view = true;
     }
-    if (idx0_ == -999 || idx1_ == -999)
+    if (idx0_ == INVALID || idx1_ == INVALID)
     {
         is_cursor_out_of_view = true;
     }
@@ -163,7 +158,7 @@ void ArrowKeyNavigationMenu::MoveCursorAlongPrimaryAxis(int delta)
     if (N < 1)
         return;
     // If the cursor is inactive, activate it
-    if (choice_ == -999)
+    if (choice_ == INVALID)
     {
         if (delta > 0)
         {
@@ -195,7 +190,7 @@ void ArrowKeyNavigationMenu::MoveCursorAlongSecondaryAxis(int delta)
     if (N < 1)
         return;
     // If the cursor is inactive, activate it
-    if (choice_ == -999)
+    if (choice_ == INVALID)
     {
         if (delta > 0)
         {
@@ -285,7 +280,7 @@ void ArrowKeyNavigationMenu::SetChoiceAndConstrain(int c)
 {
     if (Empty())
     {
-        choice_ = -999;
+        choice_ = INVALID;
         return;
     }
     if (c < 0)

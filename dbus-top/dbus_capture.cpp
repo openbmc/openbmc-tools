@@ -14,6 +14,8 @@
 
 #include "analyzer.hpp"
 #include "histogram.hpp"
+#include "sensorhelper.hpp"
+#include "main.hpp"
 
 #include <ncurses.h>
 #include <stdlib.h>
@@ -23,6 +25,7 @@
 
 bool IS_USER_BUS = false; // User bus or System bus?
 extern sd_bus* g_bus;
+extern DBusConnectionSnapshot* g_connection_snapshot;
 static std::unordered_map<uint64_t, uint64_t> in_flight_methodcalls;
 
 namespace dbus_top_analyzer
@@ -170,11 +173,24 @@ void DbusCaptureThread()
             const char* member = sd_bus_message_get_member(m);
             // TODO: This is for the bottom-left window
             TrackMessage(m);
+
+            // Look up the unique connection name for sender and destination
+            std::string sender_uniq, dest_uniq;
+            if (sender != nullptr)
+            {
+                sender_uniq =
+                    g_connection_snapshot->GetUniqueNameIfExists(sender);
+            }
+            if (destination != nullptr)
+            {
+                dest_uniq =
+                    g_connection_snapshot->GetUniqueNameIfExists(destination);
+            }
             
             // This is for the bottom-right window
             dbus_top_analyzer::g_dbus_statistics.OnNewDBusMessage(
-            sender, destination, interface, path, member, type, m);
-
+            sender_uniq.c_str(), dest_uniq.c_str(), interface, path, member,
+                type, m);
             sd_bus_message_unref(m);
         }
         r = sd_bus_wait(g_bus,

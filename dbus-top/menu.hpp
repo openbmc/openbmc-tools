@@ -23,16 +23,10 @@ class DBusTopWindow;
 class ArrowKeyNavigationMenu
 {
   public:
-    explicit ArrowKeyNavigationMenu(WINDOW* win) : win_(win)
-    {
-        idx0_ = idx1_ = -999;
-        h_padding_ = 2;
-        col_width_ = 15;
-        h_spacing_ = 2;
-        choice_ = -999;
-        parent_ = nullptr;
-    }
-
+    explicit ArrowKeyNavigationMenu(WINDOW* win) :
+        win_(win), h_padding_(2), col_width_(15), h_spacing_(2), idx0_(INVALID),
+        idx1_(INVALID), choice_(INVALID), parent_(nullptr)
+    {}
     explicit ArrowKeyNavigationMenu(DBusTopWindow* view);
     void LoadDummyValues()
     {
@@ -97,7 +91,7 @@ class ArrowKeyNavigationMenu
 
     void Deselect()
     {
-        choice_ = -999;
+        choice_ = INVALID;
     }
 
     bool Empty()

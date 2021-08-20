@@ -14,6 +14,7 @@
 
 #include "analyzer.hpp"
 #include "histogram.hpp"
+#include "main.hpp"
 #include "sensorhelper.hpp"
 #include "views.hpp"
 #include "xmlparse.hpp"
@@ -72,6 +73,7 @@ bool DBusTopSortFieldIsNumeric(DBusTopSortField field)
         case kAverageLatency:
             return true;
     }
+    return false;
 }
 
 namespace dbus_top_analyzer
@@ -231,7 +233,7 @@ namespace dbus_top_analyzer
                                         SD_BUS_CREDS_DESCRIPTION,
                                     &creds);
             // PID
-            int pid = -999;
+            int pid = INVALID;
             if (r < 0)
             {
                 printf("Oh! Cannot get creds for %s\n", services[i].c_str());
@@ -243,7 +245,7 @@ namespace dbus_top_analyzer
             pids.push_back(pid);
             // comm
             std::string comm;
-            if (pid != -999)
+            if (pid != INVALID)
             {
                 std::ifstream ifs("/proc/" + std::to_string(pid) + "/cmdline");
                 std::string line;
@@ -485,15 +487,44 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
 {
     num_messages_++;
     std::vector<std::string> keys;
+
+    std::string sender_orig = CheckAndFixNullString(sender);
+    std::string dest_orig = CheckAndFixNullString(destination);
+    // For method return messages, we actually want to show the sender
+    // and destination of the original method call, so we swap the
+    // sender and destination
+    if (type == 2)
+    { // DBUS_MESSAGE_TYPE_METHOD_METHOD_RETURN
+        std::swap(sender_orig, dest_orig);
+    }
+
+    // Special case: when PID == 1 (init), the DBus unit would be systemd.
+    // It seems it was not possible to obtain the connection name of systemd
+    // so we manually set it here.
+    const int sender_orig_pid =
+        g_connection_snapshot->GetConnectionPIDFromNameOrUniqueName(
+            sender_orig);
+    
+    if (sender_orig_pid == 1)
+    {
+        sender_orig = "systemd";
+    }
+    const int dest_orig_pid =
+        g_connection_snapshot->GetConnectionPIDFromNameOrUniqueName(dest_orig);
+    if (dest_orig_pid == 1)
+    {
+        dest_orig = "systemd";
+    }
+
     for (DBusTopSortField field : fields_)
     {
         switch (field)
         {
             case kSender:
-                keys.push_back(CheckAndFixNullString(sender));
+                keys.push_back(sender_orig);
                 break;
             case kDestination:
-                keys.push_back(CheckAndFixNullString(destination));
+                keys.push_back(dest_orig);
                 break;
             case kInterface:
                 keys.push_back(CheckAndFixNullString(interface));
@@ -506,12 +537,9 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
                 break;
             case kSenderPID:
             {
-                const int pid =
-                    g_connection_snapshot->GetConnectionPIDFromNameOrUniqueName(
-                        sender);
-                if (pid != -999)
+                if (sender_orig_pid != INVALID)
                 {
-                    keys.push_back(std::to_string(pid));
+                    keys.push_back(std::to_string(sender_orig_pid));
                 }
                 else
                 {
@@ -523,7 +551,7 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
             {
                 keys.push_back(
                     g_connection_snapshot->GetConnectionCMDFromNameOrUniqueName(
-                        sender));
+                        sender_orig));
                 break;
             }
             case kMsgPerSec:
@@ -532,28 +560,26 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
         }
     }
     // keys = combination of fields of user's choice
-    // Update computed metrics
-    bool has_msg_per_sec = false;
-    bool has_avg_latency = false;
-    for (DBusTopSortField field : fields_)
-    {
-        if (field == kMsgPerSec)
-        {
-            has_msg_per_sec = true;
-        }
-        else if (field == kAverageLatency)
-        {
-            has_avg_latency = true;
-        }
-    }
+    
     if (stats_.count(keys) == 0)
     {
         stats_[keys] = DBusTopComputedMetrics();
     }
-    // Need to update msg/s
-    if (has_msg_per_sec || has_avg_latency)
+    // Need to update msg/s regardless
+    switch (type)
     {
-        stats_[keys].num_messages++;
+        case 1: // DBUS_MESSAGE_TYPE_METHOD_CALL
+            stats_[keys].num_method_calls++;
+            break;
+        case 2: // DBUS_MESSAGE_TYPE_METHOD_METHOD_RETURN
+            stats_[keys].num_method_returns++;
+            break;
+        case 3: // DBUS_MESSAGE_TYPE_ERROR
+            stats_[keys].num_errors++;
+            break;
+        case 4: // DBUS_MESSAGE_TYPE_SIGNAL
+            stats_[keys].num_signals++;
+            break;
     }
     // Update global latency histogram
     // For method call latency
@@ -565,7 +591,7 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
     }
     else if (type == 2) // DBUS_MESSAGE_TYPE_MEHOTD_RETURN
     {
-        uint64_t reply_serial; // serial == cookie
+        uint64_t reply_serial = 0; // serial == cookie
         sd_bus_message_get_reply_cookie(m, &reply_serial);
         if (in_flight_methodcalls.count(reply_serial) > 0)
         {
@@ -575,7 +601,6 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
             dbus_top_analyzer::g_mc_time_histogram.AddSample(dt_usec);
 
             // Add method call count and total latency to the corresponding key
-            stats_[keys].num_method_calls++;
             stats_[keys].total_latency_usec += dt_usec;
         }
     }

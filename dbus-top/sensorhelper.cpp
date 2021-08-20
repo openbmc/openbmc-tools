@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "sensorhelper.hpp"
+#include "main.hpp"
 
 #include <unistd.h>
 

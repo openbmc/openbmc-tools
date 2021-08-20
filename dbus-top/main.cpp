@@ -22,6 +22,7 @@
 #include "sensorhelper.hpp"
 #include "views.hpp"
 
+#include <fmt/printf.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -38,7 +39,7 @@ FooterView* g_footer_view;
 BarGraph<float>* g_bargraph = nullptr;
 Histogram<float>* g_histogram;
 std::vector<DBusTopWindow*> g_views;
-int g_highlighted_view_index = -999;
+int g_highlighted_view_index = INVALID;
 sd_bus* g_bus = nullptr;
 SensorSnapshot* g_sensor_snapshot;
 DBusConnectionSnapshot* g_connection_snapshot;
@@ -137,14 +138,7 @@ void UpdateWindowSizes()
 
 std::string FloatToString(float value)
 {
-    std::ostringstream temp;
-    // Set Fixed -Point Notation
-    temp << std::fixed;
-    temp << std::setprecision(2);
-    // Add double to stream
-    temp << value;
-    // Get string from output string stream
-    return temp.str();
+    return fmt::sprintf("%.2f", value);
 }
 
 void DBusTopRefresh()
@@ -185,7 +179,7 @@ void DBusTopStatisticsCallback(DBusTopStatistics* stat, Histogram<float>* hist)
 void CycleHighlightedView()
 {
     int new_index = 0;
-    if (g_highlighted_view_index == -999)
+    if (g_highlighted_view_index == INVALID)
     {
         new_index = 0;
     }
@@ -200,14 +194,14 @@ void CycleHighlightedView()
     }
     if (new_index >= static_cast<int>(g_views.size()))
     {
-        new_index = -999;
+        new_index = INVALID;
     }
     // Un-highlight all
     for (DBusTopWindow* v : g_views)
     {
         v->focused_ = false;
     }
-    if (new_index != -999)
+    if (new_index != INVALID)
     {
         g_views[new_index]->focused_ = true;
         g_current_active_view = g_views[new_index];
@@ -222,113 +216,86 @@ void CycleHighlightedView()
 
 int UserInputThread()
 {
-    bool needs_refresh = false;
     while (true)
     {
         int c = getch();
         DBusTopWindow* curr_view = g_current_active_view;
-        switch (c)
+        
+        // If a view is currently focused on
+        if (curr_view)
         {
-            case 27:
+            switch (c)
             {
-                getch();
-                switch (getch())
+                case '\e': // 27 in dec, 0x1B in hex, escape key
                 {
-                    case 'A':
-                        if (curr_view)
-                        {
-                            curr_view->OnKeyDown("up");
-                        }
-                        break;
-                    case 'B':
-                        if (curr_view)
-                        {
-                            curr_view->OnKeyDown("down");
-                        }
-                        break;
-                    case 'C': // right
-                        if (curr_view)
-                        {
-                            curr_view->OnKeyDown("right");
-                        }
-                        break;
-                    case 'D': // left
-                        if (curr_view)
-                        {
-                            curr_view->OnKeyDown("left");
-                        }
-                        break;
-                    case 27:
-                        if (curr_view)
-                        {
-                            curr_view->OnKeyDown("escape");
-                        }
-                        break;
-                    default:
+                    getch();
+                    c = getch();
+                    switch (c)
                     {
-                        break;
+                        case 'A':
+                            curr_view->OnKeyDown("up");
+                            break;
+                        case 'B':
+                            curr_view->OnKeyDown("down");
+                            break;
+                        case 'C':
+                            curr_view->OnKeyDown("right");
+                            break;
+                        case 'D':
+                            curr_view->OnKeyDown("left");
+                            break;
+                        case '\e':
+                            curr_view->OnKeyDown("escape");
+                            break;
                     }
-                }
-                break;
-            }
-            case 9: // Tab
-                CycleHighlightedView();
-                break;
-            case 10: // Line Feed (Enter)
-                if (curr_view)
+                    break;
+                }               
+                case '\n': // 10 in dec, 0x0A in hex, line feed
                 {
                     curr_view->OnKeyDown("enter");
                 }
-                break;
-            case 'q':
-            case 'Q':
-            {
-                if (curr_view)
+                case 'q':
+                case 'Q': // Q key
                 {
                     curr_view->OnKeyDown("escape");
+                    break;
                 }
-                break;
-            }
-            case 'a':
-            case 'A':
-            {
-                if (curr_view)
+                case 'a':
+                case 'A': // A key
                 {
                     curr_view->OnKeyDown("a");
+                    break;
                 }
-                break;
-            }
-            case 'd':
-            case 'D':
-            {
-                if (curr_view)
+                case 'd':
+                case 'D': // D key
                 {
                     curr_view->OnKeyDown("d");
+                    break;
                 }
-                break;
-            }
-            case 33:
-            { // page up
-                if (curr_view)
+                case 33: // Page up
                 {
                     curr_view->OnKeyDown("pageup");
+                    break;
                 }
-                break;
-            }
-            case 34:
-            { // page down
-                if (curr_view)
+                case 34: // Page down
                 {
                     curr_view->OnKeyDown("pagedown");
+                    break;
                 }
-                break;
-            }
-            case ' ':
-            {
-                if (curr_view)
+                case ' ': // Spacebar
                 {
                     curr_view->OnKeyDown("space");
+                    break;
                 }
+            }
+        }
+        // The following keys are registered both when a view is selected and
+        // when it is not
+        switch (c)
+        {
+            case '\t': // 9 in dec, 0x09 in hex, tab
+            {
+                CycleHighlightedView();
                 break;
             }
             case 'r':
@@ -367,10 +334,6 @@ int UserInputThread()
             }
             default:
                 break;
-        }
-        if (needs_refresh)
-        {
-            DBusTopRefresh();
         }
     }
     exit(0);

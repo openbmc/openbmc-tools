@@ -386,7 +386,7 @@ void SensorDetailView::Render()
         {
             is_cursor_out_of_view = true;
         }
-        if (idx0 == -999 || idx1 == -999)
+        if (idx0 == INVALID || idx1 == INVALID)
         {
             is_cursor_out_of_view = true;
         }
@@ -514,7 +514,7 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
     sort_col_idx_ = 0;
     sort_order_ = SortOrder::Ascending;
     horizontal_pan_ = 0;
-    row_idx_ = -999;
+    row_idx_ = INVALID;
     disp_row_idx_ = 0;
     horizontal_pan_ = 0;
     menu1_ = new ArrowKeyNavigationMenu(this);
@@ -549,7 +549,7 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
     }
     
     curr_menu_state_ = LeftSide;
-    menu_h_ = 6;
+    menu_h_ = 5;
     menu_w_ = 24; // Need at least 2*padding + 15 for enough space, see menu.hpp
     menu_margin_ = 6;
     // Populate preferred column widths
@@ -557,7 +557,6 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
     {
         column_widths_[FieldNames[i]] = FieldPreferredWidths[i];
     }
-    column_widths_["Msg/s"] = 8;
 }
 
 std::pair<int, int> DBusStatListView::GetXSpanForColumn(const int col_idx)
@@ -565,7 +564,7 @@ std::pair<int, int> DBusStatListView::GetXSpanForColumn(const int col_idx)
     std::vector<int> cw = ColumnWidths();
     if (col_idx < 0 || col_idx >= static_cast<int>(cw.size()))
     {
-        return std::make_pair(-999, -999);
+        return std::make_pair(INVALID, INVALID);
     }
     int x0 = 0, x1 = 0;
     for (int i = 0; i < col_idx; i++)
@@ -606,7 +605,7 @@ bool IsSpansOverlap(const std::pair<int, int>& s0,
         tmp[2] = std::make_pair(s1.first, 1);
         tmp[3] = std::make_pair(s1.second, -1);
         std::sort(tmp.begin(), tmp.end());
-        int overlap_x0 = -999, overlap_x1 = -999;
+        int overlap_x0 = -INVALID, overlap_x1 = -INVALID;
         int idx = 0;
         const int N = static_cast<int>(tmp.size());
         int level = 0;
@@ -624,7 +623,7 @@ bool IsSpansOverlap(const std::pair<int, int>& s0,
                 overlap_x0 = idx - 1;
             }
             // The ending position of the overlap
-            if (overlap_x0 != -999 && level < 2 && overlap_x1 == -999)
+            if (overlap_x0 != -INVALID && level < 2 && overlap_x1 == -INVALID)
             {
                 overlap_x1 = idx - 1;
             }
@@ -645,11 +644,7 @@ bool DBusStatListView::IsXSpanVisible(const std::pair<int, int>& xs,
 }
 std::vector<std::string> DBusStatListView::ColumnHeaders()
 {
-    std::vector<std::string> headers = {"Msg/s"}; // Msg's is always present
-    std::vector<std::string> agg_headers = visible_columns_;
-    headers.insert(headers.end(), visible_columns_.begin(),
-                   visible_columns_.end());
-    return headers;
+    return visible_columns_;
 }
 
 std::vector<int> DBusStatListView::ColumnWidths()
@@ -911,17 +906,17 @@ void DBusStatListView::Render()
         // 1 char outside boundary = start printing from the second character,
         // etc
 
-        // Print ">" for Descending order (meaning: row 0 > row 1 > row 2 ... )
         // Print "<" for Ascending order (meaning: row 0 < row 1 < row 2 ... )
+        // Print ">" for Descending order (meaning: row 0 > row 1 > row 2 ... )
         if (sort_col_idx_ == i)
         {
             if (sort_order_ == SortOrder::Ascending)
             {
-                s.push_back('>');
+                s.push_back('<');
             }
             else
             {
-                s.push_back('<');
+                s.push_back('>');
             }
         }
 
@@ -984,8 +979,6 @@ void DBusStatListView::Render()
         StringOrFloat sort_key; // The key used for sorting
         for (int j = 0; j < ncols; j++) // one column in the row
         {
-            bool is_sort_key =
-                (j == sort_col_idx_); // Is the column used for sorting?
             DBusTopSortField field = fields[j];
             // Populate the content of stats_snapshot_staged
 
@@ -1030,10 +1023,27 @@ void DBusStatListView::Render()
                     break;
                 case kMsgPerSec: // Compute "messages per second"
                 {
-                    float num_msgs_per_sec =
-                        itr->second.num_messages / interval_secs;
-                    row.push_back(FloatToString(num_msgs_per_sec));
-                    sof.f = num_msgs_per_sec;
+                    int numbers[] = {
+                        itr->second.num_method_calls,
+                        itr->second.num_method_returns,
+                        itr->second.num_signals,
+                        itr->second.num_errors,
+                    };
+                    int the_sum = 0; // For sorting
+
+                    std::string s; // String representation in the form or
+                                   // "1.00/2.00/3.00/4.00"
+                    for (int i = 0; i < 4; i++)
+                    {
+                        the_sum += numbers[i];
+                        if (i > 0)
+                            s += "/";
+                        float per_sec = numbers[i] / interval_secs;
+                        s += FloatToString(per_sec);
+                    }
+
+                    row.push_back(s);
+                    sof.f = the_sum;
                     break;
                 }
                 case kAverageLatency: // Compute "average Method Call latency"

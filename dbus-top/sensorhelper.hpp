@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "main.hpp"
 // This is the form a sensor assumes on DBus.
 // Aggregates their view from all other daemons.
 #include <bitset>
@@ -109,7 +110,7 @@ class DBusConnectionSnapshot
     // Only when service is known (during playback)
     void AddConnection(const std::string& _s)
     {
-        connections_.push_back(new DBusConnection(_s, "", "", "", -999));
+        connections_.push_back(new DBusConnection(_s, "", "", "", INVALID));
     }
 
     // When all 5 pieces of details are known (during actual capture)
@@ -127,7 +128,7 @@ class DBusConnectionSnapshot
     {
         if (unique_name_to_cxn.find(key) == unique_name_to_cxn.end())
         {
-            return -999;
+            return INVALID;
         }
         else
         {
@@ -146,6 +147,17 @@ class DBusConnectionSnapshot
             return unique_name_to_cxn[key]->cmd;
         }
     }
+
+    std::string GetUniqueNameIfExists(const std::string service)
+    {
+        for (DBusConnection* cxn : connections_)
+        {
+            if (cxn->service == service)
+                return cxn->connection;
+        }
+        return service;
+    }
+
 };
 
 // Each sensor might have different units, for example current and voltage

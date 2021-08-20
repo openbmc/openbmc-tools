@@ -49,11 +49,15 @@ struct DBusTopComputedMetrics
 {
     DBusTopComputedMetrics()
     {
-        num_messages = 0;
+        num_signals = 0;
+        num_errors = 0;
+        num_method_returns = 0;
         num_method_calls = 0;
         total_latency_usec = 0;
     }
-    int num_messages;
+    int num_method_returns = 0;
+    int num_errors = 0;
+    int num_signals = 0;
     int num_method_calls;
     uint64_t total_latency_usec;
 };

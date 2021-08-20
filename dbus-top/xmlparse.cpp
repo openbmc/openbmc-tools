@@ -13,11 +13,12 @@
 // limitations under the License.
 
 #include "xmlparse.hpp"
+#include "main.hpp"
 
 int Munch(const std::string& sv, int* idx, std::string* out)
 {
     if (*idx >= static_cast<int>(sv.size()))
-        return -999;
+        return -INVALID;
     while (::isspace(sv[*idx]))
     {
         (*idx)++;
@@ -115,7 +116,7 @@ XMLNode* ParseXML(const std::string& sv)
     {
         printf("%s\n", sv.c_str());
     }
-    while ((res = Munch(sv, &idx, &out)) != -999)
+    while ((res = Munch(sv, &idx, &out)) != -INVALID)
     {
         if (res == 1 || res == 12)
         {

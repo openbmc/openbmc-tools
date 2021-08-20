@@ -19,6 +19,8 @@
 #include <ncurses.h>
 
 #include <string>
+
+const int INVALID = -999; // Constant indicating invalid indices
 struct Rect
 {
     int x, y, w, h; // X, Y, Width, Height
