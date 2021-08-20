@@ -132,8 +132,7 @@ void UpdateWindowSizes()
             v->rect={0,0,maxx,maxy-MARGIN_BOTTOM};
             v->UpdateWindowSizeAndPosition();
         }
-    }
-    
+    } 
 }
 
 std::string FloatToString(float value)
@@ -220,7 +219,6 @@ int UserInputThread()
     {
         int c = getch();
         DBusTopWindow* curr_view = g_current_active_view;
-        
         // If a view is currently focused on
         if (curr_view)
         {
@@ -249,7 +247,7 @@ int UserInputThread()
                             break;
                     }
                     break;
-                }               
+                }  
                 case '\n': // 10 in dec, 0x0A in hex, line feed
                 {
                     curr_view->OnKeyDown("enter");

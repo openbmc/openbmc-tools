@@ -186,7 +186,6 @@ void DbusCaptureThread()
                 dest_uniq =
                     g_connection_snapshot->GetUniqueNameIfExists(destination);
             }
-            
             // This is for the bottom-right window
             dbus_top_analyzer::g_dbus_statistics.OnNewDBusMessage(
             sender_uniq.c_str(), dest_uniq.c_str(), interface, path, member,
