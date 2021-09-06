@@ -1,0 +1,51 @@
+#!/bin/sh
+
+set -eu
+
+fstab_mountpoint_options() {
+    awk "\"$1\" == \$2 { print \$4 }"
+}
+
+fstab_option_iter() {
+    tr ',' '\n'
+}
+
+fstab_option_value() {
+    cut -d= -f2
+}
+
+if [ $# -lt 2 ]
+then
+    cat $0
+    exit 1
+fi
+
+case $1 in
+    add)
+        o_lowerdir="$2"
+        o_upperdir=$(mktemp -d)
+        o_workdir=$(mktemp -d)
+        mount -t overlay -o lowerdir="${o_lowerdir}",upperdir=${o_upperdir},workdir=${o_workdir} overlay "${o_lowerdir}"
+        ;;
+    remove)
+        o_lowerdir="$2"
+        o_options="$(fstab_mountpoint_options $o_lowerdir < /proc/mounts)"
+        umount $o_lowerdir
+        echo "${o_options}" |
+            fstab_option_iter |
+            while read FS_MNTOPT
+            do
+            case $FS_MNTOPT in
+                upperdir=*)
+                    rm -rf "$(echo $FS_MNTOPT | fstab_option_value)"
+                    ;;
+                workdir=*)
+                    rm -rf "$(echo $FS_MNTOPT | fstab_option_value)"
+                    ;;
+            esac
+        done
+        ;;
+    -h|--help|*)
+        cat $0
+        ;;
+esac
