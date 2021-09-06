@@ -1,0 +1,54 @@
+#!/bin/sh
+
+set -eu
+
+fstab_fs_mntopt() {
+    awk "\"overlay\" == \$1 && \"$1\" == \$2 { printf(\"%s\n\", \$4) }"
+}
+
+fstab_option_iter() {
+    tr ',' '\n'
+}
+
+fstab_option_value() {
+    cut -d= -f2
+}
+
+if [ $# -lt 2 ]
+then
+    cat $0
+    exit 1
+fi
+
+case $1 in
+    add)
+        o_lowerdir="$2"
+        o_upperdir=$(mktemp -d)
+        o_workdir=$(mktemp -d)
+        mount -t overlay -o lowerdir="${o_lowerdir}",upperdir=${o_upperdir},workdir=${o_workdir} overlay "${o_lowerdir}"
+        ;;
+    remove)
+        o_lowerdir="$2"
+        o_options="$(fstab_fs_mntopt $o_lowerdir < /proc/mounts)"
+        umount $o_lowerdir
+        if [ -z "$o_options" ]
+        then
+            echo $o_lowerdir is not an overlay
+            exit 1
+        else
+            echo "${o_options}" |
+                fstab_option_iter |
+                while read FS_MNTOPT
+                do
+                    case $FS_MNTOPT in
+                        upperdir=*|workdir=*)
+                            rm -rf "$(echo $FS_MNTOPT | fstab_option_value)"
+                            ;;
+                    esac
+                done
+        fi
+        ;;
+    -h|--help|*)
+        cat $0
+        ;;
+esac
