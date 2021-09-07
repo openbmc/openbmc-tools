@@ -70,6 +70,24 @@
       "revId": "fbe814c770b3b0e6d88cd90a009d0aca083cf5df",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79c17212_2e90e9bd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-09-07T04:45:00Z",
+      "side": 1,
+      "message": "the `rm -rf` invocations can\u0027t execute if the mountpoint doesn\u0027t exist:\n\n```\nroot@bmc:~# sh -x ./overlay remove /foo/bar/baz\n+ set -eu\n+ \u0027[\u0027 2 -lt 2 \u0027]\u0027\n+ case $1 in\n+ o_lowerdir\u003d/foo/bar/baz\n++ fstab_mountpoint_options /foo/bar/baz\n++ awk \u0027\"/foo/bar/baz\" \u003d\u003d $2 { print $4 }\u0027\n+ o_options\u003d\n+ umount /foo/bar/baz\numount: /foo/bar/baz: no mount point specified.\n```\n\nThat said, it could possibly do with some safety for mountpoints that aren\u0027t overlay mountpoints.",
+      "parentUuid": "6e965961_821aa991",
+      "revId": "fbe814c770b3b0e6d88cd90a009d0aca083cf5df",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
