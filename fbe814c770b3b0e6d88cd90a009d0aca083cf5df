@@ -16,6 +16,24 @@
       "revId": "fbe814c770b3b0e6d88cd90a009d0aca083cf5df",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88dc8eb3_f8191d12",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-09-07T03:43:44Z",
+      "side": 1,
+      "message": "Hmm, I expect the mount will fail? It\u0027s easier to not try to save the user from themselves, and the general rule of this repo is you should know what you\u0027re doing :)",
+      "parentUuid": "c940b1de_f1985b09",
+      "revId": "fbe814c770b3b0e6d88cd90a009d0aca083cf5df",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
