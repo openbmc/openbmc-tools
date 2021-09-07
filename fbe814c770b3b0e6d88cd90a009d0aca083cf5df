@@ -52,6 +52,24 @@
       "revId": "fbe814c770b3b0e6d88cd90a009d0aca083cf5df",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e965961_821aa991",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2021-09-07T04:05:04Z",
+      "side": 1,
+      "message": "The script contains `rm -rf` so we need to make sure it does not delete files unexpectedly.",
+      "parentUuid": "88dc8eb3_f8191d12",
+      "revId": "fbe814c770b3b0e6d88cd90a009d0aca083cf5df",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
