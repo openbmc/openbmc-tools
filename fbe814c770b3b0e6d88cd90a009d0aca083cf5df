@@ -88,6 +88,24 @@
       "revId": "fbe814c770b3b0e6d88cd90a009d0aca083cf5df",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "43c0995a_c8bcc4b1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2021-09-08T08:46:58Z",
+      "side": 1,
+      "message": "Yeah, such result is better to be put in the commit message to show it will not accidentally remove the unexpected files.",
+      "parentUuid": "79c17212_2e90e9bd",
+      "revId": "fbe814c770b3b0e6d88cd90a009d0aca083cf5df",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
