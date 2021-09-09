@@ -10,6 +10,7 @@ from enum import Enum
 from scapy.all import rdpcap
 import struct
 import json
+import sys
 
 RawMessage = namedtuple("RawMessage", "endian, header, data")
 FixedHeader = namedtuple("FixedHeader", "endian, type, flags, version, length, cookie")
@@ -192,10 +193,11 @@ class AlignedStream(object):
         return remaining, offset
 
     def dump(self):
-        print("AlignedStream: absolute offset: {}".format(self.offset))
-        print("AlignedStream: relative offset: {}".format(self.offset - self.stash[1]))
-        print("AlignedStream: remaining buffer:\n{}".format(self.drain()[0]))
-        print("AlignedStream: provided buffer:\n{}".format(self.stash[0]))
+        print("AlignedStream: absolute offset: {}".format(self.offset), file=sys.stderr)
+        print("AlignedStream: relative offset: {}".format(self.offset - self.stash[1]),
+                file=sys.stderr)
+        print("AlignedStream: remaining buffer:\n{}".format(self.drain()[0]), file=sys.stderr)
+        print("AlignedStream: provided buffer:\n{}".format(self.stash[0]), file=sys.stderr)
 
     def dump_assert(self, condition):
         if condition:
@@ -211,9 +213,10 @@ def parse_fixed(endian, stream, tc):
         val = struct.unpack("{}{}".format(endian, prop.type), val)[0]
         return bool(val) if prop.type == DBusType.BOOLEAN else val
     except struct.error as e:
-        print(e)
-        print("parse_fixed: Error unpacking {}".format(val))
-        print("parse_fixed: Attempting to unpack type {} with properties {}".format(tc.type, prop))
+        print(e, file=sys.stderr)
+        print("parse_fixed: Error unpacking {}".format(val), file=sys.stderr)
+        print("parse_fixed: Attempting to unpack type {} with properties {}".format(tc.type, prop),
+              file=sys.stderr)
         stream.dump_assert(False)
 
 def parse_string(endian, stream, tc):
@@ -233,7 +236,8 @@ def parse_string(endian, stream, tc):
             stream.dump()
             raise AssertionError(e)
     except AssertionError as e:
-        print("parse_string: Error unpacking string of length {} from {}".format(size, val))
+        print("parse_string: Error unpacking string of length {} from {}".format(size, val),
+                file=sys.stderr)
         raise e
 
 def parse_type(endian, stream, tc):
@@ -328,10 +332,10 @@ def parse_message(raw):
             body = parse_body(header, data)
             return CookedMessage(header, body)
         except AssertionError as e:
-            print(header)
+            print(header, file=sys.stderr)
             raise e
     except AssertionError as e:
-        print(raw)
+        print(raw, file=sys.stderr)
         raise e
 
 def parse_packet(packet):
@@ -340,6 +344,7 @@ def parse_packet(packet):
     try:
         msg = parse_message(raw)
     except MalformedPacketError as e:
+        print("Got malformed packet: {}".format(raw), file=sys.stderr)
         # For a message that is so large that its payload data could not be parsed,
         # just parse its header, then set its data field to empty.
         header, data = parse_header(raw, True)
