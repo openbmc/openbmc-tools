@@ -169,7 +169,7 @@ class AlignedStream(object):
             prop = TypePropertyLookup[prop.nature.value]
         advance = (prop.nature - (self.offset & (prop.nature - 1))) % prop.nature
         _ = bytes(islice(self.stream, advance))
-        self.offset += advance
+        self.offset += len(_)
 
     def take(self, size):
         val = islice(self.stream, size)
