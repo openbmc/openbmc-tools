@@ -187,9 +187,10 @@ class AlignedStream(object):
         remaining = bytes(self.stream)
         offset = self.offset
         self.offset += len(remaining)
-        assert self.offset - self.stash[1] == len(self.stash[0]), \
-                ("(self.offset - self.stash[1]): %d, len(self.stash[0]): %d"
-                    % (self.offset - self.stash[1], len(self.stash[0])))
+        if self.offset - self.stash[1] != len(self.stash[0]):
+            print("(self.offset - self.stash[1]): %d, len(self.stash[0]): %d"
+                % (self.offset - self.stash[1], len(self.stash[0])), file=sys.stderr)
+            raise MalformedPacketError
         return remaining, offset
 
     def dump(self):
