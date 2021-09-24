@@ -468,21 +468,13 @@ class TimelineView {
                    this.MouseState.y >  0) {
           this.MouseState.hoveredVisibleLineIndex = undefined;
           this.MouseState.hoveredSide = 'top_horizontal_scrollbar';
-          should_hide_cursor = true;
         } else if (this.MouseState.x >= PAD + LEFT_MARGIN &&
                    this.MouseState.y >= this.Canvas.height - BOTTOM_HORIZONTAL_SCROLLBAR_HEIGHT &&
                    this.MouseState.y <= this.Canvas.height) {
           this.MouseState.hoveredVisibleLineIndex = undefined;
           this.MouseState.hoveredSide = 'bottom_horizontal_scrollbar';
-          should_hide_cursor = true;
         } else {
           this.MouseState.hoveredSide = undefined;
-        }
-
-        if (should_hide_cursor) {
-          this.linked_views.forEach((v) => {
-            v.MouseState.y = 0;
-          })
         }
       }
     }
@@ -1587,8 +1579,23 @@ class TimelineView {
       }
 
       // Hovering cursor
+      // Only draw when the mouse is not over any hotizontal scroll bar
+      let should_hide_cursor = false;
+
+      if (this.MouseState.hoveredSide == "top_horizontal_scrollbar" ||
+          this.MouseState.hoveredSide == "bottom_horizontal_scrollbar") {
+        should_hide_cursor = true;
+      }
+      this.linked_views.forEach((v) => {
+        if (v.MouseState.hoveredSide == "top_horizontal_scrollbar" ||
+            v.MouseState.hoveredSide == "bottom_horizontal_scrollbar") {
+          should_hide_cursor = true;
+        }
+      })
+
       if (this.MouseState.hovered == true &&
-          this.MouseState.hoveredSide == undefined) {
+          this.MouseState.hoveredSide == undefined &&
+          should_hide_cursor == false) {
         ctx.beginPath();
         ctx.strokeStyle = '#0000FF';
         ctx.lineWidth = 1;

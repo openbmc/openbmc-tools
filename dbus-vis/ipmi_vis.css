@@ -83,6 +83,30 @@ body {
 	width: 500px;
 }
 
+#dbus_pcap_status_content {
+	margin-left: auto;
+	margin-right: auto;
+	width: 500px;
+	color: #999;
+	display: none;
+}
+
+#dbus_pcap_error_content {
+	display: none;
+	margin-left: auto;
+	margin-right: auto;
+	width: 500px;
+	background-color: #ffc;
+}
+
+#scapy_error_content {
+	display: none;
+	margin-left: auto;
+	margin-right: auto;
+	width: 500px;
+	background-color: #ffc;
+}
+
 #span_group_by_dbus, #span_group_by_ipmi, #span_group_by_boost_asio_handler,
 #div_navi_and_replay{
   display: none;
