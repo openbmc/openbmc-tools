@@ -1,3 +1,7 @@
+const { spawnSync } = require('child_process');
+const md5File = require('md5-file');
+const https = require('https');
+
 function OpenFileHandler() {
   console.log('Will open a dialog box ...');
   const options = {
@@ -60,6 +64,30 @@ var g_canvas_ipmi = document.getElementById('my_canvas_ipmi');
 var g_canvas_dbus = document.getElementById('my_canvas_dbus');
 var g_canvas_asio = document.getElementById('my_canvas_boost_asio_handler');
 
+var g_dbus_pcap_status_content = document.getElementById('dbus_pcap_status_content');
+var g_dbus_pcap_error_content = document.getElementById('dbus_pcap_error_content');
+var g_btn_download_dbus_pcap = document.getElementById('btn_download_dbus_pcap');
+var g_welcome_screen_content = document.getElementById('welcome_screen_content');
+var g_scapy_error_content = document.getElementById('scapy_error_content');
+
+function DownloadDbusPcap() {
+  const url = 'https://raw.githubusercontent.com/openbmc/openbmc-tools/08ce0a5bad2b5c970af567c2e9888d444afe3946/dbus-pcap/dbus-pcap';
+
+  https.get(url, (res) => {
+    const path = 'dbus-pcap';
+    const file_path = fs.createWriteStream(path);
+    res.pipe(file_path);
+    file_path.on('finish', () => {
+      file_path.close();
+      alert("dbus-pcap download complete!");
+      CheckDbusPcapPresence();
+    });
+  });
+}
+
+g_btn_download_dbus_pcap.addEventListener(
+  'click', DownloadDbusPcap);
+
 function ShowDBusTimeline() {
   g_canvas_dbus.style.display = 'block';
   g_group_by_dbus.style.display = 'block';
@@ -71,6 +99,49 @@ function ShowIPMITimeline() {
 function ShowASIOTimeline() {
   g_canvas_asio.style.display = 'block';
   g_group_by_asio.style.display = 'block';
+}
+
+// Make sure the user has scapy.all installed
+function IsPythonInstallationOK() {
+  const x = spawnSync('python3', ['-m', 'scapy.all']);
+  return (x.status == 0);
+}
+
+function IsDbusPcapPresent() {
+  if (fs.existsSync('dbus-pcap')) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function CheckDependencies() {
+  g_dbus_pcap_status_content.style.display = 'none';
+  g_dbus_pcap_error_content.style.display = 'none';
+  g_scapy_error_content.style.display = 'none';
+  g_welcome_screen_content.style.display = 'none';
+
+  const dbus_pcap_ok = IsDbusPcapPresent();
+  if (!dbus_pcap_ok) {
+    g_dbus_pcap_error_content.style.display = 'block';
+  }
+
+  const scapy_ok = IsPythonInstallationOK();
+  if (!scapy_ok) {
+    g_scapy_error_content.style.display = 'block';
+  }
+
+  let msg = "";
+  if (dbus_pcap_ok) {
+    msg += 'dbus-pcap found, md5sum: ' +
+      md5File.sync('dbus-pcap');
+    g_dbus_pcap_status_content.style.display = 'block';
+    g_dbus_pcap_status_content.textContent = msg;
+  }
+
+  if (dbus_pcap_ok && scapy_ok) {
+    g_welcome_screen_content.style.display = 'block';
+  }
 }
 
 function Init() {
@@ -98,6 +169,8 @@ function Init() {
   v1.AccentColor = 'rgba(0,224,224,0.5)';
   v2.AccentColor = 'rgba(0,128,0,  0.5)';
   v3.AccentColor = '#E22';
+
+  CheckDependencies();
 }
 
 var g_WelcomeScreen = document.getElementById('welcome_screen');

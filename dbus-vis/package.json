@@ -20,6 +20,7 @@
   "dependencies": {
     "electron-dialog": "^2.0.0",
     "file-system": "^2.2.2",
+    "md5-file": "^5.0.0",
     "tar-stream": "^2.1.2",
     "targz": "^1.0.1"
   }

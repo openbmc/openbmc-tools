@@ -83,6 +83,26 @@
 								</ol>
 								One file from each type (2 files in total) can be viewed simultaneously.
 						</div>
+						<hr />
+						<div id="dbus_pcap_status_content">
+							dbus-pcap status goes here
+						</div>
+						<div id="dbus_pcap_error_content">
+							The <b>dbus-pcap</b> script is not found; dbus-vis needs <b>dbus-pcap</b> for parsing PCAP files.<br/><br/>
+							Click to down <b>dbus-pcap</b> from: <br/>
+								https://raw.githubusercontent.com/openbmc/openbmc-tools/08ce0a5bad2b5c970af567c2e9888d444afe3946/dbus-pcap/dbus-pcap<br/><br/>
+							<button id="btn_download_dbus_pcap">Download to dbus-vis folder</button>
+						</div>
+						<div id="scapy_error_content">
+							The <b>scapy</b> Python module is not installed. dbus-vis depends on dbus-pcap, which in turn depends on the scapy Python module.
+							
+							Please install it using either of the following commands:<br/>
+							<br/>
+							python3 -m pip install scapy<br/>
+							sudo apt install python3-scapy<br/>
+							<br/>
+							After installation, refresh dbus-vis with Ctrl+R.
+						</div>
 				</div>
 				<canvas id="my_canvas_dbus" width="1400" height="600"></canvas>
 				<canvas id="my_canvas_ipmi" width="1400" height="200"></canvas>
