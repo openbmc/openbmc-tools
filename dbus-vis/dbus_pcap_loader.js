@@ -61,6 +61,10 @@ function OpenDBusPcapFile(file_name) {
       }
     });
 
+    dbus_pcap1.stderr.on('data', (data) => {
+      // Ignore errors for now
+    });
+
     dbus_pcap1.on('close', (code) => {
       ShowBlocker('Running dbus-pcap (Pass 2/2, packet contents) ...');
       let stdout2 = '';
@@ -88,6 +92,10 @@ function OpenDBusPcapFile(file_name) {
           ShowBlocker('Running dbus-pcap (Pass 2/2, packet contents): ' + count2 + '/' + num_packets + ' (' + pct + '%)');
           last_update_millis = millis;
         }
+      });
+
+      dbus_pcap2.stderr.on('data', (data) => {
+        // Ignore error
       });
 
       dbus_pcap2.on('close', (code) => {

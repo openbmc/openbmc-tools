@@ -8,9 +8,9 @@ function createWindow() {
     width: 1440,
     height: 900,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration:
-          true  // For opening file dialog from the renderer process
+          true,  // For opening file dialog from the renderer process
+      enableRemoteModule: true  // For require('electron').remote
     }
   });
 
