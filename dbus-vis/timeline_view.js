@@ -171,6 +171,11 @@ class TimelineView {
       EndDragScrollBar: function() {
         this.drag_begin_y = undefined;
         this.drag_begin_title_start_idx = undefined;
+      },
+      IsHoveredOverHorizontalScrollbar: function() {
+        if (this.hoveredSide == "top_horizontal_scrollbar") return true;
+        else if (this.hoveredSide == "bottom_horizontal_scrollbar") return true;
+        else return false;
       }
     };
     this.ScrollBarState = {

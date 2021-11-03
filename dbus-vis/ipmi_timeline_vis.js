@@ -575,7 +575,12 @@ let MouseState = {
   x: 0,
   y: 0,
   hoveredVisibleLineIndex: -999,
-  hoveredSide: undefined
+  hoveredSide: undefined,
+  IsHoveredOverHorizontalScrollbar: function() {
+    if (this.hoveredSide == "top_horizontal_scrollbar") return true;
+    else if (this.hoveredSide == "bottom_horizontal_scrollbar") return true;
+    else return false;
+  }
 };
 let Canvas = document.getElementById('my_canvas_ipmi');
 
@@ -583,7 +588,8 @@ Canvas.onmousemove = function(event) {
   const v = ipmi_timeline_view;
   v.MouseState.x = event.pageX - this.offsetLeft;
   v.MouseState.y = event.pageY - this.offsetTop;
-  if (v.MouseState.pressed == true) {  // Update highlighted area
+  if (v.MouseState.pressed == true &&
+      v.MouseState.hoveredSide == 'timeline') {  // Update highlighted area
     v.HighlightedRegion.t1 = v.MouseXToTimestamp(v.MouseState.x);
   }
   v.OnMouseMove();
@@ -592,7 +598,8 @@ Canvas.onmousemove = function(event) {
   v.linked_views.forEach(function(u) {
     u.MouseState.x = event.pageX - Canvas.offsetLeft;
     u.MouseState.y = 0;                  // Do not highlight any entry
-    if (u.MouseState.pressed == true) {  // Update highlighted area
+    if (u.MouseState.pressed == true &&
+        u.MouseState.hoveredSide == 'timeline') {  // Update highlighted area
       u.HighlightedRegion.t1 = u.MouseXToTimestamp(u.MouseState.x);
     }
     u.OnMouseMove();
