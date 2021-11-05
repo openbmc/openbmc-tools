@@ -8,14 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/quadpixels/openbmc_ipmi_timeline_vis.git"
+    "url": "git+https://github.com/openbmc/openbmc-tools.git"
   },
   "keywords": [
     "OpenBMC",
-    "IPMI"
+    "IPMI",
+	"DBus"
   ],
   "devDependencies": {
-    "electron": "^8.2.4"
+    "electron": "^11.5.0"
   },
   "dependencies": {
     "electron-dialog": "^2.0.0",
