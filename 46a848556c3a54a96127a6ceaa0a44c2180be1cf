@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6e5aa975_7f0143df",
+        "filename": "dbus-vis/package.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-11-08T00:48:47Z",
+      "side": 1,
+      "message": "Formatting here seems broken?\n\nRegardless, this and the URL fix above are separate from the electron bump to fix the security issues. If these were a separate patch we could merge the electron bump immediately to fix the security issue, but now that has to wait.\n\nCan you please split the bump out from these documentation fixes?",
+      "revId": "46a848556c3a54a96127a6ceaa0a44c2180be1cf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
