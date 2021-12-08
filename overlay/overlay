@@ -49,12 +49,15 @@ then
     exit 1
 fi
 
-case $1 in
+subcmd=$1
+shift
+
+case $subcmd in
     add)
-        overlay_add $2
+        overlay_add $1
         ;;
     remove)
-        overlay_remove $2
+        overlay_remove $1
         ;;
     -h|--help|*)
         cat $0
