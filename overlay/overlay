@@ -21,6 +21,28 @@ overlay_add() {
     mount -t overlay -o lowerdir="${o_lowerdir}",upperdir=${o_upperdir},workdir=${o_workdir} overlay "${o_lowerdir}"
 }
 
+overlay_remove() {
+    o_lowerdir="$1"
+    o_options="$(fstab_fs_mntopt $o_lowerdir < /proc/mounts)"
+    umount $o_lowerdir
+    if [ -z "$o_options" ]
+    then
+        echo $o_lowerdir is not an overlay
+        exit 1
+    else
+        echo "${o_options}" |
+            fstab_option_iter |
+            while read FS_MNTOPT
+            do
+                case $FS_MNTOPT in
+                    upperdir=*|workdir=*)
+                        rm -rf "$(echo $FS_MNTOPT | fstab_option_value)"
+                        ;;
+                esac
+            done
+    fi
+}
+
 if [ $# -lt 2 ]
 then
     cat $0
@@ -32,25 +54,7 @@ case $1 in
         overlay_add $2
         ;;
     remove)
-        o_lowerdir="$2"
-        o_options="$(fstab_fs_mntopt $o_lowerdir < /proc/mounts)"
-        umount $o_lowerdir
-        if [ -z "$o_options" ]
-        then
-            echo $o_lowerdir is not an overlay
-            exit 1
-        else
-            echo "${o_options}" |
-                fstab_option_iter |
-                while read FS_MNTOPT
-                do
-                    case $FS_MNTOPT in
-                        upperdir=*|workdir=*)
-                            rm -rf "$(echo $FS_MNTOPT | fstab_option_value)"
-                            ;;
-                    esac
-                done
-        fi
+        overlay_remove $2
         ;;
     -h|--help|*)
         cat $0
