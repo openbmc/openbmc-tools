@@ -54,10 +54,16 @@ shift
 
 case $subcmd in
     add)
-        overlay_add $1
+        for target in "$@"
+        do
+            overlay_add "$target"
+        done
         ;;
     remove)
-        overlay_remove $1
+        for target in "$@"
+        do
+            overlay_remove "$target"
+        done
         ;;
     -h|--help|*)
         cat $0
