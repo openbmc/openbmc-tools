@@ -14,6 +14,13 @@ fstab_option_value() {
     cut -d= -f2
 }
 
+overlay_add() {
+    o_lowerdir="$1"
+    o_upperdir=$(mktemp -d)
+    o_workdir=$(mktemp -d)
+    mount -t overlay -o lowerdir="${o_lowerdir}",upperdir=${o_upperdir},workdir=${o_workdir} overlay "${o_lowerdir}"
+}
+
 if [ $# -lt 2 ]
 then
     cat $0
@@ -22,10 +29,7 @@ fi
 
 case $1 in
     add)
-        o_lowerdir="$2"
-        o_upperdir=$(mktemp -d)
-        o_workdir=$(mktemp -d)
-        mount -t overlay -o lowerdir="${o_lowerdir}",upperdir=${o_upperdir},workdir=${o_workdir} overlay "${o_lowerdir}"
+        overlay_add $2
         ;;
     remove)
         o_lowerdir="$2"
