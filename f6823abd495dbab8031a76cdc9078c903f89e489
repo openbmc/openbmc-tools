@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4ab4fa17_92b80d72",
+        "filename": "overlay/overlay",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2021-12-08T02:49:29Z",
+      "side": 1,
+      "message": "Unrelated to the refactoring, but this looks like it could use a `\u003e\u00262`?",
+      "revId": "f6823abd495dbab8031a76cdc9078c903f89e489",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
