@@ -27,7 +27,7 @@ overlay_remove() {
     umount $o_lowerdir
     if [ -z "$o_options" ]
     then
-        echo $o_lowerdir is not an overlay
+        echo >&2 $o_lowerdir is not an overlay
         exit 1
     else
         echo "${o_options}" |
