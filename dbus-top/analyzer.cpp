@@ -33,6 +33,9 @@ extern DBusConnectionSnapshot* g_connection_snapshot;
 extern sd_bus* g_bus;
 extern SensorDetailView* g_sensor_detail_view;
 
+bool ParseI2CTraceLine(std::string line,
+  int& pid, double& timestamp, I2CCmd& cmd, int& i2cid);
+
 static std::unordered_map<uint64_t, uint64_t>
     in_flight_methodcalls; // serial => microseconds
 uint64_t Microseconds()
@@ -71,6 +74,7 @@ bool DBusTopSortFieldIsNumeric(DBusTopSortField field)
         case kSenderPID:
         case kMsgPerSec:
         case kAverageLatency:
+        case kSenderI2CTxPerSec:
             return true;
     }
     return false;
@@ -477,6 +481,29 @@ namespace dbus_top_analyzer
         printf("=== Sensors snapshot summary: ===\n");
         g_sensor_snapshot->PrintSummary();
     }
+
+    void I2CMonitorThread() {
+        while (true) {
+            std::ifstream ifs("/sys/kernel/debug/tracing/trace");
+            while (ifs.good()) {
+                std::string line;
+                std::getline(ifs, line);
+                
+                int pid; double timestamp; I2CCmd cmd; int i2cid;
+                if (ParseI2CTraceLine(line, pid, timestamp, cmd, i2cid)) {
+
+                    // Assume only I2C0 through I2C15 are physical buses and
+                    // any bus greater than and including 16 are Muxed I2C buses
+                    if (i2cid >= 0 && i2cid <= 15) {
+                        if (cmd == I2C_WRITE || cmd == I2C_READ) {
+                            g_dbus_statistics.IncrementI2CTxCount(pid);
+                        }
+                    }
+                }
+            }
+            sleep(1);
+        }
+    }
 } // namespace dbus_top_analyzer
 
 void DBusTopStatistics::OnNewDBusMessage(const char* sender,
@@ -516,12 +543,15 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
         dest_orig = "systemd";
     }
 
+    bool has_sender_field = false;
+    bool has_i2c_field = false;
     for (DBusTopSortField field : fields_)
     {
         switch (field)
         {
             case kSender:
                 keys.push_back(sender_orig);
+                has_sender_field = true;
                 break;
             case kDestination:
                 keys.push_back(dest_orig);
@@ -537,6 +567,7 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
                 break;
             case kSenderPID:
             {
+                has_sender_field = true;
                 if (sender_orig_pid != INVALID)
                 {
                     keys.push_back(std::to_string(sender_orig_pid));
@@ -549,6 +580,7 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
             }
             case kSenderCMD:
             {
+                has_sender_field = true;
                 keys.push_back(
                     g_connection_snapshot->GetConnectionCMDFromNameOrUniqueName(
                         sender_orig));
@@ -557,6 +589,9 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
             case kMsgPerSec:
             case kAverageLatency:
                 break; // Don't populate "keys" using these 2 fields
+            case kSenderI2CTxPerSec:
+                has_i2c_field = true;
+                break;
         }
     }
     // keys = combination of fields of user's choice
@@ -565,6 +600,13 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
     {
         stats_[keys] = DBusTopComputedMetrics();
     }
+
+    // If Sender, SenderPID or SenderCMD is selected, add an entry to stats2pid_ so
+    // that we can look up I2C stats later
+    if (has_sender_field && has_i2c_field && sender_orig_pid != INVALID) {
+        stats2pid_[keys] = sender_orig_pid;
+    }
+
     // Need to update msg/s regardless
     switch (type)
     {
@@ -621,4 +663,62 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
             num_sig_++;
             break;
     }
+}
+
+void EnableKernelI2CTracing() {
+  system("echo nop > /sys/kernel/debug/tracing/current_tracer");
+  system("echo 1   > /sys/kernel/debug/tracing/events/i2c/enable");
+  system("echo 1   > /sys/kernel/debug/tracing/tracing_on");
+}
+
+void DisableKernelI2CTracing() {
+  system("echo nop > /sys/kernel/debug/tracing/current_tracer");
+  system("echo 0   > /sys/kernel/debug/tracing/events/i2c/enable");
+  system("echo 0   > /sys/kernel/debug/tracing/tracing_on");
+}
+
+bool ParseI2CTraceLine(std::string line,
+  int& pid, double& timestamp, I2CCmd& cmd, int& i2cid) {
+    int x = line.find('-');
+    if (x == -1) return false;
+
+    line = line.substr(x+1);
+    x = line.find(' ');
+    if (x == -1) return false;
+
+    std::string pid_str = line.substr(0, x);
+    pid = std::atoi(pid_str.c_str());
+    
+    x = line.find(':');
+    if (x == -1) return false;
+    std::string part1 = line.substr(0, x); // until timestamp
+    std::string part2 = line.substr(x+2);
+    
+    x = part1.rfind(' ');
+    if (x == -1) return false;
+    part1 = part1.substr(x+1);
+    timestamp = std::atof(part1.c_str());
+    
+    x = part2.find(':');
+    if (x == -1) return false;
+    std::string part3 = part2.substr(x+2);
+    part2 = part2.substr(0, x);
+    if (part2 == "i2c_write") {
+        cmd = I2C_WRITE;
+    } else if (part2 == "i2c_read") {
+        cmd = I2C_READ;
+    } else if (part2 == "i2c_reply") {
+        cmd = I2C_REPLY;
+    } else if (part2 == "i2c_result") {
+        cmd = I2C_RESULT;
+    }
+    
+    x = part3.find(' ');
+    if (x == -1) return false;
+    part3 = part3.substr(0, x);
+    x = part3.find('-');
+    if (x == -1) return false;
+    part3 = part3.substr(x+1);
+    i2cid = std::atoi(part3.c_str());
+    return true;
 }
