@@ -361,7 +361,13 @@ int main(int argc, char** argv)
 
     printf("Listing all sensors for display\n");
     // ListAllSensors creates connection snapshot and sensor snapshot
+
+    // Todo: move this to separate thread
+    g_connection_snapshot = new DBusConnectionSnapshot();
     dbus_top_analyzer::ListAllSensors();
+    
+    printf("g_connection_snapshot=%p\n", g_connection_snapshot);
+
     g_bargraph = new BarGraph<float>(300);
     g_histogram = new Histogram<float>();
 
@@ -386,7 +392,13 @@ int main(int argc, char** argv)
     dbus_top_analyzer::SetDBusTopStatisticsCallback(&DBusTopStatisticsCallback);
     std::thread capture_thread(DbusCaptureThread);
     std::thread user_input_thread(UserInputThread);
+    EnableKernelI2CTracing();
+    std::thread i2c_monitor_thread(dbus_top_analyzer::I2CMonitorThread);
     capture_thread.join();
 
     return 0;
+}
+
+__attribute__((destructor)) void DTOR() {
+    DisableKernelI2CTracing();
 }
