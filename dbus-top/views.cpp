@@ -1050,7 +1050,7 @@ void DBusStatListView::Render()
                     sof.f = the_sum;
                     break;
                 }
-                case kAverageLatency: // Compute "average Method Call latency"
+                case kAverageLatency: { // Compute "average Method Call latency"
                     const DBusTopComputedMetrics& m = itr->second;
                     if (m.num_method_calls == 0)
                     {
@@ -1072,6 +1072,19 @@ void DBusStatListView::Render()
                         sof.f = avg_latency_usec;
                     }
                     break;
+                }
+                case kSenderI2CTxPerSec: {
+                    const DBusTopComputedMetrics& m = itr->second;
+                    if (m.total_i2c_tx == 0) {
+                        row.push_back("(unknown)");
+                        sof.f = (sort_order_ == Ascending) ? -1 : 1e20;
+                    } else {
+                        float avg_i2c_tx = m.total_i2c_tx / interval_secs;
+                        sof.f = avg_i2c_tx;
+                        row.push_back(FloatToString(avg_i2c_tx));
+                    }
+                    break;
+                }
             }
             if (j == sort_col_idx_)
             {
