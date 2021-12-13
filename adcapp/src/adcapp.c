@@ -92,9 +92,11 @@ main ( int argc , char* argv [] )
 					printf ("Read ADC channel failed\n");
 					return -1;
 				}
-				printf ("ADC Channel Value =%5d for channel %d\n", reading, get_adc_value.channel_num);
-			}
-			break;
+                                printf(
+                                    "ADC Channel Value =%5dmv for channel %d\n",
+                                    reading, get_adc_value.channel_num);
+                        }
+                        break;
 
 		default:
 			printf("Invalid ADC Function Call ");
