@@ -26,34 +26,42 @@
   \brief Source for all adc interface code
  */
 
-static int adc_directory_check()
-{
-	int retval = 0;
-	struct stat sb;
-	if (!(stat("/sys/bus/iio/devices/iio:device0", &sb) == 0 && S_ISDIR(sb.st_mode)))
-	{
-		printf("\"/sys/bus/iio/devices/iio:device0\" is not exist!\n");
-		retval = -1;
-	}
-	return retval;
-}
+ static int adc_directory_check(char *path) {
+   int retval = 0;
+   struct stat sb;
+   if (!(stat(path, &sb) == 0 && S_ISDIR(sb.st_mode))) {
+     printf("%s is not exist!\n", path);
+     retval = -1;
+   }
+   return retval;
+ }
 
 static int sys_get_adc_vol( get_adc_value_t *argp )
 {
 	int retval = -1;
 	int fd;
 	int tmp;
-	char stringArray[50];
-	char val[5];
-	if(argp->channel_num > 15)	retval = -1;
-	retval = adc_directory_check();
-	if(retval != 0)
-	{
-		return retval;
-	}
-	snprintf(stringArray, sizeof(stringArray), "%s%s%d%s", "/sys/bus/iio/devices/iio:device0","/in_voltage", argp->channel_num,"_raw");
-	retval = access(stringArray,F_OK);
-	if(retval != 0)
+        int devid = 0;
+        char stringArray[50];
+        char devpath[50];
+        char val[5];
+        if(argp->channel_num > 15)	retval = -1;
+#ifdef AST2600_ADCAPP
+        if (argp->channel_num >= 8) {
+          devid = 1;
+          argp->channel_num -= 8;
+        }
+#endif
+        snprintf(devpath, sizeof(devpath), "/sys/bus/iio/devices/iio:device%d",
+                 devid);
+        retval = adc_directory_check(devpath);
+        if (retval != 0) {
+          return retval;
+        }
+        snprintf(stringArray, sizeof(stringArray), "%s/in_voltage%d_raw",
+                 devpath, argp->channel_num);
+        retval = access(stringArray, F_OK);
+        if(retval != 0)
 	{
 		return retval;
 	}
