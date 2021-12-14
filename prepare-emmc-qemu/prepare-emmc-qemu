@@ -37,6 +37,8 @@ then
     exit 1
 fi
 
+xzdec -V > /dev/null
+
 set -x
 
 target="$1"
