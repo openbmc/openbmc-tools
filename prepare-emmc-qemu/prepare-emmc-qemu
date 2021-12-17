@@ -19,6 +19,16 @@ print_help() {
     echo '\t'$script_name 'p10bmc' '~/src/openbmc/openbmc/build/p10bmc'
 }
 
+detect_xzdec() {
+    if command -v xz >/dev/null
+    then
+        echo xz -dc
+    elif command -v xzdec >/dev/null
+    then
+        echo xzdec
+    fi
+}
+
 if [ $# -eq 0 ]
 then
     print_help
@@ -37,7 +47,12 @@ then
     exit 1
 fi
 
-xzdec -V > /dev/null
+
+XZDEC=$(detect_xzdec)
+if [ -z "$XZDEC" ]; then
+    echo >&2 "XZ decompress is not available (xz or xzdec).  Stopping."
+    exit 1
+fi
 
 set -x
 
@@ -52,7 +67,7 @@ mmc="mmc-${target}.img"
 dd of=$mmc if=/dev/zero bs=1M count=128
 dd of=$mmc if=${fw_dir}/u-boot-spl.bin conv=notrunc
 dd of=$mmc if=${fw_dir}/u-boot.bin conv=notrunc bs=1K seek=64
-xzdec $wicxz | dd of=$mmc conv=notrunc bs=1M seek=2
+${XZDEC} $wicxz | dd of=$mmc conv=notrunc bs=1M seek=2
 truncate --size ${image_size} $mmc
 
 set +x
