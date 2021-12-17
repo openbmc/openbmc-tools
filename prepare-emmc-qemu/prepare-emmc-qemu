@@ -37,7 +37,16 @@ then
     exit 1
 fi
 
-xzdec -V > /dev/null
+if which xz >/dev/null
+then
+  xzdec="xz -dc"
+elif which xzdec >/dev/null
+then
+  xzdec="xzdec"
+else
+  echo "XZ decompress is not available (xz or xzdec).  Stopping."
+  exit 1
+fi
 
 set -x
 
@@ -52,7 +61,7 @@ mmc="mmc-${target}.img"
 dd of=$mmc if=/dev/zero bs=1M count=128
 dd of=$mmc if=${fw_dir}/u-boot-spl.bin conv=notrunc
 dd of=$mmc if=${fw_dir}/u-boot.bin conv=notrunc bs=1K seek=64
-xzdec $wicxz | dd of=$mmc conv=notrunc bs=1M seek=2
+${xzdec} $wicxz | dd of=$mmc conv=notrunc bs=1M seek=2
 truncate --size ${image_size} $mmc
 
 set +x
