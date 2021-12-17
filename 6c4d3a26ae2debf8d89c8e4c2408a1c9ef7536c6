@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "50e7cd31_693ad554",
+        "filename": "prepare-emmc-qemu/prepare-emmc-qemu",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-12-17T20:59:25Z",
+      "side": 1,
+      "message": "which(1) isn\u0027t super portable. Please use `command -v` instead",
+      "revId": "6c4d3a26ae2debf8d89c8e4c2408a1c9ef7536c6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "739076ce_ec731620",
+        "filename": "prepare-emmc-qemu/prepare-emmc-qemu",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-12-17T20:59:25Z",
+      "side": 1,
+      "message": "Again here",
+      "revId": "6c4d3a26ae2debf8d89c8e4c2408a1c9ef7536c6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58f50f37_5b7671b9",
+        "filename": "prepare-emmc-qemu/prepare-emmc-qemu",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2021-12-17T20:59:25Z",
+      "side": 1,
+      "message": "can we avoid open-coding this and instead stick it all in a function? For example\n\nSo:\n\n detect_xzdec() {\n  if command -v xz \u003e/dev/null\n  then\n    echo xz -dc\n  elif command -v xzdec \u003e/dev/null\n  then\n    echo xzdec\n  fi\n }\n\nThen\n\n XZDEC\u003d$(detect_xzdec)\n if [ -z \"$XZDEC\" ]; then\n    echo \u003e\u00262 \"XZ decompress is not available (xz or xzdec).  Stopping.\"\n fi\n\nthen use $XZDEC throughout",
+      "revId": "6c4d3a26ae2debf8d89c8e4c2408a1c9ef7536c6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
