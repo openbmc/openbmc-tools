@@ -23,6 +23,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <systemd/sd-bus.h>
 
 extern SensorSnapshot* g_sensor_snapshot;
 extern DBusConnectionSnapshot* g_connection_snapshot;
@@ -100,6 +101,7 @@ bool IsUniqueName(const std::string& x)
 }
 
 std::vector<std::string> FindAllObjectPathsForService(
+    sd_bus* bus,
     const std::string& service,
     std::function<void(const std::string&, const std::vector<std::string>&)>
         on_interface_cb)
@@ -127,4 +129,57 @@ std::string Trim(const std::string& s)
     if (idx0 >= N || idx1 < 0)
         return "";
     return s.substr(idx0, idx1 - idx0 + 1);
+}
+
+int GetOrInsertPathID(std::map<std::string, int>* lookup, const std::string& path) {
+    if (lookup->find(path) == lookup->end()) {
+        (*lookup)[path] = lookup->size();
+    }
+    return lookup->at(path);
+}
+
+std::string SimplifyPath(std::string s) {
+    const std::string& k = "/xyz/openbmc_project";
+    if (s != k && s.find(k) == 0) { s = s.substr(k.size()); }
+    return s;
+}
+
+void SensorSnapshot::DumpAssociationDefinitionGraphToFile() {
+    std::map<std::string, int> path2id;
+    for (const std::vector<std::string>& d : association_definitions_) {
+        GetOrInsertPathID(&path2id, d[0]);
+        GetOrInsertPathID(&path2id, d[3]);
+    }
+
+    std::ofstream ofs("/tmp/association_definitions.dot", std::ofstream::out);
+    ofs << "digraph G {\n";
+    ofs << "  rankdir=\"LR\"\n";
+    ofs << "  node [shape=box,width=0.1,height=0.01]\n";
+    for (const auto& [p, i] : path2id) {
+        ofs << "  node" << i << " [ label=\"" << SimplifyPath(p) << "\"]\n";
+    }
+
+    for (const std::vector<std::string>& d : association_definitions_) {
+        int idx0 = path2id[d[0]], idx1 = path2id[d[3]];
+        //   A -> B [ dir="both" headlabel="Head" taillabel="Tail" arrowhead="obox" arrowtail="box" ]
+        ofs << "  node" << idx0 << " -> node" << idx1 << " [ dir=\"both\" headlabel=\"" << d[2] << "\" taillabel=\"" << d[1]
+            << "\" arrowhead=\"obox\" arrowtail=\"box\" ]\n";
+    }
+    ofs << "}\n";
+    ofs << "// " << association_definitions_.size() << " entries in association_definitions_\n";
+    for (int i=0; i<int(association_definitions_.size()); i++) {
+        const std::vector<std::string>& a = association_definitions_[i];
+        ofs << "// " << i << ". " << a[0] << " " << a[1] << " " << a[2] << " " << a[3] << "\n";
+    }
+    ofs.close();
+}
+
+std::pair<std::string, std::string> ExtractFileName(std::string x) {
+    size_t idx = x.rfind('/');
+    std::string d = "";
+    if (idx != std::string::npos) {
+        d = x.substr(0, idx);
+        x = x.substr(idx);
+    }
+    return {d, x};
 }
