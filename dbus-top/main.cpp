@@ -30,6 +30,7 @@
 #include <iomanip>
 #include <sstream>
 #include <thread>
+#include <cassert>
 
 DBusTopWindow* g_current_active_view;
 SummaryView* g_summary_window;
@@ -41,8 +42,31 @@ Histogram<float>* g_histogram;
 std::vector<DBusTopWindow*> g_views;
 int g_highlighted_view_index = INVALID;
 sd_bus* g_bus = nullptr;
-SensorSnapshot* g_sensor_snapshot;
-DBusConnectionSnapshot* g_connection_snapshot;
+
+int GetConnectionNumericID(const std::string& unique_name) {
+    size_t idx = unique_name.find('.');
+    if (idx == std::string::npos) {
+        return -999;
+    }
+    try {
+        int ret = std::atoi(unique_name.substr(idx+1).c_str());
+        return ret;
+    } catch (const std::exception& e) {
+        return -999;
+    }
+}
+
+// Whenever an update of SensorSnapshot and DBusConnectionSnapshot is needed,
+// they are populated into the "staging" copies and a pointer swap is done
+// by the main thread (the thread that constructs the snapshots shall not touch the
+// copy used for UI rendering)
+bool g_sensor_update_thread_active = false;
+std::string g_snapshot_update_bus_cxn = ""; // The DBus connection used by the updater thread.
+int g_snapshot_update_bus_cxn_id = -999;
+SensorSnapshot* g_sensor_snapshot, *g_sensor_snapshot_staging = nullptr;
+DBusConnectionSnapshot* g_connection_snapshot, *g_connection_snapshot_staging = nullptr;
+std::mutex g_mtx_snapshot_update;
+
 DBusTopStatistics* g_dbus_statistics; // At every update interval,
                                       // dbus_top_analyzer::g_dbus_statistics's
                                       // value is copied to this one for display
@@ -142,6 +166,7 @@ std::string FloatToString(float value)
 
 void DBusTopRefresh()
 {
+    g_mtx_snapshot_update.lock();
     UpdateWindowSizes();
     for (DBusTopWindow* v : g_views)
     {
@@ -153,6 +178,7 @@ void DBusTopRefresh()
         focused_view->DrawBorderIfNeeded(); // focused view border: on top
     }
     refresh();
+    g_mtx_snapshot_update.unlock();
 }
 
 // This function is called by the Capture thread
@@ -171,6 +197,23 @@ void DBusTopStatisticsCallback(DBusTopStatistics* stat, Histogram<float>* hist)
     }
     g_summary_window->UpdateDBusTopStatistics(stat);
     stat->SetSortFieldsAndReset(g_dbus_stat_list_view->GetSortFields());
+
+    g_mtx_snapshot_update.lock();
+    if (g_sensor_snapshot_staging != nullptr &&
+        g_connection_snapshot_staging != nullptr) {
+
+        std::swap(g_sensor_snapshot_staging, g_sensor_snapshot);
+        std::swap(g_connection_snapshot_staging, g_connection_snapshot);
+
+        delete g_connection_snapshot_staging;
+        delete g_sensor_snapshot_staging;
+
+        g_sensor_snapshot_staging = nullptr;
+        g_connection_snapshot_staging = nullptr;
+    }
+    g_mtx_snapshot_update.unlock();
+
+    g_sensor_detail_view->UpdateSensorSnapshot(g_sensor_snapshot);
     // ReinitializeUI(); // Don't do it here, only when user presses [R]
     DBusTopRefresh();
 }
@@ -350,6 +393,35 @@ void ReinitializeUI()
     }
 }
 
+void ListAllSensorsThread() {
+    // Create a temporary connection
+    assert(g_sensor_update_thread_active == false);
+    sd_bus* bus;
+    int r;
+    r = AcquireBus(&bus);
+    printf("r=%d\n", r);
+    const char* bus_name;
+    sd_bus_get_unique_name(bus, &bus_name);
+    printf("bus_name=%s\n", bus_name);
+    g_snapshot_update_bus_cxn = std::string(bus_name);
+    g_snapshot_update_bus_cxn_id = GetConnectionNumericID(g_snapshot_update_bus_cxn);
+
+    g_sensor_update_thread_active = true;
+    DBusConnectionSnapshot* cxn_snapshot;
+    SensorSnapshot* sensor_snapshot;
+    dbus_top_analyzer::ListAllSensors(bus, &cxn_snapshot, &sensor_snapshot);
+
+    g_mtx_snapshot_update.lock();
+    g_connection_snapshot = cxn_snapshot;
+    g_sensor_snapshot = sensor_snapshot;
+    g_mtx_snapshot_update.unlock();
+    g_sensor_update_thread_active = false;
+    g_snapshot_update_bus_cxn = "";
+    g_snapshot_update_bus_cxn_id = -999;
+
+    sd_bus_close(bus);
+}
+
 int main(int argc, char** argv)
 {
     int r = AcquireBus(&g_bus);
@@ -362,11 +434,11 @@ int main(int argc, char** argv)
     printf("Listing all sensors for display\n");
     // ListAllSensors creates connection snapshot and sensor snapshot
 
-    // Todo: move this to separate thread
     g_connection_snapshot = new DBusConnectionSnapshot();
-    dbus_top_analyzer::ListAllSensors();
-    
-    printf("g_connection_snapshot=%p\n", g_connection_snapshot);
+    g_sensor_snapshot = new SensorSnapshot(g_connection_snapshot);
+
+    // Do the scan in a separate thread.
+    std::thread list_all_sensors_thread(ListAllSensorsThread);
 
     g_bargraph = new BarGraph<float>(300);
     g_histogram = new Histogram<float>();

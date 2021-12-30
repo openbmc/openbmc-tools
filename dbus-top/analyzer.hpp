@@ -25,6 +25,9 @@
 #include <unordered_map>
 #include <vector>
 
+class DBusConnectionSnapshot;
+class SensorSnapshot;
+
 enum DBusTopSortField
 {
     // DBus Message properties
@@ -78,7 +81,9 @@ class DBusTopStatistics
     // For mapping to PID
     std::map<std::vector<std::string>, int> stats2pid_;
 
+    // Todo: Think of a way to not use the mtx to protect access to i2c_tx_count_
     std::unordered_map<int, int> i2c_tx_count_;
+
     DBusTopStatistics() :
         num_messages_(0), num_mc_(0), num_mr_(0), num_sig_(0), num_error_(0),
         seconds_since_last_sample_(0)
@@ -86,7 +91,9 @@ class DBusTopStatistics
         fields_ = {kSender, kDestination, kSenderPID, kSenderCMD};
         stats_.clear();
         stats2pid_.clear();
+        mtx_.lock();
         i2c_tx_count_.clear();
+        mtx_.unlock();
     }
 
     std::vector<DBusTopSortField> GetFields()
@@ -125,7 +132,9 @@ class DBusTopStatistics
         num_error_ = 0;
         stats_.clear();
         stats2pid_.clear();
+        mtx_.lock();
         i2c_tx_count_.clear();
+        mtx_.unlock();
     }
     
     void SetSortFieldsAndReset(const std::vector<DBusTopSortField>& f)
@@ -138,7 +147,9 @@ class DBusTopStatistics
         stats_.clear();
         stats2pid_.clear();
         fields_ = f;
+        mtx_.lock();
         i2c_tx_count_.clear();
+        mtx_.unlock();
     }
 
     void Assign(DBusTopStatistics* out)
@@ -152,7 +163,9 @@ class DBusTopStatistics
         out->fields_ = this->fields_;
         out->stats_ = this->stats_;
         out->stats2pid_ = this->stats2pid_;
+        mtx_.lock();
         out->i2c_tx_count_ = this->i2c_tx_count_;
+        mtx_.unlock();
     }
 
     void OnNewDBusMessage(const char* sender, const char* destination,
@@ -171,21 +184,26 @@ class DBusTopStatistics
     {
         std::map<std::vector<std::string>, DBusTopComputedMetrics> ret;
         ret = stats_;
+
+        mtx_.lock();
         std::unordered_map<int, int> i2c_tx_count = i2c_tx_count_;
+        mtx_.unlock();
 
         // If Sender PID or Sender is selected, populate I2C TX/s
         for (std::map<std::vector<std::string>, DBusTopComputedMetrics>::iterator itr = ret.begin();
             itr != ret.end(); itr++) {
             if (stats2pid_.find(itr->first) != stats2pid_.end()) {
                 int pid = stats2pid_[itr->first];
-                itr->second.total_i2c_tx = i2c_tx_count_[pid];
+                itr->second.total_i2c_tx = i2c_tx_count[pid];
             }
         }
         return ret;
     }
 
     void IncrementI2CTxCount(int pid) {
+        mtx_.lock();
         ++i2c_tx_count_[pid];
+        mtx_.unlock();
     }
 
   private:
@@ -210,7 +228,7 @@ namespace dbus_top_analyzer
                                             Histogram<float>*);
     void SetDBusTopStatisticsCallback(DBusTopStatisticsCallback cb);
     // Methods for sending Object Mapper queries
-    void ListAllSensors();
+    void ListAllSensors(sd_bus*, DBusConnectionSnapshot**, SensorSnapshot**);
 
     // The thread that monitors /sys/kernel/debug/tracing/trace
     void I2CMonitorThread();
