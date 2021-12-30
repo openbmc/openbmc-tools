@@ -21,9 +21,12 @@
 #include <optional>
 #include <set>
 #include <string>
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+std::pair<std::string, std::string> ExtractFileName(std::string x);
 // Where is this sensor seen?
 constexpr int VISIBILITY_OBJECT_MAPPER = 0;
 constexpr int VISIBILITY_HWMON = 1;
@@ -228,6 +231,11 @@ class SensorSnapshot
         return ret;
     }
 
+    explicit SensorSnapshot()
+    {
+        connection_snapshot_ = nullptr;
+    }
+
     explicit SensorSnapshot(DBusConnectionSnapshot* cs)
     {
         connection_snapshot_ = cs;
@@ -331,10 +339,57 @@ class SensorSnapshot
         return nullptr;
     }
 
+    void AddAssociationEndpoints(const std::string& path,
+                                 const std::set<std::string>& entries) {
+        associations_[path] = entries;
+    }
+
+    // Input: object path (regardless of what service name)
+    // out_edges: what associations does `path` declare?
+    // in_edges: what associations have `path` as endpoints?
+    void FindAssociationEndpoints(const std::string& path,
+        std::map<std::string, std::set<std::string> >* out_edges,
+        std::map<std::string, std::set<std::string> >* in_edges) {
+
+        std::map<std::string, std::set<std::string>> out, in;
+        for (const auto& [k, v] : associations_) {
+            if (k.find(path) == 0) {
+                out[k.substr(path.size())] = v;
+            }
+            for (const std::string& entry : v) {
+                if (entry.find(path) == 0) {
+                    std::pair<std::string, std::string> p = ExtractFileName(k);
+                    in[p.second].insert(k);
+                }
+            }
+        }
+
+        *out_edges = out;
+        *in_edges  = in;
+    }
+
+    void AddAssociationDefinition(const std::string& path,
+        const std::string& forward, const std::string& reverse,
+        const std::string& endpoint) {
+        std::vector<std::string> d = { path, forward, reverse, endpoint };
+        association_definitions_.push_back(d);
+    }
+
+    void DumpAssociationDefinitionGraphToFile();
+
   private:
     std::vector<Sensor*> sensors_;
     std::unordered_map<std::string, int> conn2pid_;
     DBusConnectionSnapshot* connection_snapshot_;
+
+    // Associations seen from Inventory objects
+    // Key: the path of the object that has the Association interface
+    // Value: all the endpoints
+    std::unordered_map<std::string, std::set<std::string>> associations_;
+
+    // Association Definitions
+    // Ideally, this should match associations_ above
+    std::vector<std::vector<std::string>> association_definitions_;
 };
 
 bool IsSensorObjectPath(const std::string& s);

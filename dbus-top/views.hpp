@@ -351,9 +351,10 @@ class SensorDetailView : public DBusTopWindow
         curr_sensor_id_ = sensor_ids_[choice_];
     }
 
-    // Cache the sensor list in the sensor snapshot
+    // Make a copy of the SensorSnapshot object for display usage
     void UpdateSensorSnapshot(SensorSnapshot* snapshot)
     {
+        sensor_snapshot_ = *snapshot;
         std::string old_sensor_id = "";
         if (choice_ != -999)
         {
@@ -406,6 +407,7 @@ class SensorDetailView : public DBusTopWindow
 
     State state;
     std::string GetStatusString() override;
+    SensorSnapshot sensor_snapshot_;
 };
 
 class DBusStatListView : public DBusTopWindow
