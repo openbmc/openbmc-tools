@@ -28,6 +28,11 @@ extern sd_bus* g_bus;
 extern DBusConnectionSnapshot* g_connection_snapshot;
 static std::unordered_map<uint64_t, uint64_t> in_flight_methodcalls;
 
+extern bool g_sensor_update_thread_active;
+extern std::string g_snapshot_update_bus_cxn;
+extern int g_snapshot_update_bus_cxn_id;
+extern int GetConnectionNumericID(const std::string& unique_name);
+
 namespace dbus_top_analyzer
 {
     extern DBusTopStatistics g_dbus_statistics;
@@ -171,25 +176,51 @@ void DbusCaptureThread()
             const char* destination = sd_bus_message_get_destination(m);
             const char* interface = sd_bus_message_get_interface(m);
             const char* member = sd_bus_message_get_member(m);
-            // TODO: This is for the bottom-left window
-            TrackMessage(m);
 
-            // Look up the unique connection name for sender and destination
+            // For looking up the unique connection name for sender and destination
             std::string sender_uniq, dest_uniq;
-            if (sender != nullptr)
-            {
-                sender_uniq =
-                    g_connection_snapshot->GetUniqueNameIfExists(sender);
+            bool should_ignore = false;
+
+            if (g_sensor_update_thread_active && g_snapshot_update_bus_cxn != "") {
+                int cxn_id = -999;
+                if (sender != nullptr) {
+                    cxn_id = GetConnectionNumericID(std::string(sender));
+                }
+                if (destination != nullptr) {
+                    cxn_id = GetConnectionNumericID(std::string(destination));
+                }
+
+                // Reason for this: The connection may be the connection from the
+                // update thread plus 1, example:
+                // :1.10000 vs :1.10001
+                // Not sure where the new connection comes from. FIXME
+                if (cxn_id <= 4 + g_snapshot_update_bus_cxn_id &&
+                    cxn_id >=     g_snapshot_update_bus_cxn_id) {
+                    should_ignore = true;
+                }
             }
-            if (destination != nullptr)
-            {
-                dest_uniq =
-                    g_connection_snapshot->GetUniqueNameIfExists(destination);
+
+            if (!should_ignore) {
+
+                // TODO: This is for the bottom-left window
+                TrackMessage(m);
+
+                if (sender != nullptr)
+                {
+                    sender_uniq =
+                        g_connection_snapshot->GetUniqueNameIfExists(sender);
+                }
+                if (destination != nullptr)
+                {
+                    dest_uniq =
+                        g_connection_snapshot->GetUniqueNameIfExists(destination);
+                }
+                // This is for the bottom-right window
+                dbus_top_analyzer::g_dbus_statistics.OnNewDBusMessage(
+                sender_uniq.c_str(), dest_uniq.c_str(), interface, path, member,
+                    type, m);
             }
-            // This is for the bottom-right window
-            dbus_top_analyzer::g_dbus_statistics.OnNewDBusMessage(
-            sender_uniq.c_str(), dest_uniq.c_str(), interface, path, member,
-                type, m);
+            
             sd_bus_message_unref(m);
         }
         r = sd_bus_wait(g_bus,
