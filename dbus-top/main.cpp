@@ -34,7 +34,7 @@
 
 DBusTopWindow* g_current_active_view;
 SummaryView* g_summary_window;
-SensorDetailView* g_sensor_detail_view;
+InventoryView* g_sensor_detail_view;
 DBusStatListView* g_dbus_stat_list_view;
 FooterView* g_footer_view;
 BarGraph<float>* g_bargraph = nullptr;
@@ -451,7 +451,7 @@ int main(int argc, char** argv)
     clear();
     g_dbus_statistics = new DBusTopStatistics();
     g_summary_window = new SummaryView();
-    g_sensor_detail_view = new SensorDetailView();
+    g_sensor_detail_view = new InventoryView();
     g_dbus_stat_list_view = new DBusStatListView();
     g_footer_view = new FooterView();
     g_views.push_back(g_summary_window);
