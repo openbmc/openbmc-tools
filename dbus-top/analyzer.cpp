@@ -34,7 +34,7 @@ int AcquireBus(sd_bus** ret);
 extern SensorSnapshot* g_sensor_snapshot;
 extern DBusConnectionSnapshot* g_connection_snapshot;
 extern sd_bus* g_bus;
-extern SensorDetailView* g_sensor_detail_view;
+extern InventoryView* g_sensor_detail_view;
 
 bool ParseI2CTraceLine(std::string line,
   int& pid, double& timestamp, I2CCmd& cmd, int& i2cid);
