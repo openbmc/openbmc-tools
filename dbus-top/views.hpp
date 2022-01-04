@@ -105,17 +105,18 @@ class SummaryView : public DBusTopWindow
     float method_call_, method_return_, signal_, error_, total_;
 };
 
-class SensorDetailView : public DBusTopWindow
+class InventoryView : public DBusTopWindow
 {
   public:
-    SensorDetailView() : DBusTopWindow()
+    InventoryView() : DBusTopWindow()
     {
-        choice_ = -999; // -999 means invalid
         h_padding = 2;
         h_spacing = 3;
         col_width = 15;
         idx0 = idx1 = -999;
         state = SensorList;
+        sensors_menu_ = new ArrowKeyNavigationMenu(this);
+        sensors_menu_->show_overflow_marks = true;
     }
 
     void Render() override;
@@ -151,30 +152,35 @@ class SensorDetailView : public DBusTopWindow
         { // Currently in sensor list
             if (key == "right")
             {
-                MoveChoiceCursorHorizontally(1);
+                //MoveChoiceCursorHorizontally(1);
+                sensors_menu_->OnKeyDown(key);
             }
             else if (key == "left")
             {
-                MoveChoiceCursorHorizontally(-1);
+                //MoveChoiceCursorHorizontally(-1);
+                sensors_menu_->OnKeyDown(key);
             }
             else if (key == "up")
             {
-                MoveChoiceCursor(-1, true);
+                //MoveChoiceCursor(-1, true);
+                sensors_menu_->OnKeyDown(key);
             }
             else if (key == "down")
             {
-                MoveChoiceCursor(1, true);
+                //MoveChoiceCursor(1, true);
+                sensors_menu_->OnKeyDown(key);
             }
             else if (key == "enter")
             {
-                if (choice_ != -999)
+                if (sensors_menu_->choice_ != INVALID)
                 {
                     state = SensorDetail;
                 }
             }
             else if (key == "escape")
             {
-                choice_ = -999;
+                //choice_ = -999;
+                sensors_menu_->Deselect();
             }
         }
         else if (state == SensorDetail)
@@ -202,22 +208,23 @@ class SensorDetailView : public DBusTopWindow
         if (ns < 1)
             return;
         // First of all, if cursor is inactive, activate it
-        if (choice_ == -999)
+        int& choice = sensors_menu_->choice_;
+        if (choice == -999)
         {
             if (delta > 0)
             {
-                choice_ = 0;
+                choice = 0;
                 curr_sensor_id_ = sensor_ids_[0];
                 return;
             }
             else
             {
-                choice_ = ns - 1;
+                choice = ns - 1;
                 curr_sensor_id_ = sensor_ids_.back();
                 return;
             }
         }
-        int choice_next = choice_ + delta;
+        int choice_next = choice + delta;
         while (choice_next >= ns)
         {
             if (wrap_around)
@@ -240,125 +247,19 @@ class SensorDetailView : public DBusTopWindow
                 choice_next = 0;
             }
         }
-        choice_ = choice_next;
-        curr_sensor_id_ = sensor_ids_[choice_];
-    }
-
-    void MoveChoiceCursorHorizontally(int delta)
-    {
-        if (delta != 0 && delta != -1 && delta != 1)
-            return;
-        const int ns = sensor_ids_.size();
-        if (ns < 1)
-            return;
-        if (choice_ == -999)
-        {
-            if (delta > 0)
-            {
-                choice_ = 0;
-                curr_sensor_id_ = sensor_ids_[0];
-                return;
-            }
-            else
-            {
-                curr_sensor_id_ = sensor_ids_.back();
-                choice_ = ns - 1;
-                return;
-            }
-        }
-        const int nrows = DispSensorsPerColumn();
-        int tot_columns = (ns - 1) / nrows + 1;
-        int num_rows_last_column = ns - nrows * (tot_columns - 1);
-        int y = choice_ % nrows, x = choice_ / nrows;
-        if (delta == 1)
-        {
-            x++;
-        }
-        else
-        {
-            x--;
-        }
-        bool overflow_to_right = false;
-        if (y < num_rows_last_column)
-        {
-            if (x >= tot_columns)
-            {
-                overflow_to_right = true;
-            }
-        }
-        else
-        {
-            if (x >= tot_columns - 1)
-            {
-                overflow_to_right = true;
-            }
-        }
-        bool overflow_to_left = false;
-        if (x < 0)
-        {
-            overflow_to_left = true;
-        }
-        {
-            if (overflow_to_right)
-            {
-                y++;
-                // overflow past the right of window
-                // Start probing next line
-                if (y >= nrows)
-                {
-                    choice_ = 0;
-                    return;
-                }
-                else
-                {
-                    choice_ = y;
-                    return;
-                }
-            }
-            else if (overflow_to_left)
-            { // overflow past the left of window
-                y--;
-                if (y < 0)
-                { // overflow past the top of window
-                    // Focus on the visually bottom-right entry
-                    if (num_rows_last_column == nrows)
-                    { // last col fully populated
-                        choice_ = ns - 1;
-                    }
-                    else
-                    { // last column is not fully populated
-                        choice_ = ns - num_rows_last_column - 1;
-                    }
-                    return;
-                }
-                else
-                {
-                    if (y < num_rows_last_column)
-                    {
-                        choice_ = nrows * (tot_columns - 1) + y;
-                    }
-                    else
-                    {
-                        choice_ = nrows * (tot_columns - 2) + y;
-                    }
-                }
-            }
-            else
-            {
-                choice_ = y + x * nrows;
-            }
-        }
-        curr_sensor_id_ = sensor_ids_[choice_];
+        choice = choice_next;
+        curr_sensor_id_ = sensor_ids_[choice];
     }
 
     // Make a copy of the SensorSnapshot object for display usage
     void UpdateSensorSnapshot(SensorSnapshot* snapshot)
     {
+        int& choice = sensors_menu_->choice_;
         sensor_snapshot_ = *snapshot;
         std::string old_sensor_id = "";
-        if (choice_ != -999)
+        if (choice != -999)
         {
-            old_sensor_id = sensor_ids_[choice_];
+            old_sensor_id = sensor_ids_[choice];
         }
         std::vector<std::string> new_sensors =
             snapshot->GetDistinctSensorNames();
@@ -366,16 +267,26 @@ class SensorDetailView : public DBusTopWindow
         {
             return; // Nothing is changed
         }
+
+        int old_ch = sensors_menu_->choice_;
+        sensors_menu_->RemoveAllItems();
+        for (const std::string& sn : new_sensors) {
+            sensors_menu_->AddItem(sn);
+        }
+        if (old_ch < int(new_sensors.size())) {
+            sensors_menu_->choice_ = old_ch;
+        }
+
         // Assume changed
         sensor_ids_ = new_sensors;
-        choice_ = -999;
+        choice = -999;
         for (int i = 0; i < static_cast<int>(new_sensors.size()); i++)
         {
             if (new_sensors[i] == old_sensor_id)
             {
-                choice_ = i;
+                choice = i;
                 break;
-                curr_sensor_id_ = sensor_ids_[choice_];
+                curr_sensor_id_ = sensor_ids_[choice];
             }
         }
     }
@@ -387,6 +298,7 @@ class SensorDetailView : public DBusTopWindow
         rect.w = win_w / 2;
         rect.h = win_h - rect.y - MARGIN_BOTTOM;
         UpdateWindowSizeAndPosition();
+        sensors_menu_->SetRect(Rect(1, 2, rect.w-2, rect.h-3));
     }
 
     std::vector<std::string> sensor_ids_;
@@ -394,13 +306,13 @@ class SensorDetailView : public DBusTopWindow
     // the sensor ID might theoretically become invalidated at any moment, and
     // we should allow the UI to show an error gracefully in that case.
     std::string curr_sensor_id_;
-    int choice_;
     int h_padding;
     int h_spacing;
     int col_width;
     int idx0, idx1; // Range of sensors on display
     enum State
     {
+        ModeSelection,
         SensorList,
         SensorDetail,
     };
@@ -408,6 +320,7 @@ class SensorDetailView : public DBusTopWindow
     State state;
     std::string GetStatusString() override;
     SensorSnapshot sensor_snapshot_;
+    ArrowKeyNavigationMenu* sensors_menu_;
 };
 
 class DBusStatListView : public DBusTopWindow

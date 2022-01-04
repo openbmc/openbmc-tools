@@ -59,7 +59,7 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
             idx1_ += ncols;
         }
     }
-    int y0 = rect_.y, x0 = rect_.x;
+    int y0 = rect_.y, x0 = rect_.x + h_padding_;
     int y = y0, x = x0;
     for (int i = 0; i < items_per_page; i++)
     {
@@ -98,6 +98,24 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
             {
                 x = x0;
                 y++;
+            }
+        }
+    }
+
+    // Draw Overflow marks
+    if (is_column_major) {
+        // Overflow to the right
+        for (int i = 0; i < nrows; i++) {
+            const int idx = idx0_ + items_per_page + i;
+            if (idx < tot_num_items) {
+                mvwaddch(win_, y0+i, x, '>');
+            }
+        }
+        // Overflow to the left
+        for (int i = 0; i < nrows; i++) {
+            const int idx = idx0_ - nrows + i;
+            if (idx >= 0) {
+                mvwaddch(win_, y0+i, rect_.x, '<');
             }
         }
     }

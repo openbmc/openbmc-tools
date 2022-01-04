@@ -367,7 +367,7 @@ void SummaryView::Render()
     wrefresh(win);
 }
 
-void SensorDetailView::Render()
+void InventoryView::Render()
 {
     werase(win);
     if (!visible_)
@@ -375,95 +375,24 @@ void SensorDetailView::Render()
     // If some sensor is focused, show details regarding that sensor
     if (state == SensorList)
     { // Otherwise show the complete list
-        const int ncols = DispSensorsPerRow(); // Number of columns in viewport
-        const int nrows = DispSensorsPerColumn(); // # rows in viewport
-        int sensors_per_page = nrows * ncols;
-        // Just in case the window gets invisibly small
-        if (sensors_per_page < 1)
-            return;
-        int num_sensors = sensor_ids_.size();
-        int total_num_columns = (num_sensors - 1) / nrows + 1;
-        bool is_cursor_out_of_view = false;
-        if (idx0 > choice_ || idx1 <= choice_)
-        {
-            is_cursor_out_of_view = true;
-        }
-        if (idx0 == INVALID || idx1 == INVALID)
-        {
-            is_cursor_out_of_view = true;
-        }
-        if (is_cursor_out_of_view)
-        {
-            idx0 = 0, idx1 = sensors_per_page;
-        }
-        while (idx1 <= choice_)
-        {
-            idx0 += nrows;
-            idx1 += nrows;
-        }
-        const int y0 = 2; // to account for the border and info line
-        const int x0 = 4; // to account for the left overflow marks
-        int y = y0, x = x0;
-        for (int i = 0; i < sensors_per_page; i++)
-        {
-            int idx = idx0 + i;
-            if (idx < static_cast<int>(sensor_ids_.size()))
-            {
-                if (idx == choice_)
-                {
-                    wattrset(win, A_REVERSE);
-                }
-                std::string s = sensor_ids_[idx];
-                if (static_cast<int>(s.size()) > col_width) {
-                    s = s.substr(0, col_width - 2) + "..";
-                } else {
-                    while (static_cast<int>(s.size()) < col_width)
-                    {
-                        s.push_back(' ');
-                    }
-                }
-                mvwaddstr(win, y, x, s.c_str());
-                wattrset(win, 0);
-            }
-            else
-                break;
-            y++;
-            if (i % nrows == nrows - 1)
-            {
-                y = y0;
-                x += col_width + h_spacing;
-            }
-        }
-        // Print overflow marks to the right of the screen
-        for (int i = 0; i < nrows; i++)
-        {
-            int idx = idx0 + sensors_per_page + i;
-            if (idx < num_sensors)
-            {
-                mvwaddch(win, y0 + i, x, '>');
-            }
-        }
-        // Print overflow marks to the left of the screen
-        for (int i = 0; i < nrows; i++)
-        {
-            int idx = idx0 - nrows + i;
-            if (idx >= 0)
-            {
-                mvwaddch(win, y0 + i, 2, '<');
-            }
-        }
+        sensors_menu_->Render();
+        
         // idx1 is one past the visible range, so no need to +1
-        const int col0 = idx0 / nrows + 1, col1 = idx1 / nrows;
+        const int ncols = sensors_menu_->RowOrColumnCount();
+        const int entry_per_row = sensors_menu_->DispEntriesPerColumn();
+        const int col0 = sensors_menu_->idx0_ / entry_per_row + 1;
+        const int col1 = sensors_menu_->idx1_ / entry_per_row;
         mvwprintw(win, 1, 2, "Columns %d-%d of %d", col0, col1,
-                  total_num_columns);
+            sensors_menu_->RowOrColumnCount());
         mvwprintw(win, 1, rect.w - 15, "%d sensors", sensor_ids_.size());
     }
     else if (state == SensorDetail)
     {
+        int& choice = sensors_menu_->choice_;
         // sensor_ids_ is the cached list of sensors, it should be the same size
         // as the actual number of sensors in the snapshot
         mvwprintw(win, 1, 2, "Details of sensor %s", curr_sensor_id_.c_str());
-        mvwprintw(win, 1, rect.w - 15, "Sensor %d/%u", choice_ + 1,
+        mvwprintw(win, 1, rect.w - 15, "Sensor %d/%u", choice + 1,
                   sensor_ids_.size()); // 1-based
         std::vector<Sensor*> sensors =
             g_sensor_snapshot->FindSensorsBySensorID(curr_sensor_id_);
@@ -553,7 +482,7 @@ void SensorDetailView::Render()
     wrefresh(win);
 }
 
-std::string SensorDetailView::GetStatusString()
+std::string InventoryView::GetStatusString()
 {
     if (state == SensorList)
     {
