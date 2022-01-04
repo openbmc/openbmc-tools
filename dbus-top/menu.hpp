@@ -102,10 +102,22 @@ class ArrowKeyNavigationMenu
     void SetChoiceAndConstrain(int c);
     Rect rect_;
     void AddItem(const std::string& s);
+    void RemoveAllItems() {
+        Deselect();
+        items_.clear();
+    }
     bool RemoveHighlightedItem(std::string* ret); // returns true if successful
     std::vector<std::string> Items()
     {
         return items_;
+    }
+
+    int RowOrColumnCount() {
+        if (order == ColumnMajor) {  // col major: how many rows
+            return int(items_.size() - 1) / DispEntriesPerColumn() + 1;
+        } else {  // row major: how many columns
+            return int(items_.size() - 1) / DispEntriesPerRow() + 1;
+        }
     }
 
     void do_Render(bool is_column_major);
@@ -118,5 +130,6 @@ class ArrowKeyNavigationMenu
     int choice_;
     DBusTopWindow* parent_;
     Order order;
+    bool show_overflow_marks = false;
 };
 
