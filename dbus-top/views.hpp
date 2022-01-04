@@ -105,10 +105,10 @@ class SummaryView : public DBusTopWindow
     float method_call_, method_return_, signal_, error_, total_;
 };
 
-class SensorDetailView : public DBusTopWindow
+class InventoryView : public DBusTopWindow
 {
   public:
-    SensorDetailView() : DBusTopWindow()
+    InventoryView() : DBusTopWindow()
     {
         choice_ = -999; // -999 means invalid
         h_padding = 2;
@@ -116,6 +116,10 @@ class SensorDetailView : public DBusTopWindow
         col_width = 15;
         idx0 = idx1 = -999;
         state = SensorList;
+        sensors_menu_ = new ArrowKeyNavigationMenu(this);
+        for (int i=0; i<100; i++) {
+            sensors_menu_->AddItem("Item" + std::to_string(i));
+        }
     }
 
     void Render() override;
@@ -366,6 +370,12 @@ class SensorDetailView : public DBusTopWindow
         {
             return; // Nothing is changed
         }
+
+        ///sensors_menu_->RemoveAllItems()
+        for (const std::string& sn : new_sensors) {
+            sensors_menu_->AddItem(sn);
+        }
+
         // Assume changed
         sensor_ids_ = new_sensors;
         choice_ = -999;
@@ -387,6 +397,7 @@ class SensorDetailView : public DBusTopWindow
         rect.w = win_w / 2;
         rect.h = win_h - rect.y - MARGIN_BOTTOM;
         UpdateWindowSizeAndPosition();
+        sensors_menu_->SetRect(Rect(0, 0, rect.w, rect.h));
     }
 
     std::vector<std::string> sensor_ids_;
@@ -401,6 +412,7 @@ class SensorDetailView : public DBusTopWindow
     int idx0, idx1; // Range of sensors on display
     enum State
     {
+        ModeSelection,
         SensorList,
         SensorDetail,
     };
@@ -408,6 +420,7 @@ class SensorDetailView : public DBusTopWindow
     State state;
     std::string GetStatusString() override;
     SensorSnapshot sensor_snapshot_;
+    ArrowKeyNavigationMenu* sensors_menu_;
 };
 
 class DBusStatListView : public DBusTopWindow

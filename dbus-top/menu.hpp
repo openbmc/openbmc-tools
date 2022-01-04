@@ -102,6 +102,10 @@ class ArrowKeyNavigationMenu
     void SetChoiceAndConstrain(int c);
     Rect rect_;
     void AddItem(const std::string& s);
+    void RemoveAllItems() {
+        Deselect();
+        items_.clear();
+    }
     bool RemoveHighlightedItem(std::string* ret); // returns true if successful
     std::vector<std::string> Items()
     {

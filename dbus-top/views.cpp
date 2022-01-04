@@ -367,7 +367,7 @@ void SummaryView::Render()
     wrefresh(win);
 }
 
-void SensorDetailView::Render()
+void InventoryView::Render()
 {
     werase(win);
     if (!visible_)
@@ -383,75 +383,84 @@ void SensorDetailView::Render()
             return;
         int num_sensors = sensor_ids_.size();
         int total_num_columns = (num_sensors - 1) / nrows + 1;
-        bool is_cursor_out_of_view = false;
-        if (idx0 > choice_ || idx1 <= choice_)
-        {
-            is_cursor_out_of_view = true;
-        }
-        if (idx0 == INVALID || idx1 == INVALID)
-        {
-            is_cursor_out_of_view = true;
-        }
-        if (is_cursor_out_of_view)
-        {
-            idx0 = 0, idx1 = sensors_per_page;
-        }
-        while (idx1 <= choice_)
-        {
-            idx0 += nrows;
-            idx1 += nrows;
-        }
-        const int y0 = 2; // to account for the border and info line
-        const int x0 = 4; // to account for the left overflow marks
-        int y = y0, x = x0;
-        for (int i = 0; i < sensors_per_page; i++)
-        {
-            int idx = idx0 + i;
-            if (idx < static_cast<int>(sensor_ids_.size()))
+        if (false) {
+            bool is_cursor_out_of_view = false;
+            if (idx0 > choice_ || idx1 <= choice_)
             {
-                if (idx == choice_)
+                is_cursor_out_of_view = true;
+            }
+            if (idx0 == INVALID || idx1 == INVALID)
+            {
+                is_cursor_out_of_view = true;
+            }
+            if (is_cursor_out_of_view)
+            {
+                idx0 = 0, idx1 = sensors_per_page;
+            }
+            while (idx1 <= choice_)
+            {
+                idx0 += nrows;
+                idx1 += nrows;
+            }
+            const int y0 = 2; // to account for the border and info line
+            const int x0 = 4; // to account for the left overflow marks
+            int y = y0, x = x0;
+            for (int i = 0; i < sensors_per_page; i++)
+            {
+                int idx = idx0 + i;
+                if (idx < static_cast<int>(sensor_ids_.size()))
                 {
-                    wattrset(win, A_REVERSE);
-                }
-                std::string s = sensor_ids_[idx];
-                if (static_cast<int>(s.size()) > col_width) {
-                    s = s.substr(0, col_width - 2) + "..";
-                } else {
-                    while (static_cast<int>(s.size()) < col_width)
+                    if (idx == choice_)
                     {
-                        s.push_back(' ');
+                        wattrset(win, A_REVERSE);
                     }
+                    std::string s = sensor_ids_[idx];
+                    if (static_cast<int>(s.size()) > col_width) {
+                        s = s.substr(0, col_width - 2) + "..";
+                    } else {
+                        while (static_cast<int>(s.size()) < col_width)
+                        {
+                            s.push_back(' ');
+                        }
+                    }
+                    mvwprintw(win, y, x, s.c_str());
+                    wattrset(win, 0);
                 }
-                mvwprintw(win, y, x, s.c_str());
-                wattrset(win, 0);
+                else
+                    break;
+                y++;
+                if (i % nrows == nrows - 1)
+                {
+                    y = y0;
+                    x += col_width + h_spacing;
+                }
             }
-            else
-                break;
-            y++;
-            if (i % nrows == nrows - 1)
+            // Print overflow marks to the right of the screen
+            for (int i = 0; i < nrows; i++)
             {
-                y = y0;
-                x += col_width + h_spacing;
+                int idx = idx0 + sensors_per_page + i;
+                if (idx < num_sensors)
+                {
+                    mvwaddch(win, y0 + i, x, '>');
+                }
             }
-        }
-        // Print overflow marks to the right of the screen
-        for (int i = 0; i < nrows; i++)
-        {
-            int idx = idx0 + sensors_per_page + i;
-            if (idx < num_sensors)
+            // Print overflow marks to the left of the screen
+            for (int i = 0; i < nrows; i++)
             {
-                mvwaddch(win, y0 + i, x, '>');
+                int idx = idx0 - nrows + i;
+                if (idx >= 0)
+                {
+                    mvwaddch(win, y0 + i, 2, '<');
+                }
             }
+        } else {
+            sensors_menu_->Render();
+            Rect& r = sensors_menu_->rect_;
+            mvwprintw(win, 2, 2, "Menu: %d, %d, %d, %d",
+                r.x, r.y, r.w, r.h
+            );
         }
-        // Print overflow marks to the left of the screen
-        for (int i = 0; i < nrows; i++)
-        {
-            int idx = idx0 - nrows + i;
-            if (idx >= 0)
-            {
-                mvwaddch(win, y0 + i, 2, '<');
-            }
-        }
+
         // idx1 is one past the visible range, so no need to +1
         const int col0 = idx0 / nrows + 1, col1 = idx1 / nrows;
         mvwprintw(win, 1, 2, "Columns %d-%d of %d", col0, col1,
@@ -553,7 +562,7 @@ void SensorDetailView::Render()
     wrefresh(win);
 }
 
-std::string SensorDetailView::GetStatusString()
+std::string InventoryView::GetStatusString()
 {
     if (state == SensorList)
     {
