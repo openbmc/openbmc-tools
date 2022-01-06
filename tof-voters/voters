@@ -1,0 +1,7 @@
+#!/bin/env -S python3 -B
+
+from libvoters.entry_point import main
+import sys
+
+if __name__ == "__main__":
+    sys.exit(main())
