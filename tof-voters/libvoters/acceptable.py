@@ -45,7 +45,7 @@ def file(proj: str, filename: str) -> bool:
         "openbmc/phosphor-logging": [".*/openpower-pels/.*"],
     }
 
-    reject_files = ["/COMMIT_MSG"]
+    reject_files = ["/COMMIT_MSG", "/PATCHSET_LEVEL"]
 
     for r in reject_files:
         if r == filename:
