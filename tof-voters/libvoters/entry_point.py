@@ -8,6 +8,7 @@ subcommands = [
     "analyze-commits",
     "analyze-reviews",
     "dump-gerrit",
+    "report",
 ]
 
 
