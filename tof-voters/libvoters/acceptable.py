@@ -9,6 +9,7 @@ def project(name: str) -> bool:
         "openbmc/intel-.*",
         "openbmc/openpower-.*",
         "openbmc/google-.*",
+        "openbmc/meta-.*",
     ]
 
     reject_repo = [
@@ -38,11 +39,20 @@ def file(proj: str, filename: str) -> bool:
             "ibm_.*",
         ],
         "openbmc/entity-manager": ["configurations/.*"],
+        "openbmc/libmctp": ["docs/bindings/vendor-.*"],
         "openbmc/openbmc": ["meta-(?!phosphor).*", "poky/.*"],
         "openbmc/openbmc-test-automation": ["oem/.*", "openpower/.*"],
-        "openbmc/phosphor-debug-collector": ["dump-extensions/.*"],
+        "openbmc/phosphor-debug-collector": [
+            "dump-extensions/.*",
+            "tools/dreport.d/ibm.d/.*",
+        ],
         "openbmc/phosphor-fan-presence": [".*/config_files/.*"],
+        "openbmc/phosphor-power": [".*/config_files/.*"],
+        "openbmc/phosphor-led-manager": ["configs/.*"],
         "openbmc/phosphor-logging": [".*/openpower-pels/.*"],
+        "openbmc/webui-vue": [
+            "src/env/.*",
+        ],
     }
 
     reject_files = ["/COMMIT_MSG", "/PATCHSET_LEVEL"]
