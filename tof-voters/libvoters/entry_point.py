@@ -4,7 +4,11 @@ import argparse
 from importlib import import_module
 from typing import List
 
-subcommands = ["analyze-commits", "dump-gerrit"]
+subcommands = [
+    "analyze-commits",
+    "analyze-reviews",
+    "dump-gerrit",
+]
 
 
 def main() -> int:
