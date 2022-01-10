@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c383c00_f4c13149",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:17:44Z",
+      "side": 1,
+      "message": "Added this to the README in that commit.",
+      "parentUuid": "6d8e6b3a_bc2b804c",
+      "revId": "991931666dfc0822d84ab8509098cbd68e21cfd0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "23928aa5_669ecb5f",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-01-10T01:33:20Z",
       "side": 1,
       "message": "Should PATCHSET_LEVEL go in the previous commit?",
+      "revId": "991931666dfc0822d84ab8509098cbd68e21cfd0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4e4c775_beb707bd",
+        "filename": "tof-voters/libvoters/acceptable.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:17:44Z",
+      "side": 1,
+      "message": "No, it is intentionally here.  Gerrit lists \"PATCHSET_LEVEL\" in the code review comments data, but not in the \"files modified by this commit\" data.",
+      "parentUuid": "23928aa5_669ecb5f",
       "revId": "991931666dfc0822d84ab8509098cbd68e21cfd0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
