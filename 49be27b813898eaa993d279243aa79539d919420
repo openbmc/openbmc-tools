@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "842119f3_54c51bab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-01-10T01:36:04Z",
+      "side": 1,
+      "message": "This seems fair on its own as it\u0027s the result of an explicit discussion.",
+      "revId": "49be27b813898eaa993d279243aa79539d919420",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
