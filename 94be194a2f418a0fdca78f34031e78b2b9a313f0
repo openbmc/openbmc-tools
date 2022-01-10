@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bad04cb3_739701cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:12:10Z",
+      "side": 1,
+      "message": "I don\u0027t have any intention of this being installed.  The module is just for better code organization.  If someone really wants a setup.py I guess I can add that at the end, but I don\u0027t really see the value of it.",
+      "parentUuid": "3c1c017a_06627e5d",
+      "revId": "94be194a2f418a0fdca78f34031e78b2b9a313f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9b2dfe1a_43e767eb",
@@ -35,6 +53,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3329b10d_358c7a29",
+        "filename": "tof-voters/libvoters/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:12:10Z",
+      "side": 1,
+      "message": "\"need this\" ... no.  But they help editors and UNIX utilities out.\n\n  $ file libvoters/__init__.py                           \n  libvoters/__init__.py: empty\n  $ file libvoters/__init__.py\n  libvoters/__init__.py: Python script, ASCII text executable",
+      "parentUuid": "9b2dfe1a_43e767eb",
+      "revId": "94be194a2f418a0fdca78f34031e78b2b9a313f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dc7a5b85_a24af562",
@@ -48,6 +84,30 @@
       "writtenOn": "2022-01-10T01:25:04Z",
       "side": 1,
       "message": "I\u0027d rather we go with `--data-directory` if we have a short option? Let\u0027s not abbreviate long options...",
+      "range": {
+        "startLine": 13,
+        "startChar": 9,
+        "endLine": 13,
+        "endChar": 14
+      },
+      "revId": "94be194a2f418a0fdca78f34031e78b2b9a313f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "50e5f407_2ae0a59c",
+        "filename": "tof-voters/libvoters/entry_point.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:12:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc7a5b85_a24af562",
       "range": {
         "startLine": 13,
         "startChar": 9,
@@ -77,6 +137,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "473756da_4cdd4b5e",
+        "filename": "tof-voters/libvoters/entry_point.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:12:10Z",
+      "side": 1,
+      "message": "I have no idea what you\u0027re suggesting.  \n\nThe end array looks like this:\n\n```\nsubcommands \u003d [\n    \"analyze-commits\",\n    \"analyze-reviews\",\n    \"dump-gerrit\",\n    \"report\",\n]\n```\n\nAre you really asking for each of these to be prefixed with libvoters.subcmd?  What is the rationale?",
+      "parentUuid": "b235a398_56fcc6a7",
+      "revId": "94be194a2f418a0fdca78f34031e78b2b9a313f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bbee81a9_67828aa0",
         "filename": "tof-voters/libvoters/subcmd/__init__.py",
         "patchSetId": 1
@@ -88,6 +166,24 @@
       "writtenOn": "2022-01-10T01:25:04Z",
       "side": 1,
       "message": "we don\u0027t plan to execute this file, so I don\u0027t think the interpreter definition is necessary. This can just be empty.",
+      "revId": "94be194a2f418a0fdca78f34031e78b2b9a313f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "844bb459_f2a8d3e6",
+        "filename": "tof-voters/libvoters/subcmd/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:12:10Z",
+      "side": 1,
+      "message": "See above.",
+      "parentUuid": "bbee81a9_67828aa0",
       "revId": "94be194a2f418a0fdca78f34031e78b2b9a313f0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -105,6 +201,24 @@
       "writtenOn": "2022-01-10T01:25:04Z",
       "side": 1,
       "message": "can you link to the documentation here so we know how to format it, given  we\u0027re just passing through the gerrit requirements rather than using strftime to abstract the input from gerrit? Even an example would be useful.",
+      "revId": "94be194a2f418a0fdca78f34031e78b2b9a313f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ddf94e9_8502bf46",
+        "filename": "tof-voters/libvoters/subcmd/dump-gerrit.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:12:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2cb03918_d1a20474",
       "revId": "94be194a2f418a0fdca78f34031e78b2b9a313f0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
