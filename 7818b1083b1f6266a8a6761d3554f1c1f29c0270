@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4773130_66095401",
+        "filename": "tof-voters/libvoters/subcmd/analyze-commits.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-01-10T01:32:04Z",
+      "side": 1,
+      "message": "Resisting the urge to rewrite this in functional style 😜",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 75,
+        "endChar": 24
+      },
+      "revId": "7818b1083b1f6266a8a6761d3554f1c1f29c0270",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2523e462_f19910f6",
+        "filename": "tof-voters/libvoters/subcmd/analyze-commits.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-01-10T01:32:04Z",
+      "side": 1,
+      "message": "That\u0027s some hectic formatting",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 38
+      },
+      "revId": "7818b1083b1f6266a8a6761d3554f1c1f29c0270",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
