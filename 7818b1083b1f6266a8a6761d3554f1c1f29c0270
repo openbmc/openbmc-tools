@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ff3f272_9ac65bdb",
+        "filename": "tof-voters/libvoters/acceptable.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:15:41Z",
+      "side": 1,
+      "message": "I don\u0027t think there are any reusable components today... but if we can identify them we can filter it out here, certainly.  Right now they\u0027re all company-specific.",
+      "parentUuid": "6a6579b6_e136b11b",
+      "revId": "7818b1083b1f6266a8a6761d3554f1c1f29c0270",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2a6e1ff5_defb5f40",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-01-10T16:43:41Z",
       "side": 1,
       "message": "Isn\u0027t there some convention about required \"options\" that this violates? ;-)",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 9
+      },
+      "revId": "7818b1083b1f6266a8a6761d3554f1c1f29c0270",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3193e1c_8b30dc43",
+        "filename": "tof-voters/libvoters/subcmd/analyze-commits.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T23:15:41Z",
+      "side": 1,
+      "message": "This could obviously be done as positional arguments but I feel like they are less self-documenting in that way.  (first parameter is \"before\" is far less usable than --before to me).\n\nAs is the argparse gives pretty good error information and is clear which ones are optional and which ones are required (optional has [] wrapper).\n```\n$ ./voters analyze-commits                                              \nusage: voters analyze-commits [-h] --before BEFORE --after AFTER\nvoters analyze-commits: error: the following arguments are required: --before/-b, --after/-a\n$ ./voters --help                \nusage: voters [-h] [--data-directory DATA_DIRECTORY] {analyze-commits,analyze-reviews,dump-gerrit,report} ...\n$ ./voters analyze-commits --help                                    \nusage: voters analyze-commits [-h] --before BEFORE --after AFTER\n```",
+      "parentUuid": "2a6e1ff5_defb5f40",
       "range": {
         "startLine": 19,
         "startChar": 0,
