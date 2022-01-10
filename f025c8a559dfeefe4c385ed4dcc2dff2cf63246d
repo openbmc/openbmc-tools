@@ -33,6 +33,24 @@
       "message": "I\u0027d also prefer to merge this commit with previous and with 50200, but it also ok as is.",
       "revId": "f025c8a559dfeefe4c385ed4dcc2dff2cf63246d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b48f334_896c6e7b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-10T22:58:59Z",
+      "side": 1,
+      "message": "Will squash and abandon this one.",
+      "parentUuid": "5eb952d2_b103e349",
+      "revId": "f025c8a559dfeefe4c385ed4dcc2dff2cf63246d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
