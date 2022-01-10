@@ -22,6 +22,30 @@
       },
       "revId": "aa7ad2051d3cc83ce0352e1958e22d19b25ec8d5",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ff77591_61526cb3",
+        "filename": "tof-voters/libvoters/subcmd/report.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000879
+      },
+      "writtenOn": "2022-01-10T07:24:09Z",
+      "side": 1,
+      "message": "It is kind of defined here:\nhttps://github.com/openbmc/docs/blob/master/tof/membership-and-voting.md#metrics",
+      "parentUuid": "9f590251_f8f29ff7",
+      "range": {
+        "startLine": 41,
+        "startChar": 21,
+        "endLine": 41,
+        "endChar": 52
+      },
+      "revId": "aa7ad2051d3cc83ce0352e1958e22d19b25ec8d5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
