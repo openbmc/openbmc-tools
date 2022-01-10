@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6d8e6b3a_bc2b804c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-01-10T16:47:14Z",
+      "side": 1,
+      "message": "would some context be useful?  maybe a link to what it\u0027s implementing?\n\nhttps://github.com/openbmc/docs/blob/master/tof/membership-and-voting.md#metrics",
+      "revId": "991931666dfc0822d84ab8509098cbd68e21cfd0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "23928aa5_669ecb5f",
         "filename": "tof-voters/libvoters/acceptable.py",
         "patchSetId": 1
