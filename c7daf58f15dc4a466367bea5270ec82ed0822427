@@ -46,6 +46,30 @@
       },
       "revId": "c7daf58f15dc4a466367bea5270ec82ed0822427",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd27adaf_621f24f9",
+        "filename": "bbdbg/bbdbg",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-01-11T09:00:31Z",
+      "side": 1,
+      "message": "Haha, whoops. I have a solution that I think is simpler:\n\n find tmp/work/*/obmc-phosphor-image/ -name opkg.conf -exec grep -lE ^src \\{\\} \\;",
+      "parentUuid": "5905935f_21dfa335",
+      "range": {
+        "startLine": 34,
+        "startChar": 41,
+        "endLine": 34,
+        "endChar": 69
+      },
+      "revId": "c7daf58f15dc4a466367bea5270ec82ed0822427",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
