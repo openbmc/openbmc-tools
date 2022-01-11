@@ -130,6 +130,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e995ebb2_185a0e19",
+        "filename": "tof-voters/libvoters/subcmd/analyze-commits.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-01-11T00:26:48Z",
+      "side": 1,
+      "message": "taking the directory listing and processing it with map() and filter() calls to avoid the explicit statefulness of continue.\n\nI didn\u0027t expect you to do anything, was just voicing my instinct when reading the code.",
+      "parentUuid": "cb6a7749_2a26a9e4",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 75,
+        "endChar": 24
+      },
+      "revId": "7818b1083b1f6266a8a6761d3554f1c1f29c0270",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2523e462_f19910f6",
@@ -167,6 +191,30 @@
       "side": 1,
       "message": "It was whatever \u0027black\u0027 does automatically, but yes...",
       "parentUuid": "2523e462_f19910f6",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 38
+      },
+      "revId": "7818b1083b1f6266a8a6761d3554f1c1f29c0270",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9f00fe4_d40e0edf",
+        "filename": "tof-voters/libvoters/subcmd/analyze-commits.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-01-11T00:26:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "bbc41301_adc15491",
       "range": {
         "startLine": 79,
         "startChar": 0,
