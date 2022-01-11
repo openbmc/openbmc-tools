@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "444bd5a9_bd5f0897",
+        "filename": "bbdbg/bbdbg",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2022-01-11T07:05:31Z",
+      "side": 1,
+      "message": "This should not be hard-coded, it could be passed by user.",
+      "range": {
+        "startLine": 34,
+        "startChar": 41,
+        "endLine": 34,
+        "endChar": 69
+      },
+      "revId": "c7daf58f15dc4a466367bea5270ec82ed0822427",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
