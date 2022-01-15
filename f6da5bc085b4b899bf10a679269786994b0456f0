@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa7c7706_bed1a19c",
+        "filename": "tof-voters/libvoters/subcmd/analyze-commits.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000733
+      },
+      "writtenOn": "2022-01-15T00:25:43Z",
+      "side": 1,
+      "message": "It looks like this is causing the script to skip some commits that have different messages indicating they\u0027ve been applied.  For example, patch 46584 has \"Change has been successfully rebased and submitted\" instead of \"Change has been successfully merged\".  I\u0027m assuming that\u0027s not intended, but it seems to have had a significant impact on at least some results (see https://github.com/openbmc/technical-oversight-forum/issues/10).",
+      "range": {
+        "startLine": 54,
+        "startChar": 1,
+        "endLine": 64,
+        "endChar": 24
+      },
+      "revId": "f6da5bc085b4b899bf10a679269786994b0456f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
