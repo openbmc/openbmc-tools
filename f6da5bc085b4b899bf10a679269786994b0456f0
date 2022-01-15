@@ -22,6 +22,30 @@
       },
       "revId": "f6da5bc085b4b899bf10a679269786994b0456f0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b17c4f7_a0413af4",
+        "filename": "tof-voters/libvoters/subcmd/analyze-commits.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-01-15T02:44:06Z",
+      "side": 1,
+      "message": "You are correct.  I have applied a fix and will regenerate the data.  \n\nGood news! You qualified.",
+      "parentUuid": "fa7c7706_bed1a19c",
+      "range": {
+        "startLine": 54,
+        "startChar": 1,
+        "endLine": 64,
+        "endChar": 24
+      },
+      "revId": "f6da5bc085b4b899bf10a679269786994b0456f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
