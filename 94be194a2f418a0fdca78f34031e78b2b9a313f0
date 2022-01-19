@@ -191,6 +191,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3795b7c6_0566dbd9",
+        "filename": "tof-voters/libvoters/entry_point.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-01-19T00:18:59Z",
+      "side": 1,
+      "message": "\u003e adds unnecessarily to cognitive load when reading the code\n\nin case it helps any... +1\n\n\u003e That said, it\u0027s a nitpick, so feel free to ignore me\n\nand here +1",
+      "parentUuid": "e7e7a5b6_397dd3df",
+      "revId": "94be194a2f418a0fdca78f34031e78b2b9a313f0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bbee81a9_67828aa0",
         "filename": "tof-voters/libvoters/subcmd/__init__.py",
         "patchSetId": 1
