@@ -29,7 +29,7 @@ BBDBG_CORE=$1; shift
 BBDBG_PKGS=$@
 
 BBDBG_ROOT=$(mktemp -t --directory bbdbg.XXX)
-BBDBG_LIBS=${BBDBG_PATH}/tmp/sysroots-components/$(uname -m)/libsolv-native/usr/lib
+BBDBG_LIBS=${BBDBG_PATH}/tmp/sysroots-components/$(uname -m)/libsolv-native/usr/lib:${BBDBG_PATH}/tmp/sysroots-components/$(uname -m)/libarchive-native/usr/lib
 BBDBG_OPKG=${BBDBG_PATH}/tmp/sysroots-components/$(uname -m)/opkg-native/usr/bin/opkg
 BBDBG_CONF=$(find ${BBDBG_PATH}/tmp/work/*/obmc-phosphor-image -name opkg.conf -exec grep -lE ^src \{\} \;)
 
