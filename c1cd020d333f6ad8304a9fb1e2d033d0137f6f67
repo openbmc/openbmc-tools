@@ -1,0 +1,8 @@
+Code-Review+2: Andrew Jeffery <andrew@aj.id.au>
+Ok-To-Test+1: Andrew Jeffery <andrew@aj.id.au>
+Verified+1: Andrew Jeffery <andrew@aj.id.au>
+Submitted-by: Andrew Jeffery <andrew@aj.id.au>
+Submitted-at: Fri, 21 Jan 2022 00:56:41 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/openbmc-tools/+/50569
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
