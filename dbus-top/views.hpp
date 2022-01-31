@@ -21,6 +21,7 @@
 #include "sensorhelper.hpp"
 
 #include <ncurses.h>
+
 #include <string>
 #include <vector>
 constexpr int MARGIN_BOTTOM = 1;
@@ -152,22 +153,22 @@ class InventoryView : public DBusTopWindow
         { // Currently in sensor list
             if (key == "right")
             {
-                //MoveChoiceCursorHorizontally(1);
+                // MoveChoiceCursorHorizontally(1);
                 sensors_menu_->OnKeyDown(key);
             }
             else if (key == "left")
             {
-                //MoveChoiceCursorHorizontally(-1);
+                // MoveChoiceCursorHorizontally(-1);
                 sensors_menu_->OnKeyDown(key);
             }
             else if (key == "up")
             {
-                //MoveChoiceCursor(-1, true);
+                // MoveChoiceCursor(-1, true);
                 sensors_menu_->OnKeyDown(key);
             }
             else if (key == "down")
             {
-                //MoveChoiceCursor(1, true);
+                // MoveChoiceCursor(1, true);
                 sensors_menu_->OnKeyDown(key);
             }
             else if (key == "enter")
@@ -179,7 +180,7 @@ class InventoryView : public DBusTopWindow
             }
             else if (key == "escape")
             {
-                //choice_ = -999;
+                // choice_ = -999;
                 sensors_menu_->Deselect();
             }
         }
@@ -270,10 +271,12 @@ class InventoryView : public DBusTopWindow
 
         int old_ch = sensors_menu_->choice_;
         sensors_menu_->RemoveAllItems();
-        for (const std::string& sn : new_sensors) {
+        for (const std::string& sn : new_sensors)
+        {
             sensors_menu_->AddItem(sn);
         }
-        if (old_ch < int(new_sensors.size())) {
+        if (old_ch < int(new_sensors.size()))
+        {
             sensors_menu_->choice_ = old_ch;
         }
 
@@ -298,7 +301,7 @@ class InventoryView : public DBusTopWindow
         rect.w = win_w / 2;
         rect.h = win_h - rect.y - MARGIN_BOTTOM;
         UpdateWindowSizeAndPosition();
-        sensors_menu_->SetRect(Rect(1, 2, rect.w-2, rect.h-3));
+        sensors_menu_->SetRect(Rect(1, 2, rect.w - 2, rect.h - 3));
     }
 
     std::vector<std::string> sensor_ids_;
@@ -345,8 +348,8 @@ class DBusStatListView : public DBusTopWindow
     };
     SortOrder sort_order_;
 
-    int disp_row_idx_; // From which row to start displaying? (essentially a
-                       // vertical scroll bar)
+    int disp_row_idx_;    // From which row to start displaying? (essentially a
+                          // vertical scroll bar)
     int last_choices_[2]; // Last choice index on either side
     enum MenuState
     {
@@ -366,7 +369,7 @@ class DBusStatListView : public DBusTopWindow
         menu2_->win_ = win;
         UpdateWindowSizeAndPosition();
     }
-    
+
   private:
     void SetMenuState(MenuState s)
     {
@@ -451,4 +454,9 @@ class FooterView : public DBusTopWindow
         return "";
     }
 
+    void SetStatusString(const std::string& s)
+    {
+        status_string_ = s;
+    }
+    std::string status_string_;
 };

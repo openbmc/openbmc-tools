@@ -27,10 +27,10 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <cassert>
 #include <iomanip>
 #include <sstream>
 #include <thread>
-#include <cassert>
 
 DBusTopWindow* g_current_active_view;
 SummaryView* g_summary_window;
@@ -43,28 +43,35 @@ std::vector<DBusTopWindow*> g_views;
 int g_highlighted_view_index = INVALID;
 sd_bus* g_bus = nullptr;
 
-int GetConnectionNumericID(const std::string& unique_name) {
+int GetConnectionNumericID(const std::string& unique_name)
+{
     size_t idx = unique_name.find('.');
-    if (idx == std::string::npos) {
+    if (idx == std::string::npos)
+    {
         return -999;
     }
-    try {
-        int ret = std::atoi(unique_name.substr(idx+1).c_str());
+    try
+    {
+        int ret = std::atoi(unique_name.substr(idx + 1).c_str());
         return ret;
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception& e)
+    {
         return -999;
     }
 }
 
 // Whenever an update of SensorSnapshot and DBusConnectionSnapshot is needed,
 // they are populated into the "staging" copies and a pointer swap is done
-// by the main thread (the thread that constructs the snapshots shall not touch the
-// copy used for UI rendering)
+// by the main thread (the thread that constructs the snapshots shall not touch
+// the copy used for UI rendering)
 bool g_sensor_update_thread_active = false;
-std::string g_snapshot_update_bus_cxn = ""; // The DBus connection used by the updater thread.
+std::string g_snapshot_update_bus_cxn =
+    ""; // The DBus connection used by the updater thread.
 int g_snapshot_update_bus_cxn_id = -999;
-SensorSnapshot* g_sensor_snapshot, *g_sensor_snapshot_staging = nullptr;
-DBusConnectionSnapshot* g_connection_snapshot, *g_connection_snapshot_staging = nullptr;
+SensorSnapshot *g_sensor_snapshot, *g_sensor_snapshot_staging = nullptr;
+DBusConnectionSnapshot *g_connection_snapshot,
+    *g_connection_snapshot_staging = nullptr;
 std::mutex g_mtx_snapshot_update;
 
 DBusTopStatistics* g_dbus_statistics; // At every update interval,
@@ -75,34 +82,34 @@ int maxx, maxy, halfx, halfy;
 
 void ActivateWindowA()
 {
-    g_views[0]->visible_=true;
-    g_views[0]->maximize_=true;
-    g_views[1]->visible_=false;
-    g_views[2]->visible_=false;
+    g_views[0]->visible_ = true;
+    g_views[0]->maximize_ = true;
+    g_views[1]->visible_ = false;
+    g_views[2]->visible_ = false;
 }
 
 void ActivateWindowB()
 {
-    g_views[1]->visible_=true;
-    g_views[1]->maximize_=true;
-    g_views[0]->visible_=false;
-    g_views[2]->visible_=false;
+    g_views[1]->visible_ = true;
+    g_views[1]->maximize_ = true;
+    g_views[0]->visible_ = false;
+    g_views[2]->visible_ = false;
 }
 void ActivateWindowC()
 {
-    g_views[2]->visible_=true;
-    g_views[2]->maximize_=true;
-    g_views[0]->visible_=false;
-    g_views[1]->visible_=false;
+    g_views[2]->visible_ = true;
+    g_views[2]->maximize_ = true;
+    g_views[0]->visible_ = false;
+    g_views[1]->visible_ = false;
 }
 void ActivateAllWindows()
 {
     g_views[0]->maximize_ = false;
-    g_views[1]->maximize_=false;
-    g_views[2]->maximize_=false;
-    g_views[0]->visible_=true;
-    g_views[1]->visible_=true;
-    g_views[2]->visible_= true;
+    g_views[1]->maximize_ = false;
+    g_views[2]->maximize_ = false;
+    g_views[0]->visible_ = true;
+    g_views[1]->visible_ = true;
+    g_views[2]->visible_ = true;
 }
 
 void InitColorPairs()
@@ -152,8 +159,9 @@ void UpdateWindowSizes()
     for (DBusTopWindow* v : g_views)
     {
         v->OnResize(maxx, maxy);
-        if(v->maximize_){
-            v->rect={0,0,maxx,maxy-MARGIN_BOTTOM};
+        if (v->maximize_)
+        {
+            v->rect = {0, 0, maxx, maxy - MARGIN_BOTTOM};
             v->UpdateWindowSizeAndPosition();
         }
     }
@@ -181,6 +189,13 @@ void DBusTopRefresh()
     g_mtx_snapshot_update.unlock();
 }
 
+void DBusTopUpdateFooterView()
+{
+    g_mtx_snapshot_update.lock();
+    g_footer_view->Render();
+    g_mtx_snapshot_update.unlock();
+}
+
 // This function is called by the Capture thread
 void DBusTopStatisticsCallback(DBusTopStatistics* stat, Histogram<float>* hist)
 {
@@ -200,7 +215,8 @@ void DBusTopStatisticsCallback(DBusTopStatistics* stat, Histogram<float>* hist)
 
     g_mtx_snapshot_update.lock();
     if (g_sensor_snapshot_staging != nullptr &&
-        g_connection_snapshot_staging != nullptr) {
+        g_connection_snapshot_staging != nullptr)
+    {
 
         std::swap(g_sensor_snapshot_staging, g_sensor_snapshot);
         std::swap(g_connection_snapshot_staging, g_connection_snapshot);
@@ -393,7 +409,8 @@ void ReinitializeUI()
     }
 }
 
-void ListAllSensorsThread() {
+void ListAllSensorsThread()
+{
     // Create a temporary connection
     assert(g_sensor_update_thread_active == false);
     sd_bus* bus;
@@ -404,7 +421,8 @@ void ListAllSensorsThread() {
     sd_bus_get_unique_name(bus, &bus_name);
     printf("bus_name=%s\n", bus_name);
     g_snapshot_update_bus_cxn = std::string(bus_name);
-    g_snapshot_update_bus_cxn_id = GetConnectionNumericID(g_snapshot_update_bus_cxn);
+    g_snapshot_update_bus_cxn_id =
+        GetConnectionNumericID(g_snapshot_update_bus_cxn);
 
     g_sensor_update_thread_active = true;
     DBusConnectionSnapshot* cxn_snapshot;
@@ -437,9 +455,6 @@ int main(int argc, char** argv)
     g_connection_snapshot = new DBusConnectionSnapshot();
     g_sensor_snapshot = new SensorSnapshot(g_connection_snapshot);
 
-    // Do the scan in a separate thread.
-    std::thread list_all_sensors_thread(ListAllSensorsThread);
-
     g_bargraph = new BarGraph<float>(300);
     g_histogram = new Histogram<float>();
 
@@ -459,6 +474,10 @@ int main(int argc, char** argv)
     g_views.push_back(g_dbus_stat_list_view);
     g_views.push_back(g_footer_view);
 
+    // Do the scan in a separate thread. This uses the Footer View so it has to
+    // be after g_footer_view = new FooterView()
+    std::thread list_all_sensors_thread(ListAllSensorsThread);
+
     g_sensor_detail_view->UpdateSensorSnapshot(g_sensor_snapshot);
     UpdateWindowSizes();
     dbus_top_analyzer::SetDBusTopStatisticsCallback(&DBusTopStatisticsCallback);
@@ -471,6 +490,7 @@ int main(int argc, char** argv)
     return 0;
 }
 
-__attribute__((destructor)) void DTOR() {
+__attribute__((destructor)) void DTOR()
+{
     DisableKernelI2CTracing();
 }

@@ -13,10 +13,13 @@
 // limitations under the License.
 
 #include "views.hpp"
+
 #include "bargraph.hpp"
 #include "histogram.hpp"
 #include "menu.hpp"
+
 #include <string.h>
+
 #include <algorithm>
 
 extern SensorSnapshot* g_sensor_snapshot;
@@ -31,7 +34,7 @@ extern std::string g_snapshot_update_bus_cxn;
 
 namespace dbus_top_analyzer
 {
-    extern DBusTopStatistics g_dbus_statistics;
+extern DBusTopStatistics g_dbus_statistics;
 }
 
 // Linear interpolation
@@ -376,14 +379,14 @@ void InventoryView::Render()
     if (state == SensorList)
     { // Otherwise show the complete list
         sensors_menu_->Render();
-        
+
         // idx1 is one past the visible range, so no need to +1
         const int ncols = sensors_menu_->RowOrColumnCount();
         const int entry_per_row = sensors_menu_->DispEntriesPerColumn();
         const int col0 = sensors_menu_->idx0_ / entry_per_row + 1;
         const int col1 = sensors_menu_->idx1_ / entry_per_row;
         mvwprintw(win, 1, 2, "Columns %d-%d of %d", col0, col1,
-            sensors_menu_->RowOrColumnCount());
+                  sensors_menu_->RowOrColumnCount());
         mvwprintw(win, 1, rect.w - 15, "%d sensors", sensor_ids_.size());
     }
     else if (state == SensorDetail)
@@ -420,54 +423,74 @@ void InventoryView::Render()
                 y += DrawTextWithWidthLimit(win, buf, y, x, w, "/");
                 y++;
 
-                // TODO: can cache in and out & only update when there are user UI actions
+                // TODO: can cache in and out & only update when there are user
+                // UI actions
                 std::map<std::string, std::set<std::string>> in, out;
-                g_sensor_snapshot->FindAssociationEndpoints(sensor->ObjectPath(), &out, &in);
+                g_sensor_snapshot->FindAssociationEndpoints(
+                    sensor->ObjectPath(), &out, &in);
 
                 y++;
                 mvwprintw(win, y, x, "Association status:");
 
-                if (out.size() > 0) {
+                if (out.size() > 0)
+                {
                     y++;
                     int nforward = 0;
-                    for (const auto& [k, v] : out) {
+                    for (const auto& [k, v] : out)
+                    {
                         nforward += int(v.size());
                     }
-                    mvwprintw(win, y, x, "Used as Forward vertex %d times:", nforward);
+                    mvwprintw(win, y, x,
+                              "Used as Forward vertex %d times:", nforward);
                     y++;
                     int idx = 0;
-                    for (const auto& [k, v] : out) {
-                        idx ++;
-                        snprintf(buf, sizeof(buf), "%d. %s (%lu)", idx, k.c_str(), v.size());
+                    for (const auto& [k, v] : out)
+                    {
+                        idx++;
+                        snprintf(buf, sizeof(buf), "%d. %s (%d)", idx,
+                                 k.c_str(), static_cast<int>(v.size()));
                         y += DrawTextWithWidthLimit(win, buf, y, x, w, "/");
-                        for (const std::string& entry : v) {
-                            y += DrawTextWithWidthLimit(win, entry, y, x+2, w-2, "/");
+                        for (const std::string& entry : v)
+                        {
+                            y += DrawTextWithWidthLimit(win, entry, y, x + 2,
+                                                        w - 2, "/");
                         }
                     }
-                } else {
+                }
+                else
+                {
                     y++;
                     mvwprintw(win, y, x, "Not used as forward vertex");
                     y++;
                 }
 
-                if (in.size() > 0) {
+                if (in.size() > 0)
+                {
                     y++;
                     int nbackward = 0;
-                    for (const auto& [k, v] : in) {
+                    for (const auto& [k, v] : in)
+                    {
                         nbackward += int(v.size());
                     }
-                    mvwprintw(win, y, x, "Used as reverse vertex %d times:", nbackward);
+                    mvwprintw(win, y, x,
+                              "Used as reverse vertex %d times:", nbackward);
                     y++;
                     int idx = 0;
-                    for (const auto& [k, v] : in) {
-                        idx ++;
-                        snprintf(buf, sizeof(buf), "%d. %s (%lu)", idx, k.c_str(), v.size());
+                    for (const auto& [k, v] : in)
+                    {
+                        idx++;
+                        snprintf(buf, sizeof(buf), "%d. %s (%d)", idx,
+                                 k.c_str(), static_cast<int>(v.size()));
                         y += DrawTextWithWidthLimit(win, buf, y, x, w, "/");
-                        for (const std::string& entry : v) {
-                            y += DrawTextWithWidthLimit(win, entry, y, x+2, w-2, "/");
+                        for (const std::string& entry : v)
+                        {
+                            y += DrawTextWithWidthLimit(win, entry, y, x + 2,
+                                                        w - 2, "/");
                         }
                     }
-                } else {
+                }
+                else
+                {
                     y++;
                     mvwprintw(win, y, x, "Not used as reverse vertex");
                 }
@@ -524,7 +547,7 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
     }
     for (int i = 0; i < N; i++)
     {
-    const std::string s = FieldNames[i];
+        const std::string s = FieldNames[i];
         if (inactive_fields.count(s) > 0)
         {
             menu1_->AddItem(s);
@@ -534,7 +557,7 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
             menu2_->AddItem(s);
         }
     }
-    
+
     curr_menu_state_ = LeftSide;
     menu_h_ = 5;
     menu_w_ = 24; // Need at least 2*padding + 15 for enough space, see menu.hpp
@@ -963,14 +986,14 @@ void DBusStatListView::Render()
         int idx0 = 0; // indexing into the std::vector<string> of each row
         std::vector<std::string> row;
 
-        StringOrFloat sort_key; // The key used for sorting
+        StringOrFloat sort_key;         // The key used for sorting
         for (int j = 0; j < ncols; j++) // one column in the row
         {
             DBusTopSortField field = fields[j];
             // Populate the content of stats_snapshot_staged
 
             StringOrFloat sof; // Represents this column
-            
+
             // When we haven't used up all
             if (idx0 < static_cast<int>(itr->first.size()))
             {
@@ -1033,7 +1056,8 @@ void DBusStatListView::Render()
                     sof.f = the_sum;
                     break;
                 }
-                case kAverageLatency: { // Compute "average Method Call latency"
+                case kAverageLatency:
+                { // Compute "average Method Call latency"
                     const DBusTopComputedMetrics& m = itr->second;
                     if (m.num_method_calls == 0)
                     {
@@ -1056,12 +1080,16 @@ void DBusStatListView::Render()
                     }
                     break;
                 }
-                case kSenderI2CTxPerSec: {
+                case kSenderI2CTxPerSec:
+                {
                     const DBusTopComputedMetrics& m = itr->second;
-                    if (m.total_i2c_tx == 0) {
+                    if (m.total_i2c_tx == 0)
+                    {
                         row.push_back("(unknown)");
                         sof.f = (sort_order_ == Ascending) ? -1 : 1e20;
-                    } else {
+                    }
+                    else
+                    {
                         float avg_i2c_tx = m.total_i2c_tx / interval_secs;
                         sof.f = avg_i2c_tx;
                         row.push_back(FloatToString(avg_i2c_tx));
@@ -1077,7 +1105,7 @@ void DBusStatListView::Render()
         stats_snapshot_staged.push_back(std::make_pair(sort_key, row));
         itr++;
     }
-    
+
     // Sort the "staged snapshot" using the sort_key, using different functions
     // depending on whether sort key is numeric or string
     if (is_sort_key_numeric)
@@ -1098,7 +1126,7 @@ void DBusStatListView::Render()
                 return a.first.s < b.first.s;
             });
     }
-    
+
     if (sort_order_ == Descending)
     {
         std::reverse(stats_snapshot_staged.begin(),
@@ -1110,9 +1138,9 @@ void DBusStatListView::Render()
     const int y0 = 2, y1 = y0 + num_lines_shown - 1;
     // Key is sender, destination, interface, path, etc
     for (int i = 0, shown = 0;
-        i + disp_row_idx_ < static_cast<int>(stats_snapshot_staged.size()) &&
-        shown < num_lines_shown;
-        i++, shown++)
+         i + disp_row_idx_ < static_cast<int>(stats_snapshot_staged.size()) &&
+         shown < num_lines_shown;
+         i++, shown++)
     {
         std::string s;
         int x = 0;
@@ -1227,11 +1255,8 @@ void FooterView::Render()
         help_info = g_current_active_view->GetStatusString();
     }
     mvwaddstr(win, 0, 1, date_time);
-    if (g_sensor_update_thread_active) {
-        mvwaddstr(win, 0, 27, "Updating sensor list ..");
-    } else {
-        mvwaddstr(win, 0, 27, "                       ");
-    }
+    mvwaddstr(win, 0, 27, "                                           ");
+    mvwaddstr(win, 0, 27, status_string_.c_str());
     mvwaddstr(win, 0, rect.w - int(help_info.size()) - 1, help_info.c_str());
     wrefresh(win);
 }
