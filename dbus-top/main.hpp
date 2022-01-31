@@ -35,3 +35,4 @@ int DrawTextWithWidthLimit(WINDOW* win, std::string txt, int y, int x,
 std::string FloatToString(float value);
 template <typename T>
 void HistoryBarGraph(WINDOW* win, const Rect& rect, BarGraph<T>* bargraph);
+void DBusTopUpdateFooterView();
