@@ -952,6 +952,11 @@ void DBusStatListView::Render()
                 s = "";
             x = 0;
         }
+        if (x + s.size() > rect.w)
+        {
+            const int len = rect.w - x;
+            s = s.substr(0, len);
+        }
         mvwaddstr(win, 1, x, s.c_str());
     }
     wattrset(win, 0);
@@ -1200,7 +1205,7 @@ void DBusStatListView::OnResize(int win_w, int win_h)
     rect.h = win_h - rect.y - MARGIN_BOTTOM;
     const int x0 = rect.w / 2 - menu_w_ - menu_margin_ / 2;
     const int x1 = x0 + menu_margin_ + menu_w_;
-    const int menu_y = rect.h - menu_h_;
+    const int menu_y = rect.h - 1 - menu_h_;
     menu1_->SetRect(Rect(x0, menu_y, menu_w_, menu_h_)); // Local coordinates
     menu1_->SetOrder(ArrowKeyNavigationMenu::Order::ColumnMajor);
     menu2_->SetRect(Rect(x1, menu_y, menu_w_, menu_h_));
