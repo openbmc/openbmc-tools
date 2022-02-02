@@ -175,6 +175,7 @@ class InventoryView : public DBusTopWindow
             {
                 if (sensors_menu_->choice_ != INVALID)
                 {
+                    MoveChoiceCursor(0, true);
                     state = SensorDetail;
                 }
             }
