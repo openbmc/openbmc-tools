@@ -71,6 +71,10 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
                 wattrset(win_, A_REVERSE);
             }
             std::string s = items_[idx];
+            if (s.size() > col_width_)
+            {
+                s = s.substr(0, col_width_ - 3) + "..";
+            }
             while (s.size() < col_width_)
             {
                 s.push_back(' ');
@@ -103,19 +107,24 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
     }
 
     // Draw Overflow marks
-    if (is_column_major) {
+    if (is_column_major)
+    {
         // Overflow to the right
-        for (int i = 0; i < nrows; i++) {
+        for (int i = 0; i < nrows; i++)
+        {
             const int idx = idx0_ + items_per_page + i;
-            if (idx < tot_num_items) {
-                mvwaddch(win_, y0+i, x, '>');
+            if (idx < tot_num_items)
+            {
+                mvwaddch(win_, y0 + i, x, '>');
             }
         }
         // Overflow to the left
-        for (int i = 0; i < nrows; i++) {
+        for (int i = 0; i < nrows; i++)
+        {
             const int idx = idx0_ - nrows + i;
-            if (idx >= 0) {
-                mvwaddch(win_, y0+i, rect_.x, '<');
+            if (idx >= 0)
+            {
+                mvwaddch(win_, y0 + i, rect_.x, '<');
             }
         }
     }
