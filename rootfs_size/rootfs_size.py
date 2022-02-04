@@ -8,7 +8,7 @@ import argparse
 
 # Set command line arguments
 parser = argparse.ArgumentParser(
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument("-b", "--build_dir",
                     dest="BUILD_DIR",
@@ -29,7 +29,7 @@ FILE_SIZE_LIMIT = 0
 SQUASHFS = args.BUILD_DIR + args.SQUASHFS_FILE
 
 original_size = getsize(SQUASHFS)
-print ("squashfs size: {}".format(original_size))
+print("squashfs size: {}".format(original_size))
 
 results = []
 
