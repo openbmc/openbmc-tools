@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f96a991_92da8f14",
+        "filename": "rootfs_size/rootfs_size.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-02-08T04:39:09Z",
+      "side": 1,
+      "message": "Does the job I guess, but maybe we could have set `default\u003dint(cpu_count())` in the add_argument() call?",
+      "range": {
+        "startLine": 86,
+        "startChar": 0,
+        "endLine": 88,
+        "endChar": 32
+      },
+      "revId": "6e28ef2ec3554af4c6687ce1c6319f982cccdc56",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
