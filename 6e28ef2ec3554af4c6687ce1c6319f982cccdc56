@@ -22,6 +22,30 @@
       },
       "revId": "6e28ef2ec3554af4c6687ce1c6319f982cccdc56",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54376620_ca31c991",
+        "filename": "rootfs_size/rootfs_size.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-02-08T18:14:38Z",
+      "side": 1,
+      "message": ".... yeah, that makes more sense and is simpler.  Not sure what I was thinking.\n\ndone in latest patchset.",
+      "parentUuid": "9f96a991_92da8f14",
+      "range": {
+        "startLine": 86,
+        "startChar": 0,
+        "endLine": 88,
+        "endChar": 32
+      },
+      "revId": "6e28ef2ec3554af4c6687ce1c6319f982cccdc56",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
