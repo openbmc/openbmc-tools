@@ -43,10 +43,20 @@ class subcmd:
 
             qualified = points >= 15
 
-            results[user] = { "qualified": qualified, "points": points,
-                    "commits": user_commits, "reviews": user_reviews }
+            results[user] = {"qualified": qualified, "points": points,
+                             "commits": user_commits, "reviews": user_reviews}
+
+        total_users = len(results)
+        for user, values in results.items():
+            user_points = values["points"]
+            rank = 0
+            for other_user, other_values in results.items():
+                if user_points >= other_values["points"]:
+                    rank += 1
+            results[user]["percentile"] = int(rank / total_users * 100)
+            results[user]["rank"] = total_users-rank + 1
 
         with open(os.path.join(args.dir, "report.json"), "w") as outfile:
-            outfile.write(json.dumps(results, indent = 4))
+            outfile.write(json.dumps(results, indent=4))
 
         return 0
