@@ -21,11 +21,11 @@ class subcmd:
         results = {}
 
         if not os.path.isfile(commits_fp):
-            print("Missing commits.json; run analyze-commits?");
+            print("Missing commits.json; run analyze-commits?")
             return 1
 
         if not os.path.isfile(reviews_fp):
-            print("Missing reviews.json; run analyze-reviews?");
+            print("Missing reviews.json; run analyze-reviews?")
             return 1
 
         with open(commits_fp, "r") as commits_file:
