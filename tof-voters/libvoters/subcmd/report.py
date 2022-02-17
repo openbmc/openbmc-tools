@@ -3,7 +3,7 @@
 import argparse
 import json
 import os
-
+import math
 
 class subcmd:
     def __init__(self, parser: argparse._SubParsersAction) -> None:
@@ -12,7 +12,6 @@ class subcmd:
         )
 
         p.set_defaults(cmd=self)
-
 
     def run(self, args: argparse.Namespace) -> int:
         commits_fp = os.path.join(args.dir, "commits.json")
@@ -43,10 +42,27 @@ class subcmd:
 
             qualified = points >= 15
 
-            results[user] = { "qualified": qualified, "points": points,
-                    "commits": user_commits, "reviews": user_reviews }
+            results[user] = {"qualified": qualified, "points": points,
+                             "commits": user_commits, "reviews": user_reviews}
+
+        total_users = len(results)
+        value_list = sorted(
+            results.items(), key=lambda x: x[1]["points"], reverse=True
+        )
+
+        prev_value = {"points": math.inf}
+        for (rank, (user, values)) in enumerate(value_list):
+            percent = int((total_users - rank) / total_users * 100)
+            results[user]["percentile"] = percent
+
+            # if the last users points was the same as yours, assume their rank
+            if prev_value["points"] == values["points"]:
+                results[user]["rank"] = prev_value["rank"]
+            else:
+                results[user]["rank"] = rank + 1
+            prev_value = values
 
         with open(os.path.join(args.dir, "report.json"), "w") as outfile:
-            outfile.write(json.dumps(results, indent = 4))
+            outfile.write(json.dumps(results, indent=4))
 
         return 0

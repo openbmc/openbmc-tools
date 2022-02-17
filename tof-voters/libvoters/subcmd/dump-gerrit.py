@@ -44,7 +44,8 @@ class subcmd:
         query = list(
             ssh(
                 args.server,
-                "-p", args.port,
+                "-p",
+                args.port,
                 "gerrit",
                 "query",
                 "--format=json",
