@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f915d17b_24985d3d",
+        "filename": "tof-voters/libvoters/subcmd/report.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-02-18T18:39:49Z",
+      "side": 1,
+      "message": "I guess I forgot to format this file with `black`.",
+      "revId": "50d293aa65e8942611c89b88e5422831a65f9047",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d8e6f53_e4a2bdcd",
+        "filename": "tof-voters/libvoters/subcmd/report.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-02-18T18:39:49Z",
+      "side": 1,
+      "message": "How about using a \u0027sorted\u0027 call here with a lambda that sorts on points?\n\nThat\u0027ll eliminate the O(n^2) search you\u0027re doing on line 53.",
+      "range": {
+        "startLine": 50,
+        "startChar": 28,
+        "endLine": 50,
+        "endChar": 44
+      },
+      "revId": "50d293aa65e8942611c89b88e5422831a65f9047",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
