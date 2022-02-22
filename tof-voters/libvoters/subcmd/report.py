@@ -7,9 +7,7 @@ import os
 
 class subcmd:
     def __init__(self, parser: argparse._SubParsersAction) -> None:
-        p = parser.add_parser(
-            "report", help="Create final report"
-        )
+        p = parser.add_parser("report", help="Create final report")
 
         p.set_defaults(cmd=self)
 
@@ -42,14 +40,18 @@ class subcmd:
 
             qualified = points >= 15
 
-            results[user] = {"qualified": qualified, "points": points,
-                             "commits": user_commits, "reviews": user_reviews}
+            results[user] = {
+                "qualified": qualified,
+                "points": points,
+                "commits": user_commits,
+                "reviews": user_reviews,
+            }
 
         total_users = len(results)
-        value_list = sorted(
-            results.items(), key=lambda x: x[1]["points"], reverse=True)
+        key = lambda x: x[1]["points"]
+        value_list = sorted(results.items(), key=key, reverse=True)
         for (rank, (user, values)) in enumerate(value_list):
-            percent = int((total_users-rank) / total_users * 100)
+            percent = int((total_users - rank) / total_users * 100)
             results[user]["percentile"] = percent
             results[user]["rank"] = rank
 
