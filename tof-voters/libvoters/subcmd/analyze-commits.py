@@ -76,9 +76,8 @@ class subcmd:
 
             changes = 0
             touched_files = []
-            for file_data in sorted(
-                data["patchSets"], key=lambda x: x["number"]
-            )[-1][
+            key = lambda x: x["number"]
+            for file_data in sorted(data["patchSets"], key=key)[-1][
                 "files"
             ]:  # type: Dict[str, Any]
                 if not acceptable.file(project, file_data["file"]):
