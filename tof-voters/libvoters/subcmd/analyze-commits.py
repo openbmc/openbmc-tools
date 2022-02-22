@@ -12,9 +12,7 @@ from typing import Any, Dict
 
 class subcmd:
     def __init__(self, parser: argparse._SubParsersAction) -> None:
-        p = parser.add_parser(
-            "analyze-commits", help="Determine points for commits"
-        )
+        p = parser.add_parser("analyze-commits", help="Determine points for commits")
 
         p.add_argument(
             "--before",
@@ -76,9 +74,7 @@ class subcmd:
 
             changes = 0
             touched_files = []
-            for file_data in sorted(
-                data["patchSets"], key=lambda x: x["number"]
-            )[-1][
+            for file_data in sorted(data["patchSets"], key=lambda x: x["number"])[-1][
                 "files"
             ]:  # type: Dict[str, Any]
                 if not acceptable.file(project, file_data["file"]):

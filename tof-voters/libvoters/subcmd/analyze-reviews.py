@@ -12,9 +12,7 @@ from typing import Dict
 
 class subcmd:
     def __init__(self, parser: argparse._SubParsersAction) -> None:
-        p = parser.add_parser(
-            "analyze-reviews", help="Determine points for reviews"
-        )
+        p = parser.add_parser("analyze-reviews", help="Determine points for reviews")
 
         p.add_argument(
             "--before",

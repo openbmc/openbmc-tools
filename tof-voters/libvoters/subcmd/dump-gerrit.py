@@ -8,9 +8,7 @@ from sh import ssh  # type: ignore
 
 class subcmd:
     def __init__(self, parser: argparse._SubParsersAction) -> None:
-        p = parser.add_parser(
-            "dump-gerrit", help="Dump commit data from Gerrit"
-        )
+        p = parser.add_parser("dump-gerrit", help="Dump commit data from Gerrit")
         p.add_argument(
             "--server",
             "-s",
@@ -44,7 +42,8 @@ class subcmd:
         query = list(
             ssh(
                 args.server,
-                "-p", args.port,
+                "-p",
+                args.port,
                 "gerrit",
                 "query",
                 "--format=json",
