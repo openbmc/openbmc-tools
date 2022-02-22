@@ -33,18 +33,27 @@ class subcmd:
 
         for user in sorted(set(commits.keys()).union(reviews.keys())):
             user_commits = len(commits.get(user, []))
-            user_reviews = len(reviews.get(user, []))
+            user_reviews = reviews.get(user, {})
+            reviews_by_others = len(user_reviews.get("from_others", []))
+            this_user_reviews = len(user_reviews.get("for_others", []))
 
-            points = user_commits * 3 + user_reviews
-            print(user, points, user_commits, user_reviews)
+            points = user_commits * 3 + this_user_reviews
+            print(user, points, user_commits, this_user_reviews)
 
             qualified = points >= 15
+
+            if reviews_by_others == 0:
+                ratio = 0.0
+            else:
+                ratio = this_user_reviews / reviews_by_others
 
             results[user] = {
                 "qualified": qualified,
                 "points": points,
                 "commits": user_commits,
-                "reviews": user_reviews,
+                "reviews": this_user_reviews,
+                "reviews_by_others": reviews_by_others,
+                "review_ratio": round(ratio, 2),
             }
 
         total_users = len(results)
