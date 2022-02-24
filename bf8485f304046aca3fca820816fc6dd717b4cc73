@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5fc5f8c_26c2a5b7",
+        "filename": "tof-voters/libvoters/subcmd/analyze-reviews.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-02-24T17:00:54Z",
+      "side": 1,
+      "message": "Does mypy still pass with the type definition removed?  Seems like not:\n\n```\n$ mypy .             \nlibvoters/subcmd/analyze-reviews.py:38: error: Need type annotation for \"changes_per_user\"\nFound 1 error in 1 file (checked 9 source files)\n```",
+      "revId": "bf8485f304046aca3fca820816fc6dd717b4cc73",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
