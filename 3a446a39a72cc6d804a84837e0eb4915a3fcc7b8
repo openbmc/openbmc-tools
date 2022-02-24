@@ -39,6 +39,30 @@
       },
       "revId": "3a446a39a72cc6d804a84837e0eb4915a3fcc7b8",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcd961b7_d7bf513b",
+        "filename": "tof-voters/libvoters/subcmd/analyze-reviews.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-02-24T15:49:15Z",
+      "side": 1,
+      "message": "I changed the comment, and I don\u0027t like that the variable names are confusing, but it\u0027s a weird forward and reverse thing.",
+      "parentUuid": "87330dd2_94eff6b3",
+      "range": {
+        "startLine": 59,
+        "startChar": 12,
+        "endLine": 59,
+        "endChar": 51
+      },
+      "revId": "3a446a39a72cc6d804a84837e0eb4915a3fcc7b8",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
