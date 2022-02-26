@@ -45,6 +45,30 @@
       },
       "revId": "6c122b05aa8becbda992b96c083cb51ab5e7e922",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df925fb2_a8b9bcba",
+        "filename": "tof-voters/libvoters/subcmd/report.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-02-26T15:58:51Z",
+      "side": 1,
+      "message": "debatable what my intent was, but I agree, 1 based ranking is probably better.",
+      "parentUuid": "92badc57_8ccd5e63",
+      "range": {
+        "startLine": 54,
+        "startChar": 36,
+        "endLine": 54,
+        "endChar": 40
+      },
+      "revId": "6c122b05aa8becbda992b96c083cb51ab5e7e922",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
