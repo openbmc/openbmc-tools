@@ -34,6 +34,24 @@
       "parentUuid": "a5fc5f8c_26c2a5b7",
       "revId": "bf8485f304046aca3fca820816fc6dd717b4cc73",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7cf3eebf_1d3edd49",
+        "filename": "tof-voters/libvoters/subcmd/analyze-reviews.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-02-28T15:57:27Z",
+      "side": 1,
+      "message": "\u003e The obvious one I tried (Dict[str, Dict[list[int]]]) didn\u0027t seem to work, and googling it didn\u0027t turn up much\n\nGenerally the `typing` hint types are uppercase and not lowercase.  You\u0027re also missing the key-type for the inner dict.\n\nThis seems to have passed `mypy` (but I don\u0027t know if it is actually correct):\n        changes_per_user: Dict[str, Dict[str, List[int]]] \u003d defaultdict(lambda: defaultdict(list))",
+      "parentUuid": "d7582a21_4df0dc46",
+      "revId": "bf8485f304046aca3fca820816fc6dd717b4cc73",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
