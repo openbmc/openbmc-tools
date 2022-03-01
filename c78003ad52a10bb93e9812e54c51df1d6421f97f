@@ -16,6 +16,24 @@
       "message": "ping.  I think this can merge?",
       "revId": "c78003ad52a10bb93e9812e54c51df1d6421f97f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b325f69e_5b2dee15",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-03-01T22:23:08Z",
+      "side": 1,
+      "message": "NVM, missed patricks comment.",
+      "parentUuid": "1abb7d88_c69217e0",
+      "revId": "c78003ad52a10bb93e9812e54c51df1d6421f97f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }

@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4efa9a0d_f2ff4b59",
+        "filename": "tof-voters/libvoters/subcmd/report.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-03-01T22:23:08Z",
+      "side": 1,
+      "message": "\u003e I don\u0027t know if this percentile is as useful as it seems in the current form.  For the \"Highly Productive\" number we only look at percentile within qualified members (ie. they have to have over 15 pts).  With the way you\u0027re calculating the metric, someone with a single commit ends up being listed as in the 40th percentile and someone who did exactly 1 review is in the 21st perentile.\n\nIDK, that kinda tells me the metric is working, considering that 40% of developers have zero commits on master in the quarter, but I\u0027m open to other ideas.  Maybe we \"weight\" the percentile based on point count?\n\n\nFWIW, my use of this ranking is only really applied for the top 20 or so people on the list, so they can say \"I\u0027m the #8 contributor in the world to openbmc\" on their yearly review, and get credit for their hard work.  At this point, I\u0027m not using it for analyzing the lower 50% of reviewers.\n\n\u003e \n\u003e There is a lot of noise in the Gerrit data because there are people who only operate in commits that are related to just a single company or people who seem to regularly give a token +1 without any feedback.  So, when we pull the data and find all the \"active users\" there are a lot more than those who are qualified.\n\nYep.",
+      "parentUuid": "06f23667_a4c0cfea",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 49
+      },
+      "revId": "6c122b05aa8becbda992b96c083cb51ab5e7e922",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "92badc57_8ccd5e63",
         "filename": "tof-voters/libvoters/subcmd/report.py",
         "patchSetId": 2
