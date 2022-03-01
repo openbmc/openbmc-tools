@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7a83b689_95bfe8fd",
+        "filename": "tof-voters/libvoters/subcmd/report.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-03-01T22:46:43Z",
+      "side": 1,
+      "message": "\u003e FWIW, my use of this ranking is only really applied for the top 20 or so people on the list, so they can say \"I\u0027m the #8 contributor in the world to openbmc\" on their yearly review, and get credit for their hard work.\n\nUnderstand.  Rank give you that and I have no concern about that metric.\n\n\u003e Maybe we \"weight\" the percentile based on point count?\n\nMy opinion is that percentile should only \"among active developers\", which by our definition is anyone with 15pts or more, and this would align with our Highly Productive definition as well.\n\nUsing your example sentence and using the current code, someone who just barely qualifies with exactly 15 points could say \"I\u0027m in the top 25% of all openbmc developers\", which is arguably a true statement, but not particularly helpful.\n\n\u003e `percent \u003d int(...)`\n\nWhile I\u0027m at it, is it better for this to be `percent \u003d 100 - int(...)` also?\n\nCurrent code meaning is: \"N% of developers have the same or less points than me\"\nProposed meaning is: \"N% of developers have the same or more points than me\".\n\nI think the second is more typical expectation of the statement \"I am in the Nth percentile of developers\".\n\n\u003e `total_users-rank`\n\nSince we changed the rank to be 0-based, I think this is now more correct than it was, but I\u0027m not positive.  Might want to devote a few brain cells to make sure the edge case of \"am I included in the percentile or not\" is covered by your math.",
+      "parentUuid": "4efa9a0d_f2ff4b59",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 49
+      },
+      "revId": "6c122b05aa8becbda992b96c083cb51ab5e7e922",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "92badc57_8ccd5e63",
         "filename": "tof-voters/libvoters/subcmd/report.py",
         "patchSetId": 2
