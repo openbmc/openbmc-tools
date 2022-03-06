@@ -62,7 +62,7 @@ function OpenDBusPcapFile(file_name) {
     });
 
     dbus_pcap1.stderr.on('data', (data) => {
-      console.err(data.toString());
+      console.error(data.toString());
     });
 
     dbus_pcap1.on('close', (code) => {
@@ -95,7 +95,7 @@ function OpenDBusPcapFile(file_name) {
       });
 
       dbus_pcap2.stderr.on('data', (data) => {
-        console.err(data.toString());
+        console.error(data.toString());
       });
 
       dbus_pcap2.on('close', (code) => {
