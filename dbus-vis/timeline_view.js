@@ -251,7 +251,7 @@ class TimelineView {
       }
       lb = ub+1;
     }
-    return -999;
+    return undefined;
   }
 
   IsEmpty() {
@@ -680,7 +680,8 @@ class TimelineView {
   do_RenderIntervals(ctx, intervals_j, j, dy0, dy1, 
     data_line_idx, visual_line_offset_within_data_line,
     isAggregateSelection,
-    vars) {
+    vars,
+    is_in_viewport) {
     // To reduce the number of draw calls while preserve the accuracy in
     // the visual presentation, combine rectangles that are within 1 pixel
     // into one
@@ -732,7 +733,7 @@ class TimelineView {
       dx1 = Math.min(dx1, RIGHT_MARGIN);
       let dw = Math.max(0, dx1 - dx0);
 
-      if (isHighlighted) {
+      if (isHighlighted && is_in_viewport) {
         ctx.fillStyle = 'rgba(128,128,255,0.5)';
         ctx.fillRect(dx0, dy0, dw, dy1 - dy0);
       }
@@ -751,7 +752,7 @@ class TimelineView {
           IsIntersectedPixelCoords(
               [dy0, dy1], [this.MouseState.y, this.MouseState.y])) {
         ctx.fillStyle = 'rgba(255,255,0,0.5)';
-        ctx.fillRect(dx0, dy0, dw, dy1 - dy0);
+        if (is_in_viewport) ctx.fillRect(dx0, dy0, dw, dy1 - dy0);
         vars.theHoveredReq = intervals_j[i][2];
         vars.theHoveredInterval = intervals_j[i];
         isCurrentReqHovered = true;
@@ -783,13 +784,15 @@ class TimelineView {
 
       const duration = intervals_j[i][1] - intervals_j[i][0];
       if (!isNaN(duration)) {
-        if (isError) {
-          ctx.fillStyle = 'rgba(192, 128, 128, 0.8)';
-          ctx.fillRect(dx0, dy0, dw, dy1 - dy0);
-          ctx.strokeStyle = 'rgba(192, 128, 128, 1)';
-        } else {
-          ctx.fillStyle = undefined;
-          ctx.strokeStyle = '#000';
+        if (is_in_viewport) {
+          if (isError) {
+            ctx.fillStyle = 'rgba(192, 128, 128, 0.8)';
+            ctx.fillRect(dx0, dy0, dw, dy1 - dy0);
+            ctx.strokeStyle = 'rgba(192, 128, 128, 1)';
+          } else {
+            ctx.fillStyle = undefined;
+            ctx.strokeStyle = '#000';
+          }
         }
 
         // This keeps track of the current "cluster" of requests
@@ -799,28 +802,34 @@ class TimelineView {
         if (!ShouldShowDebugInfo()) {
           if (dx0+dw - last_dx_begin > 1 ||
               i == intervals_j.length - 1) {
-            ctx.strokeRect(last_dx_begin, dy0, 
-              /*dx0+dw-last_dx_begin*/
-              last_dx_end - last_dx_begin, // At least 1 pixel wide
-              dy1-dy0);
+            if (is_in_viewport) {
+              ctx.strokeRect(last_dx_begin, dy0, 
+                /*dx0+dw-last_dx_begin*/
+                last_dx_end - last_dx_begin, // At least 1 pixel wide
+                dy1-dy0);
+            }
             last_dx_begin = dx0;
           }
         } else {
-          ctx.strokeRect(dx0, dy0, dw, dy1 - dy0);
+          if (is_in_viewport) {
+            ctx.strokeRect(dx0, dy0, dw, dy1 - dy0);
+          }
         }
         last_dx_end = dx0 + dw;
         this.numVisibleRequests++;
       } else {
         // This entry has only a beginning and not an end
         // perhaps the original method call did not return
-        if (isCurrentReqHovered) {
-          ctx.fillStyle = 'rgba(192, 192, 0, 0.8)';
-        } else {
-          ctx.fillStyle = 'rgba(255, 128, 128, 0.8)';
+        if (is_in_viewport) {
+          if (isCurrentReqHovered) {
+            ctx.fillStyle = 'rgba(192, 192, 0, 0.8)';
+          } else {
+            ctx.fillStyle = 'rgba(255, 128, 128, 0.8)';
+          }
+          ctx.beginPath();
+          ctx.arc(dx0, (dy0 + dy1) / 2, HISTOGRAM_H * 0.17, 0, 2 * Math.PI);
+          ctx.fill();
         }
-        ctx.beginPath();
-        ctx.arc(dx0, (dy0 + dy1) / 2, HISTOGRAM_H * 0.17, 0, 2 * Math.PI);
-        ctx.fill();
       }
 
 
@@ -867,7 +876,7 @@ class TimelineView {
   do_RenderHeader(ctx, header, j, dy0, dy1, 
     data_line_idx, visual_line_offset_within_data_line,
     isAggregateSelection,
-    vars) {
+    vars, is_in_viewport) {
 
     const dy = (dy0+dy1) / 2;
     ctx.fillStyle = "rgba(192,192,255, 1)";
@@ -881,53 +890,57 @@ class TimelineView {
 
     if (this.HeaderCollapsed[header.title] == false) {  // Expanded
       const x0 = LEFT_MARGIN - LINE_HEIGHT;
-      ctx.fillRect(0, dy-LINE_HEIGHT/2, x0, LINE_HEIGHT);
+      if (is_in_viewport) {
+        ctx.fillRect(0, dy-LINE_HEIGHT/2, x0, LINE_HEIGHT);
 
-      ctx.beginPath();
-      ctx.moveTo(x0, dy0);
-      ctx.lineTo(x0, dy1);
-      ctx.lineTo(x0 + LINE_HEIGHT, dy1);
-      ctx.fill();
-      ctx.closePath();
+        ctx.beginPath();
+        ctx.moveTo(x0, dy0);
+        ctx.lineTo(x0, dy1);
+        ctx.lineTo(x0 + LINE_HEIGHT, dy1);
+        ctx.fill();
+        ctx.closePath();
 
-      ctx.beginPath();
-      ctx.lineWidth = 1.5;
-      ctx.moveTo(0, dy1);
-      ctx.lineTo(RIGHT_MARGIN, dy1);
-      ctx.stroke();
-      ctx.closePath();
+        ctx.beginPath();
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(0, dy1);
+        ctx.lineTo(RIGHT_MARGIN, dy1);
+        ctx.stroke();
+        ctx.closePath();
 
-      ctx.fillStyle = '#003';
-      ctx.textBaseline = 'center';
-      ctx.textAlign = 'right';
-      ctx.fillText(title_text, LEFT_MARGIN - LINE_HEIGHT, dy);
+        ctx.fillStyle = '#003';
+        ctx.textBaseline = 'center';
+        ctx.textAlign = 'right';
+        ctx.fillText(title_text, LEFT_MARGIN - LINE_HEIGHT, dy);
+      }
 
       // Don't draw the timelines so visual clutter is reduced
       skip_render = true;
     } else {
       const x0 = LEFT_MARGIN - LINE_HEIGHT / 2;
-      ctx.fillRect(0, dy-LINE_HEIGHT/2, x0, LINE_HEIGHT);
-      
-      ctx.beginPath();
-      ctx.lineWidth = 1.5;
-      ctx.moveTo(x0, dy0);
-      ctx.lineTo(x0 + LINE_HEIGHT/2, dy);
-      ctx.lineTo(x0, dy1);
-      ctx.closePath();
-      ctx.fill();
+      if (is_in_viewport) {
+        ctx.fillRect(0, dy-LINE_HEIGHT/2, x0, LINE_HEIGHT);
+        
+        ctx.beginPath();
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(x0, dy0);
+        ctx.lineTo(x0 + LINE_HEIGHT/2, dy);
+        ctx.lineTo(x0, dy1);
+        ctx.closePath();
+        ctx.fill();
 
-      /*
-      ctx.beginPath();
-      ctx.moveTo(0, dy);
-      ctx.lineTo(RIGHT_MARGIN, dy);
-      ctx.stroke();
-      ctx.closePath();
-      */
+        /*
+        ctx.beginPath();
+        ctx.moveTo(0, dy);
+        ctx.lineTo(RIGHT_MARGIN, dy);
+        ctx.stroke();
+        ctx.closePath();
+        */
 
-      ctx.fillStyle = '#003';
-      ctx.textBaseline = 'center';
-      ctx.textAlign = 'right';
-      ctx.fillText(title_text, LEFT_MARGIN - LINE_HEIGHT, dy);
+        ctx.fillStyle = '#003';
+        ctx.textBaseline = 'center';
+        ctx.textAlign = 'right';
+        ctx.fillText(title_text, LEFT_MARGIN - LINE_HEIGHT, dy);
+      }
     }
 
     ctx.fillStyle = "rgba(160,120,255,0.8)";
@@ -984,7 +997,9 @@ class TimelineView {
 
         if (should_draw) {
           //console.log(dxx0 + ", " + dy0 + ", " + (dx1-dxx0) + ", " + LINE_HEIGHT);
-          ctx.fillRect(dxx0, dy0, dxx1-dxx0, LINE_HEIGHT);
+          if (is_in_viewport) {
+            ctx.fillRect(dxx0, dy0, dxx1-dxx0, LINE_HEIGHT);
+          }
           dxx0 = undefined; dxx1 = undefined;
         } else {
           // merge
@@ -1233,20 +1248,36 @@ class TimelineView {
       // This is used to handle Intervals that have overlapping entries
       let last_data_line_idx = -999;//this.VisualLineIndexToDataLineIndex(this.VisualLineStartIdx);
 
-      // 'j' iterates over the "visual rows" that need to be displayed.
+      // 'j' denotes a line index; if the viewport starts from the middle of an overlapping series of
+      // lines, 'j' will be rewinded to the first one in the series to make the counts correct.
+      let j0 = this.VisualLineStartIdx;
+      while (j0 > 0 && this.VisualLineIndexToDataLineIndex(j0)[1] > 0) { j0--; }
+
+      // If should_render is false, we're counting the entries outisde the viewport
+      // If should_render is true, do the rendering
+      let should_render = false;
+
+      // 'j' then iterates over the "visual rows" that need to be displayed.
       // A "visual row" might be one of:
       // 1. a "header" line
       // 2. an actual row of data (in the Intervals variable)
-      for (let j = this.VisualLineStartIdx; j < tvh; j++) {
+
+      // 'j' needs to go PAST the viewport if the last row is overlapping and spans beyond the viewport.
+      for (let j = j0; j < this.Intervals.length; j++) {
+
+        if (j >= this.VisualLineStartIdx) { should_render = true; }
+        if (y > height) { should_render = false; }
+
         const tmp = this.VisualLineIndexToDataLineIndex(j);
         if (tmp == undefined) break;
         const data_line_idx = tmp[0];
         const visual_line_offset_within_data_line = tmp[1];
        
-        const is_different_data_line = (data_line_idx != last_data_line_idx);
+        const should_render_title = (data_line_idx != last_data_line_idx) ||
+                                       (j == this.VisualLineStartIdx); // The first visible line should always be drawn
         last_data_line_idx = data_line_idx;
 
-        if (is_different_data_line && data_line_idx != -999) { // Only draw line title and histogram per data line index not visual line index
+        if (should_render_title && data_line_idx != -999 && should_render) { // Only draw line title and histogram per data line index not visual line index
           ctx.textBaseline = 'middle';
           ctx.textAlign = 'right';
           let desc_width = 0;
@@ -1286,7 +1317,7 @@ class TimelineView {
             }
             ctx.fillText(tj_draw, LEFT_MARGIN - 3 - desc_width, y);
           }
-        } else if (is_different_data_line && data_line_idx == -999) {
+        } else if (should_render_title && data_line_idx == -999) {
           continue;
         }
 
@@ -1325,12 +1356,12 @@ class TimelineView {
         if (this.Titles[data_line_idx].header == false) {
           if (intervals_j != undefined) {
             this.do_RenderIntervals(ctx, intervals_j, j, dy0, dy1,
-              data_line_idx, visual_line_offset_within_data_line, isAggregateSelection, vars);
+              data_line_idx, visual_line_offset_within_data_line, isAggregateSelection, vars, should_render);
           }
         } else {
           this.do_RenderHeader(ctx, this.Titles[data_line_idx],
             j, dy0, dy1,
-            data_line_idx, visual_line_offset_within_data_line, isAggregateSelection, vars);
+            data_line_idx, visual_line_offset_within_data_line, isAggregateSelection, vars, should_render);
         }
 
         // Update the context variables with updated values
@@ -1387,14 +1418,28 @@ class TimelineView {
                 RIGHT_MARGIN - 2 * PAD - H / 2, y);
           }
         }
-        y = y + LINE_SPACING;
 
-        numVisibleRequestsPerLine[data_line_idx] = numVisibleRequestsCurrLine;
-        numFailedRequestsPerLine[data_line_idx] = numFailedRequestsCurrLine;
-        totalSecondsPerLine[data_line_idx] = totalSecsCurrLine;
+        if (should_render)
+          y = y + LINE_SPACING;
+
+        // Should aggregate.
+        if (!(data_line_idx in numVisibleRequestsPerLine)) { numVisibleRequestsPerLine[data_line_idx] = 0; }
+        numVisibleRequestsPerLine[data_line_idx] += numVisibleRequestsCurrLine;
+
+        if (!(data_line_idx in numFailedRequestsPerLine)) { numFailedRequestsPerLine[data_line_idx] = 0; }
+        numFailedRequestsPerLine[data_line_idx] += numFailedRequestsCurrLine;
+
+        if (!(data_line_idx in totalSecondsPerLine)) { totalSecondsPerLine[data_line_idx] = 0; }
+        totalSecondsPerLine[data_line_idx] += totalSecsCurrLine;
 
         title_end_idx = j;
-        if (y > height) break;
+
+        if (y > height) {
+          // Make sure we don't miss the entry count of the rows beyond the viewport
+          if (visual_line_offset_within_data_line == 0) {
+            break;
+          }
+        }
       }
 
       {
@@ -1501,8 +1546,10 @@ class TimelineView {
           let totalSeconds = totalSecondsPerLine[data_line_idx];
           if (totalSeconds < 1) {
             timeDesc = (totalSeconds * 1000.0).toFixed(toFixedPrecision) + 'ms';
-          } else {
+          } else if (totalSeconds != undefined) {
             timeDesc = totalSeconds.toFixed(toFixedPrecision) + 's';
+          } else {
+            timeDesc = "???"
           }
 
           const n0 = numVisibleRequestsPerLine[data_line_idx];
