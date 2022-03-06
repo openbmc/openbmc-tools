@@ -218,7 +218,7 @@ function GenerateTimeLine_DBus(grouped) {
     let rise_fall_edges = [];
     the_header.intervals_idxes.forEach((i) => {
       intervals[i].forEach((t0t1) => {
-        if (t0t1[0] <= t0t1[1]) {  // For errored-out method calls, the end time will be set to a value smaller than the start tiem
+        if (t0t1[0] <= t0t1[1]) {  // For errored-out method calls, the end time will be set to a value smaller than the start time
           rise_fall_edges.push([t0t1[0], 0]);  // 0 is a rising edge
           rise_fall_edges.push([t0t1[1], 1]);  // 1 is a falling edge
         }
