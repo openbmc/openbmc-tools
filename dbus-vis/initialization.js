@@ -180,6 +180,8 @@ function Init() {
   v3.AccentColor = '#E22';
 
   CheckDependencies();
+
+  DragElement(document.getElementById("highlighted_messages"));
 }
 
 var g_WelcomeScreen = document.getElementById('welcome_screen');
