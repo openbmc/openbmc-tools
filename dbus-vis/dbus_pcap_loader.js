@@ -285,7 +285,7 @@ function Preprocess_DBusPcap(data, timestamps) {
         }
         let entry = [
           'mc', timestamp, serial, sender, destination, path, iface, member,
-          timestamp_end, payload, ''
+          timestamp_end, payload, packet, ''
         ];
 
         // Legacy IPMI interface uses method call for IPMI response

@@ -11,147 +11,153 @@
   <body>
     <div id="div_title"><span>
     <b>DBus &amp; IPMI Request Visualizer</b>
-		</span>
-		</div>
+    </span>
+    </div>
     <div id="title_mode_select">
-			<span>
-				<input type="radio" id="radio_open_file" name="mode" value="open_file"></input>
-  			<label for="radio_open_file">Open an existing file</label>
-  			<input type="radio" id="radio_capture" name="mode" value="capture"></input>
-  			<label for="radio_capture">Capture on a BMC</label>
+      <span>
+        <input type="radio" id="radio_open_file" name="mode" value="open_file"></input>
+        <label for="radio_open_file">Open an existing file</label>
+        <input type="radio" id="radio_capture" name="mode" value="capture"></input>
+        <label for="radio_capture">Capture on a BMC</label>
       </span>
-		</div>
-		<div id="title_open_file">
-			<span><b>File name: </b></span>
-			<span id="file_name"></span>
-			<button id="btn_open_file">Open file</button>
-			<br />
-		</div>
-		<div id="title_capture">
-			<span><b>Capture: </b></span>
-			<input type="text" id="text_hostname" value=""></input>
-			<button id="btn_start_capture">Start Capture</button>
-			<button id="btn_stop_capture">Stop Capture</button>
-			<select id="select_capture_mode">
-				<option value="live">Live</option>
-				<option value="staged">Staged (IPMI detailed)</option>
-				<option value="staged2">Staged (DBus + IPMI)</option>
-			</select>
+    </div>
+    <div id="title_open_file">
+      <span><b>File name: </b></span>
+      <span id="file_name"></span>
+      <button id="btn_open_file">Open file</button>
+      <br />
+    </div>
+    <div id="title_capture">
+      <span><b>Capture: </b></span>
+      <input type="text" id="text_hostname" value=""></input>
+      <button id="btn_start_capture">Start Capture</button>
+      <button id="btn_stop_capture">Stop Capture</button>
+      <select id="select_capture_mode">
+        <option value="live">Live</option>
+        <option value="staged">Staged (IPMI detailed)</option>
+        <option value="staged2">Staged (DBus + IPMI)</option>
+      </select>
     </div>    
-		<div id="title_capture_info">
-			<div id="capture_info">Info will appear here</div>
-		</div>
+    <div id="title_capture_info">
+      <div id="capture_info">Info will appear here</div>
+    </div>
 
     <hr/> 
 
-		<div id="div_group_by">
+    <div id="div_group_by">
     <span id="span_group_by_dbus">
-				Group DBus Requests by:
-				<input type="checkbox" id="dbus_column1" value="Type">Type</input>
-				<input type="checkbox" id="dbus_column2" value="Serial">Serial</input>
-				<input type="checkbox" id="dbus_column3" value="Sender">Sender</input>
-				<input type="checkbox" id="dbus_column4" value="Destination">Destination</input>
-				<input type="checkbox" id="dbus_column5" value="Path"checked>Path</input>
-				<input type="checkbox" id="dbus_column6" value="Interface" checked>Interface</input>
-				<input type="checkbox" id="dbus_column7" value="Member">Member</input>
+        Group DBus Requests by:
+        <input type="checkbox" id="dbus_column1" value="Type">Type</input>
+        <input type="checkbox" id="dbus_column2" value="Serial">Serial</input>
+        <input type="checkbox" id="dbus_column3" value="Sender">Sender</input>
+        <input type="checkbox" id="dbus_column4" value="Destination">Destination</input>
+        <input type="checkbox" id="dbus_column5" value="Path"checked>Path</input>
+        <input type="checkbox" id="dbus_column6" value="Interface" checked>Interface</input>
+        <input type="checkbox" id="dbus_column7" value="Member">Member</input>
     </span>
     <span id="span_group_by_ipmi">
-			  Group IPMI Requests by:
-				<input type="checkbox" id="c1" value="NetFN" checked>NetFN</input>
-				<input type="checkbox" id="c2" value="CMD"     checked>CMD</input>
+        Group IPMI Requests by:
+        <input type="checkbox" id="c1" value="NetFN" checked>NetFN</input>
+        <input type="checkbox" id="c2" value="CMD"     checked>CMD</input>
     </span>
     <div id="span_group_by_boost_asio_handler">
-			  Group Asio Handlers by:
-				<input type="checkbox" id="bah1" value="Layout Level" checked>Layout Level</input>
-				<input type="checkbox" id="bah2" value="Description">Description</input>
-				<input type="checkbox" id="bah3" value="Description1">Description w/ addresses removed</input>
+        Group Asio Handlers by:
+        <input type="checkbox" id="bah1" value="Layout Level" checked>Layout Level</input>
+        <input type="checkbox" id="bah2" value="Description">Description</input>
+        <input type="checkbox" id="bah3" value="Description1">Description w/ addresses removed</input>
     </div>
-		</div>
+    </div>
       
-		<div id="div_canvas">
-				<div id="blocker">
-						<div id="blocker_caption">AAAAA</div>
-				</div>
-				<div id="welcome_screen">
-						<div id="welcome_screen_content">
-								<br/><span>Welcome! Please <button id="btn_open_file2">Open file</button> to get timeline view/s.<span>
-								<br/>
-								<br/>Supported file types:
-								<ol>
-										<li>DBus pcap file</li>
-										<li>Boost ASIO handler log file</li>
-								</ol>
-								One file from each type (2 files in total) can be viewed simultaneously.
-						</div>
-						<hr />
-						<div id="dbus_pcap_status_content">
-							dbus-pcap status goes here
-						</div>
-						<div id="dbus_pcap_error_content">
-							The <b>dbus-pcap</b> script is not found; dbus-vis needs <b>dbus-pcap</b> for parsing PCAP files.<br/><br/>
-							Click to down <b>dbus-pcap</b> from: <br/>
-								https://raw.githubusercontent.com/openbmc/openbmc-tools/08ce0a5bad2b5c970af567c2e9888d444afe3946/dbus-pcap/dbus-pcap<br/><br/>
-							<button id="btn_download_dbus_pcap">Download to dbus-vis folder</button>
-						</div>
-						<div id="scapy_error_content">
-							The <b>scapy</b> Python module is not installed. dbus-vis depends on dbus-pcap, which in turn depends on the scapy Python module.
-							
-							Please install it using either of the following commands:<br/>
-							<br/>
-							python3 -m pip install scapy<br/>
-							sudo apt install python3-scapy<br/>
-							<br/>
-							After installation, refresh dbus-vis with Ctrl+R.
-						</div>
-				</div>
-				<canvas id="my_canvas_dbus" width="1400" height="600"></canvas>
-				<canvas id="my_canvas_ipmi" width="1400" height="200"></canvas>
-				<canvas id="my_canvas_boost_asio_handler" width="1400" height="200"></canvas>
-		</div>
+    <div id="div_canvas">
+        <div id="blocker">
+            <div id="blocker_caption">AAAAA</div>
+        </div>
+        <div id="welcome_screen">
+            <div id="welcome_screen_content">
+                <br/><span>Welcome! Please <button id="btn_open_file2">Open file</button> to get timeline view/s.<span>
+                <br/>
+                <br/>Supported file types:
+                <ol>
+                    <li>DBus pcap file</li>
+                    <li>Boost ASIO handler log file</li>
+                </ol>
+                One file from each type (2 files in total) can be viewed simultaneously.
+            </div>
+            <hr />
+            <div id="dbus_pcap_status_content">
+              dbus-pcap status goes here
+            </div>
+            <div id="dbus_pcap_error_content">
+              The <b>dbus-pcap</b> script is not found; dbus-vis needs <b>dbus-pcap</b> for parsing PCAP files.<br/><br/>
+              Click to down <b>dbus-pcap</b> from: <br/>
+                https://raw.githubusercontent.com/openbmc/openbmc-tools/08ce0a5bad2b5c970af567c2e9888d444afe3946/dbus-pcap/dbus-pcap<br/><br/>
+              <button id="btn_download_dbus_pcap">Download to dbus-vis folder</button>
+            </div>
+            <div id="scapy_error_content">
+              The <b>scapy</b> Python module is not installed. dbus-vis depends on dbus-pcap, which in turn depends on the scapy Python module.
+              
+              Please install it using either of the following commands:<br/>
+              <br/>
+              python3 -m pip install scapy<br/>
+              sudo apt install python3-scapy<br/>
+              <br/>
+              After installation, refresh dbus-vis with Ctrl+R.
+            </div>
+        </div>
+        <canvas id="my_canvas_dbus" width="1400" height="600"></canvas>
+        <canvas id="my_canvas_ipmi" width="1400" height="200"></canvas>
+        <canvas id="my_canvas_boost_asio_handler" width="1400" height="200"></canvas>
+    </div>
 
-		<div id="div_navi_and_replay">
-			<div>
-			  <span>
-				Navigation Control:
-				<button id="btn_zoom_in">Zoom In</button>
-				<button id="btn_zoom_out">Zoom Out</button>
-				<button id="btn_pan_left">&lt;&lt;</button>
-				<button id="btn_pan_right">&gt;&gt;</button>
-				<button id="btn_zoom_reset">Reset</button>
-				</span>
-			</div>
-			<div>Keyboard: [Left]/[right] arrow keys to pan; [Up]/[down] arrow keys to zoom in/out; Hold [shift] to move faster<br/>Mouse: [Left click]: highlight an interval; [wheel up/down]: zoom in/out; click overflow triangles to warp to out-of-viewport requests
-			</div>
-			<div id="highlight_hint">Click highlighted region to zoom into the region</div>
-			<div>
-				<input type="checkbox" id="cb_debuginfo">Show Debug Info</input>
-			</div>
-			<br/>
-			<div id="ipmi_replay">
-				<span>Generate replay commands for the </span><span id="highlight_count">0</span><span> highlighted IPMI requests:</span>
-				<br/>
-				<span>For replaying through "ipmitool" on host or BMC:
-				<button id="gen_replay_ipmitool1">Individual calls</button>
-				<button id="gen_replay_ipmitool2">exec command list</button></span>
-				<br/>
-				<span>For replaying through "busctl" on BMC:
-				<button id="gen_replay_ipmid_legacy">Legacy Interface (for btbridged)</button>
-				<button id="gen_replay_ipmid_new">New Interface (for kcsbridged / netipmid)</button></span>
-				<textarea rows="10" cols="150" id="ipmi_replay_output"></textarea>
-			</div>
-		</div> <!-- navi and replay -->
+    <div id="div_navi_and_replay">
+      <div>
+        <span>
+        Navigation Control:
+        <button id="btn_zoom_in">Zoom In</button>
+        <button id="btn_zoom_out">Zoom Out</button>
+        <button id="btn_pan_left">&lt;&lt;</button>
+        <button id="btn_pan_right">&gt;&gt;</button>
+        <button id="btn_zoom_reset">Reset</button>
+        </span>
+      </div>
+      <div>Keyboard: [Left]/[right] arrow keys to pan; [Up]/[down] arrow keys to zoom in/out; Hold [shift] to move faster<br/>Mouse: [Left click]: highlight an interval; [wheel up/down]: zoom in/out; click overflow triangles to warp to out-of-viewport requests
+      </div>
+      <div id="highlight_hint">Click highlighted region to zoom into the region</div>
+      <div>
+        <input type="checkbox" id="cb_debuginfo">Show Debug Info</input>
+      </div>
+      <br/>
+      <div id="ipmi_replay">
+        <span>Generate replay commands for the </span><span id="highlight_count">0</span><span> highlighted IPMI requests:</span>
+        <br/>
+        <span>For replaying through "ipmitool" on host or BMC:
+        <button id="gen_replay_ipmitool1">Individual calls</button>
+        <button id="gen_replay_ipmitool2">exec command list</button></span>
+        <br/>
+        <span>For replaying through "busctl" on BMC:
+        <button id="gen_replay_ipmid_legacy">Legacy Interface (for btbridged)</button>
+        <button id="gen_replay_ipmid_new">New Interface (for kcsbridged / netipmid)</button></span>
+        <textarea rows="10" cols="150" id="ipmi_replay_output"></textarea>
+      </div>
+    </div> <!-- navi and replay -->
     <br/>
+
+    <div id="highlighted_messages" class="info_panel">
+      <div id="highlighted_messages_header" class="info_panel_header">Info of selected range</div>
+      <div id="highlighted_messages_content" class="info_panel_content"></div>
+    </div>
 
     <!-- You can also require other files to run in this process -->
     <script src="./timeline_view.js"></script>
     <script src="./dbus_timeline_vis.js"></script>
     <script src="./ipmi_timeline_vis.js"></script>
-		<script src="./boost_handler_timeline_vis.js"></script>
+    <script src="./boost_handler_timeline_vis.js"></script>
     <script src="./ipmi_parse.js"></script>
     <script src="./ipmi_capture.js"></script>
     <script src="./renderer.js"></script>
-		<script src="./dbus_pcap_loader.js"></script>
-		<script src="./initialization.js"></script>
-		<link rel="stylesheet" href="./dbus_vis.css">
+    <script src="./dbus_pcap_loader.js"></script>
+    <script src="./info_panel.js"></script>
+    <script src="./initialization.js"></script>
+    <link rel="stylesheet" href="./dbus_vis.css">
   </body>
 </html>

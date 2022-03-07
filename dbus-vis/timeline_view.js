@@ -626,6 +626,9 @@ class TimelineView {
     this.UnhighlightIfEmpty();
     this.IsHighlightDirty = true;
     this.MouseState.hoveredSide = undefined;
+
+    // If highlighted area changed, update the info panel
+    UpdateHighlightedMessagesInfoPanel();
   }
 
   UnhighlightIfEmpty() {
@@ -704,7 +707,7 @@ class TimelineView {
         if (IsIntersected(lbub, vars.highlightedInterval)) {
           vars.numIntersected++;
           isHighlighted = true;
-          vars.currHighlightedReqs.push(intervals_j[i][2]);
+          vars.currHighlightedReqs.push(intervals_j[i][2]);  // TODO: change the name to avoid confusion with HighlightedMessages
         }
       }
 
@@ -1681,6 +1684,33 @@ class TimelineView {
             ctx, theHoveredReq, theHoveredInterval, toFixedPrecision, height);
       }
     }  // End IsCanvasDirty
+  }
+
+  // Returns list of highlighted messages.
+  // Format: [ Title, [Message] ]
+  HighlightedMessages() {
+    let ret = [];
+    if (this.HighlightedRegion.t0 == -999 || this.HighlightedRegion.t1 == -999) { return ret; }
+    const lb = Math.min(this.HighlightedRegion.t0, this.HighlightedRegion.t1);
+    const ub = Math.max(this.HighlightedRegion.t0, this.HighlightedRegion.t1);
+    for (let i=0; i<this.Titles.length; i++) {
+      const title = this.Titles[i];
+      if (title.header == true) continue;  // Do not include headers. TODO: Allow rectangular selection
+
+      const line = [ title.title, [] ];
+      const interval_idx = title.intervals_idxes[0];
+      const intervals_i = this.Intervals[interval_idx];
+      for (let j=0; j<intervals_i.length; j++) {
+        const m = intervals_i[j];
+        if (!(m[0] > ub || m[1] < lb)) {
+          line[1].push(m);
+        }
+      }
+      if (line[1].length > 0) {
+        ret.push(line);
+      }
+    }
+    return ret;
   }
 };
 
