@@ -61,6 +61,7 @@ body {
 	width: 100%; height: 100%;
 	background-color: rgba(128, 128, 128, 0.6);
 	display: none;
+	z-index: 10;
 }
 
 #blocker_caption {
@@ -110,4 +111,30 @@ body {
 #span_group_by_dbus, #span_group_by_ipmi, #span_group_by_boost_asio_handler,
 #div_navi_and_replay{
   display: none;
+}
+
+.info_panel {
+	position: absolute;
+	z-index: 9;
+	border: 1px solid #888;
+}
+
+.info_panel_header {
+	padding: 2px;
+	background-color: #CCC;
+	cursor: move;
+	z-index: 10;
+}
+
+.info_panel_content {
+	background-color: #EEE;
+	max-height: 800px;
+	overflow-y: scroll;
+	max-width: 400px;
+	overflow-x: scroll;
+}
+
+#highlighted_messages {
+	top: 10px; left: 10px;
+	display: none
 }
