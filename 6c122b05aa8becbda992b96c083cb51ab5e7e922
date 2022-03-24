@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d977514f_32d2117d",
+        "filename": "tof-voters/libvoters/subcmd/report.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-03-24T21:01:54Z",
+      "side": 1,
+      "message": "\u003e \u003e FWIW, my use of this ranking is only really applied for the top 20 or so people on the list, so they can say \"I\u0027m the #8 contributor in the world to openbmc\" on their yearly review, and get credit for their hard work.\n\u003e \n\u003e Understand.  Rank give you that and I have no concern about that metric.\n\u003e \n\u003e \u003e Maybe we \"weight\" the percentile based on point count?\n\u003e \n\u003e My opinion is that percentile should only \"among active developers\", which by our definition is anyone with 15pts or more, and this would align with our Highly Productive definition as well.\n\nACK.  Can make that change.\n\n\u003e \n\u003e Using your example sentence and using the current code, someone who just barely qualifies with exactly 15 points could say \"I\u0027m in the top 25% of all openbmc developers\", which is arguably a true statement, but not particularly helpful.\n\nFair poitn.\n\n\u003e \n\u003e \u003e `percent \u003d int(...)`\n\u003e \n\u003e While I\u0027m at it, is it better for this to be `percent \u003d 100 - int(...)` also?\n\u003e \n\u003e Current code meaning is: \"N% of developers have the same or less points than me\"\n\u003e Proposed meaning is: \"N% of developers have the same or more points than me\".\n\u003e \n\u003e I think the second is more typical expectation of the statement \"I am in the Nth percentile of developers\".\n\nAt first I wasn\u0027t on board, but in a little googling I\u0027m realizing my brain thinks of it differently than most stats, so sure, easy to change.\n\n\u003e \n\u003e \u003e `total_users-rank`\n\u003e \n\u003e Since we changed the rank to be 0-based, I think this is now more correct than it was, but I\u0027m not positive.  Might want to devote a few brain cells to make sure the edge case of \"am I included in the percentile or not\" is covered by your math.\n\nYeah, I can do that.  FWIW, I\u0027m under the assumption that a 1 count change in your position wouldn\u0027t amount to any meaningful change to the stat.",
+      "parentUuid": "7a83b689_95bfe8fd",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 49
+      },
+      "revId": "6c122b05aa8becbda992b96c083cb51ab5e7e922",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "92badc57_8ccd5e63",
         "filename": "tof-voters/libvoters/subcmd/report.py",
         "patchSetId": 2
