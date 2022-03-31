@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "01218f38_71b6efad",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-03-31T13:13:47Z",
+      "side": 1,
+      "message": "Any example output of running the tool?",
+      "revId": "3658fc9a41d66e19e1cf2cf8e7a3ee3d1527554f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "90e95f70_90b33f87",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-03-31T13:13:47Z",
+      "side": 1,
+      "message": "Looks like it could be interesting to run on some of our larger config systems.",
+      "revId": "3658fc9a41d66e19e1cf2cf8e7a3ee3d1527554f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "44d6c679_bf6b8ade",
+        "filename": "dbus_sensor_tester/meson.build",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-03-31T13:13:47Z",
+      "side": 1,
+      "message": "I see some copy/paste bmcweb references in here",
+      "range": {
+        "startLine": 1,
+        "startChar": 9,
+        "endLine": 1,
+        "endChar": 15
+      },
+      "revId": "3658fc9a41d66e19e1cf2cf8e7a3ee3d1527554f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
