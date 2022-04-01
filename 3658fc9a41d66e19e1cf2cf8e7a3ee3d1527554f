@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "eaba30a5_a1fcd158",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-04-01T18:29:24Z",
+      "side": 1,
+      "message": "The help text is pretty good, and I lost my zsh history from when I did it, but it should be something like\n\n// Repeat this for as many sensor daemons you want to create, each hosting 10 sensors.  Keep in mind, after 500 or so per instance, I was hitting arbitrary dbus limits, so that seems to be the top end at least in my setup.  Not sure which limit I hit or if it could be increased.\n./dbus-sensor-tester -n 10\n\n// Then repeat this for as many \"watchers\" you\u0027d like to simulate.  I generally simulate 1 or 2, because in the ideal case, there\u0027s only the fan control loop watching most of these things on every value.  I realize there\u0027s other systems that have more.\n./dbus-sensors-tester -w",
+      "parentUuid": "01218f38_71b6efad",
+      "revId": "3658fc9a41d66e19e1cf2cf8e7a3ee3d1527554f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "90e95f70_90b33f87",
@@ -35,6 +53,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec68bc02_39d7307a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-04-01T18:29:24Z",
+      "side": 1,
+      "message": "In theory the system size shouldn\u0027t matter.   Ideally you\u0027d shut down everything doing \"stuff\" on dbus to get real results.  Someone suggested to me that you might want to then start up one service at a time, and measure your performance at each step to see which one was consuming most of the time.",
+      "parentUuid": "90e95f70_90b33f87",
+      "revId": "3658fc9a41d66e19e1cf2cf8e7a3ee3d1527554f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "44d6c679_bf6b8ade",
@@ -48,6 +84,30 @@
       "writtenOn": "2022-03-31T13:13:47Z",
       "side": 1,
       "message": "I see some copy/paste bmcweb references in here",
+      "range": {
+        "startLine": 1,
+        "startChar": 9,
+        "endLine": 1,
+        "endChar": 15
+      },
+      "revId": "3658fc9a41d66e19e1cf2cf8e7a3ee3d1527554f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5e22890_55f020f4",
+        "filename": "dbus_sensor_tester/meson.build",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-04-01T18:29:24Z",
+      "side": 1,
+      "message": "Pretty sure I just fixed them (didn\u0027t rerun the meson file though, so apologies if I made a typo somewhere).",
+      "parentUuid": "44d6c679_bf6b8ade",
       "range": {
         "startLine": 1,
         "startChar": 9,
