@@ -18,6 +18,7 @@ overlay_add() {
     o_lowerdir="$1"
     o_upperdir=$(mktemp -d)
     o_workdir=$(mktemp -d)
+    chmod $(stat -c '%a' $o_lowerdir) $o_upperdir $o_workdir
     mount -t overlay -o lowerdir="${o_lowerdir}",upperdir=${o_upperdir},workdir=${o_workdir} overlay "${o_lowerdir}"
 }
 
