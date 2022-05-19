@@ -1263,7 +1263,7 @@ class TimelineView {
       // 2. an actual row of data (in the Intervals variable)
 
       // 'j' needs to go PAST the viewport if the last row is overlapping and spans beyond the viewport.
-      for (let j = j0; j < this.Intervals.length; j++) {
+      for (let j = j0; j < tvh; j++) {
 
         if (j >= this.VisualLineStartIdx) { should_render = true; }
         if (y > height) { should_render = false; }
