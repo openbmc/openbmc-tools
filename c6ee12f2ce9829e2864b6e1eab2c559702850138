@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c17c3921_9db3654e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2022-05-20T06:48:54Z",
+      "side": 1,
+      "message": "This chain of changes are a result of some recent improvements (adding a very primitive window for showing the highlighted dbus messages.)\n\nBeing able to show a list of highlighted messages helped me a lot in investigating an issue related to the Mapper getting unresponsive, as well as for looking into the interaction between ipmitool, ipmid and health-monitor.\n\nI can collapse all 3 changes into one if that is the preferred way.",
+      "revId": "c6ee12f2ce9829e2864b6e1eab2c559702850138",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
