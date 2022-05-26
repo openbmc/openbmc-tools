@@ -1,15 +1,9 @@
+const { ipcRenderer } = require('electron');
 const { spawnSync } = require('child_process');
 const md5File = require('md5-file');
 const https = require('https');
 
-function OpenFileHandler() {
-  console.log('Will open a dialog box ...');
-  const options = {
-    title: 'Open a file or folder',
-  };
-  let x = dialog.showOpenDialogSync(options) + '';  // Convert to string
-  console.log('file name: ' + x)
-
+ipcRenderer.on('filename', (event, x) => {
   // Determine file type
   let is_asio_log = false;
   const data = fs.readFileSync(x, {encoding: 'utf-8'});
@@ -38,8 +32,11 @@ function OpenFileHandler() {
   }
 
   OpenDBusPcapFile(x);
-
   UpdateLayout();
+});
+
+function OpenFileHandler() {
+  ipcRenderer.send('file-request');
 }
 
 // The file may be either DBus dump or Boost Asio handler log
