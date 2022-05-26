@@ -15,7 +15,7 @@
     "IPMI"
   ],
   "devDependencies": {
-    "electron": "^11.5.0"
+    "electron": "^18.2.4"
   },
   "dependencies": {
     "electron-dialog": "^2.0.0",
