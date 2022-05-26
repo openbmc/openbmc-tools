@@ -1,6 +1,16 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, dialog, ipcMain } = require('electron');
 const path = require('path');
+const {fs} = require('file-system');
+
+// Open-file dialog
+ipcMain.on('file-request', (event) => {
+  const options = {
+    title: 'Open a file or folder',
+  };
+  const x = dialog.showOpenDialogSync(options) + '';  // Convert to string
+  event.reply("filename", x);
+});
 
 function createWindow() {
   // Create the browser window.
@@ -10,7 +20,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration:
           true,  // For opening file dialog from the renderer process
-      enableRemoteModule: true  // For require('electron').remote
+      contextIsolation: false,
     }
   });
 
