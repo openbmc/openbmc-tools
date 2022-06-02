@@ -1,0 +1,9 @@
+Code-Review+2: Andrew Jeffery <andrew@aj.id.au>
+Code-Review+1: Gunnar Mills <gmills@us.ibm.com>
+Code-Review+1: Ed Tanous <ed@tanous.net>
+Verified+1: Andrew Jeffery <andrew@aj.id.au>
+Submitted-by: Andrew Jeffery <andrew@aj.id.au>
+Submitted-at: Thu, 02 Jun 2022 01:24:00 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/openbmc-tools/+/54036
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
