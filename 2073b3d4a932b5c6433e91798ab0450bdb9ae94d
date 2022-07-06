@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "011ab85a_65d8c527",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1001428
+      },
+      "writtenOn": "2022-07-06T21:11:17Z",
+      "side": 1,
+      "message": "Since this is upstream I don\u0027t know if I could add the links to\nthe properly formatted input files.\nI could maybe add example input files? So that future users can\nsee the desired format?",
+      "revId": "2073b3d4a932b5c6433e91798ab0450bdb9ae94d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
