@@ -16,6 +16,24 @@
       "message": "Since this is upstream I don\u0027t know if I could add the links to\nthe properly formatted input files.\nI could maybe add example input files? So that future users can\nsee the desired format?",
       "revId": "2073b3d4a932b5c6433e91798ab0450bdb9ae94d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b33370e_fcda558d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 15
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-07-07T18:48:56Z",
+      "side": 1,
+      "message": "Yeah, I think just adding this to show how to generate them is what I want:\n\ntail -n +1 /proc/*/status \u003e /tmp/status.txt\ntail -n +1 /proc/*/smaps \u003e /tmp/smaps.txt",
+      "parentUuid": "011ab85a_65d8c527",
+      "revId": "2073b3d4a932b5c6433e91798ab0450bdb9ae94d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
