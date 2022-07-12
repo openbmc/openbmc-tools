@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b9397e9_61c47c8d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-07-12T20:26:07Z",
+      "side": 1,
+      "message": "I don\u0027t have the time for a full review but it\u0027s better then what we have currently and the Tested aspect looks good to me. Thanks!",
+      "revId": "23f2f33849066142460fa6ca873e441ec4b292fa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
