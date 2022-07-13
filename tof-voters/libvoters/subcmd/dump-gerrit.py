@@ -14,14 +14,8 @@ class subcmd:
         p.add_argument(
             "--server",
             "-s",
-            help="Gerrit server SSH alias (default=gerrit.openbmc-project.xyz)",
-            default="gerrit.openbmc-project.xyz",
-        )
-        p.add_argument(
-            "--port",
-            "-p",
-            help="Gerrit server SSH port (default=29418)",
-            default="29418",
+            help="Gerrit server SSH alias (default=openbmc.gerrit)",
+            default="openbmc.gerrit",
         )
         p.add_argument(
             "--after",
@@ -44,7 +38,6 @@ class subcmd:
         query = list(
             ssh(
                 args.server,
-                "-p", args.port,
                 "gerrit",
                 "query",
                 "--format=json",
