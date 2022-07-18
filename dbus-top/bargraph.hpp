@@ -37,7 +37,7 @@ class BarGraph
     std::vector<float> GetLastNValues(int x)
     {
         std::vector<float> ret;
-        const int N = static_cast<int>(history_.size());
+        const int N = history_.size();
         int imax = x;
         imax = std::min(imax, length_);
         imax = std::min(imax, N);

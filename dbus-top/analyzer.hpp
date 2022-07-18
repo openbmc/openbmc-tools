@@ -87,9 +87,9 @@ class DBusTopStatistics
     {
         const int N = fields_.size();
         std::vector<std::string> ret(N);
-        for (int i = 0; i < static_cast<int>(fields_.size()); i++)
+        for (size_t i = 0; i < fields_.size(); i++)
         {
-            ret[i] = FieldNames[static_cast<int>(fields_[i])];
+            ret[i] = FieldNames[fields_[i]];
         }
         return ret;
     }
@@ -98,9 +98,9 @@ class DBusTopStatistics
     {
         const int N = fields_.size();
         std::vector<int> ret(N);
-        for (int i = 0; i < static_cast<int>(fields_.size()); i++)
+        for (size_t i = 0; i < fields_.size(); i++)
         {
-            ret[i] = FieldPreferredWidths[static_cast<int>(fields_[i])];
+            ret[i] = FieldPreferredWidths[fields_[i]];
         }
         return ret;
     }

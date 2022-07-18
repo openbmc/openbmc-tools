@@ -34,7 +34,7 @@ class Histogram
 
     void AddSample(ValueType s)
     {
-        int N = static_cast<int>(samples_.size());
+        int N = samples_.size();
         samples_[num_entries_ % N] = s;
         num_entries_++;
     }
@@ -57,7 +57,7 @@ class Histogram
 
     void ComputeHistogram()
     {
-        const int NS = static_cast<int>(samples_.size());
+        const int NS = samples_.size();
         int N = NS;
         if (num_entries_ < N)
         {
@@ -73,8 +73,8 @@ class Histogram
         else
             sorted.insert(sorted.end(), samples_.begin(), samples_.begin() + N);
         sort(sorted.begin(), sorted.end());
-        int idx_low = static_cast<int>(N * low_cum_density_);
-        int idx_high = static_cast<int>(N * high_cum_density_);
+        int idx_low = N * low_cum_density_;
+        int idx_high = N * high_cum_density_;
         if (idx_high - idx_low + 1 < 1)
         {
             return; // No entries can be shown, quit
@@ -84,7 +84,7 @@ class Histogram
         ValueType value_high = sorted[idx_high];
         low_percentile_ = value_low;
         high_percentile_ = value_high;
-        const int NB = static_cast<int>(buckets_.size()); // Number of Bins
+        const int NB = buckets_.size(); // Number of Bins
         float bucket_width = (value_high - value_low) / NB;
         // If all values are the same, manually extend the range to
         // (value-1, value+1)

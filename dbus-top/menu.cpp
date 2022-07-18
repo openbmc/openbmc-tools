@@ -17,8 +17,9 @@
 #include "views.hpp"
 
 ArrowKeyNavigationMenu::ArrowKeyNavigationMenu(DBusTopWindow* view) :
-    win_(view->win), parent_(view), idx0_(INVALID), idx1_(INVALID),
-    h_padding_(2), col_width_(15), h_spacing_(2), choice_(INVALID)
+    win_(view->win), h_padding_(2), col_width_(15), h_spacing_(2), 
+    idx0_(INVALID), idx1_(INVALID),
+    choice_(INVALID), parent_(view), order_(ColumnMajor)
 {}
 
 void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
@@ -71,11 +72,11 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
                 wattrset(win_, A_REVERSE);
             }
             std::string s = items_[idx];
-            while (s.size() < col_width_)
+            while (static_cast<int>(s.size()) < col_width_)
             {
                 s.push_back(' ');
             }
-            mvwprintw(win_, y, x, s.c_str());
+            mvwprintw(win_, y, x, "%s", s.c_str());
             wattrset(win_, 0);
         }
         else
@@ -105,12 +106,12 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
 
 void ArrowKeyNavigationMenu::Render()
 {
-    do_Render(order == ColumnMajor);
+    do_Render(order_ == ColumnMajor);
 }
 
 void ArrowKeyNavigationMenu::OnKeyDown(const std::string& key)
 {
-    switch (order)
+    switch (order_)
     {
         case ColumnMajor:
             if (key == "up")
@@ -203,7 +204,7 @@ void ArrowKeyNavigationMenu::MoveCursorAlongSecondaryAxis(int delta)
         return;
     }
     const int nrows =
-        (order == ColumnMajor) ? DispEntriesPerColumn() : DispEntriesPerRow();
+        (order_ == ColumnMajor) ? DispEntriesPerColumn() : DispEntriesPerRow();
     const int tot_columns = (N - 1) / nrows + 1;
     const int num_rows_last_column = N - nrows * (tot_columns - 1);
     int y = choice_ % nrows, x = choice_ / nrows;
@@ -299,7 +300,7 @@ void ArrowKeyNavigationMenu::AddItem(const std::string& s)
 
 bool ArrowKeyNavigationMenu::RemoveHighlightedItem(std::string* ret)
 {
-    if (choice_ < 0 || choice_ >= items_.size())
+    if (choice_ < 0 || choice_ >= static_cast<int>(items_.size()))
         return false;
     std::string r = items_[choice_];
     items_.erase(items_.begin() + choice_);
@@ -309,9 +310,9 @@ bool ArrowKeyNavigationMenu::RemoveHighlightedItem(std::string* ret)
     }
     else
     {
-        if (choice_ >= items_.size())
+        if (choice_ >= static_cast<int>(items_.size()))
         {
-            choice_ = items_.size() - 1;
+            choice_ = static_cast<int>(items_.size()) - 1;
         }
     }
     if (ret)

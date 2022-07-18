@@ -221,7 +221,7 @@ namespace dbus_top_analyzer
         }
         free(names);
         printf("2. Getting creds of each name\n");
-        for (int i = 0; i < static_cast<int>(services.size()); i++)
+        for (size_t i = 0; i < services.size(); i++)
         {
             const std::string& service = services[i];
             sd_bus_creds* creds = nullptr;
@@ -285,10 +285,10 @@ namespace dbus_top_analyzer
             g_connection_snapshot->AddConnection(service, connection, comm, unit,
                                                 pid);
         }
-        printf("There are %d DBus names.\n", int(services.size()));
-        for (int i = 0; i < int(services.size()); i++)
+        printf("There are %zu DBus names.\n", services.size());
+        for (size_t i = 0; i < services.size(); i++)
         {
-            printf("    %d: %s [%s]\n", i, services[i].c_str(), comms[i].c_str());
+            printf("    %zu: %s [%s]\n", i, services[i].c_str(), comms[i].c_str());
         }
         g_sensor_snapshot = new SensorSnapshot(g_connection_snapshot);
         // busctl call xyz.openbmc_project.ObjectMapper /
@@ -299,8 +299,8 @@ namespace dbus_top_analyzer
             "xyz.openbmc_project.ObjectMapper", nullptr);
         sd_bus_error err = SD_BUS_ERROR_NULL;
         sd_bus_message *m, *reply;
-        printf("%d paths found while introspecting ObjectMapper.\n",
-            int(all_obj_paths.size()));
+        printf("%zu paths found while introspecting ObjectMapper.\n",
+            all_obj_paths.size());
         printf("3.2. Call ObjectMapper's GetObject method against the sensor "
             "object paths that represent sensors\n");
         for (const std::string& p : all_obj_paths)
@@ -420,7 +420,7 @@ namespace dbus_top_analyzer
             }
         }
         printf("4. Check Hwmon's DBus objects\n");
-        for (int i = 0; i < int(comms.size()); i++)
+        for (size_t i = 0; i < comms.size(); i++)
         {
             const std::string& comm = comms[i];
             const std::string& service = services[i];

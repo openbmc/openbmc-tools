@@ -81,7 +81,7 @@ class ArrowKeyNavigationMenu
 
     void SetOrder(Order o)
     {
-        order = o;
+        order_ = o;
     }
 
     int Choice()
@@ -117,6 +117,6 @@ class ArrowKeyNavigationMenu
     int idx0_, idx1_;
     int choice_;
     DBusTopWindow* parent_;
-    Order order;
+    Order order_;
 };
 

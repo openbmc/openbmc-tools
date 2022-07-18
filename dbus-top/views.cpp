@@ -109,9 +109,8 @@ void HistoryBarGraph(WINDOW* win, const Rect& rect, BarGraph<T>* bargraph)
         snap = 1000;
     }
     const float eps = snap / 100.0f;
-    int label_ymax =
-        (static_cast<int>((ymax - eps) / snap) + 1) * snap; // round up
-    int label_ymin = static_cast<int>(ymin / snap) * snap;  // round down
+    int label_ymax = (((ymax - eps) / snap) + 1) * snap; // round up
+    int label_ymin = ymin / snap * snap;  // round down
     float y_per_row = (label_ymax - label_ymin) * 1.0f / (h - 1);
     int actual_ymax = label_ymax + static_cast<int>(y_per_row / 2);
     int actual_ymin = label_ymin - static_cast<int>(y_per_row / 2);
@@ -420,7 +419,7 @@ void SensorDetailView::Render()
                         s.push_back(' ');
                     }
                 }
-                mvwprintw(win, y, x, s.c_str());
+                mvwprintw(win, y, x, "%s", s.c_str());
                 wattrset(win, 0);
             }
             else
@@ -454,18 +453,18 @@ void SensorDetailView::Render()
         const int col0 = idx0 / nrows + 1, col1 = idx1 / nrows;
         mvwprintw(win, 1, 2, "Columns %d-%d of %d", col0, col1,
                   total_num_columns);
-        mvwprintw(win, 1, rect.w - 15, "%d sensors", sensor_ids_.size());
+        mvwprintw(win, 1, rect.w - 15, "%zu sensors", sensor_ids_.size());
     }
     else if (state == SensorDetail)
     {
         // sensor_ids_ is the cached list of sensors, it should be the same size
         // as the actual number of sensors in the snapshot
         mvwprintw(win, 1, 2, "Details of sensor %s", curr_sensor_id_.c_str());
-        mvwprintw(win, 1, rect.w - 15, "Sensor %d/%u", choice_ + 1,
-                  sensor_ids_.size()); // 1-based
+        mvwprintw(win, 1, rect.w - 15, "Sensor %d/%d", choice_ + 1,
+                  static_cast<int>(sensor_ids_.size())); // 1-based
         std::vector<Sensor*> sensors =
             g_sensor_snapshot->FindSensorsBySensorID(curr_sensor_id_);
-        const int N = static_cast<int>(sensors.size());
+        const int N = sensors.size();
         const int w = rect.w - 5;
         mvwprintw(win, 3, 2, "There are %d sensors with the name %s", N,
                   curr_sensor_id_.c_str());
@@ -611,7 +610,7 @@ bool IsSpansOverlap(const std::pair<int, int>& s0,
         std::sort(tmp.begin(), tmp.end());
         int overlap_x0 = -INVALID, overlap_x1 = -INVALID;
         int idx = 0;
-        const int N = static_cast<int>(tmp.size());
+        const int N = tmp.size();
         int level = 0;
         while (idx < N)
         {
@@ -670,7 +669,7 @@ std::vector<int> DBusStatListView::ColumnWidths()
 void DBusStatListView::PanViewportOrMoveHighlightedColumn(const int delta_x)
 {
     // If the column to the left is visible, highlight it
-    const int N = static_cast<int>(ColumnHeaders().size());
+    const int N = ColumnHeaders().size();
     bool col_idx_changed = false;
     if (delta_x < 0)
     { // Pan left
@@ -884,7 +883,7 @@ void DBusStatListView::Render()
     visible_columns_ = g_dbus_statistics->GetFieldNames();
     std::vector<std::string> agg_headers = visible_columns_;
     std::vector<int> agg_widths(agg_headers.size(), 0);
-    for (int i = 0; i < static_cast<int>(agg_headers.size()); i++)
+    for (size_t i = 0; i < agg_headers.size(); i++)
     {
         agg_widths[i] = column_widths_[agg_headers[i]];
     }
@@ -957,9 +956,9 @@ void DBusStatListView::Render()
     }
 
     stats_snapshot_ = g_dbus_statistics->StatsSnapshot();
-    const int nrows = static_cast<int>(stats_snapshot_.size());
+    const int nrows = stats_snapshot_.size();
     const std::vector<DBusTopSortField> fields = g_dbus_statistics->GetFields();
-    const int ncols = static_cast<int>(fields.size());
+    const int ncols = fields.size();
     // Merge the list of DBus Message properties & computed metrics together
     std::map<std::vector<std::string>, DBusTopComputedMetrics>::iterator itr =
         stats_snapshot_.begin();
