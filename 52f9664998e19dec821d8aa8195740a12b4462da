@@ -1,6 +1,7 @@
 {
   "comments": [
     {
+      "unresolved": true,
       "key": {
         "uuid": "2c16fd49_aca3a058",
         "filename": "/COMMIT_MSG",
@@ -14,8 +15,25 @@
       "side": 1,
       "message": "Can you please write a coherent commit message for the one change?\n\nThere\u0027s no point talking about the intermediate states as it\u0027s now just the one patch.\n\nAdditionally, there are Change-Ids from every intermediate patch now in this commit message.\n\nPlease make sure there\u0027s just the one Change-ID present.",
       "revId": "52f9664998e19dec821d8aa8195740a12b4462da",
-      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
-      "unresolved": true
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46a3c35c_8705acd9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2022-07-18T04:08:13Z",
+      "side": 1,
+      "message": "I think this is now addressed in the latest change set:\n* Intermediate states are not discussed in the change, only the final state with all the patches squashed into one\n* Only 1 Change-ID is present now.",
+      "parentUuid": "2c16fd49_aca3a058",
+      "revId": "52f9664998e19dec821d8aa8195740a12b4462da",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
