@@ -16,6 +16,23 @@
       "message": "I don\u0027t have the time for a full review but it\u0027s better then what we have currently and the Tested aspect looks good to me. Thanks!",
       "revId": "23f2f33849066142460fa6ca873e441ec4b292fa",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2809f996_2dc56d1d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-07-18T02:29:04Z",
+      "side": 1,
+      "message": "As a very broad comment I\u0027d recommend steering away from interactive tools. Instead, prefer controlling how the tool should behave through command-line subcommand grammars or options. Otherwise, to automate your work here, we have to use [expect](https://core.tcl-lang.org/expect/index) or some crude approximation like \"echo \u003cinput choices\u003e | ./oom_parser.py\", which tends to be hard to read and maintain.",
+      "revId": "23f2f33849066142460fa6ca873e441ec4b292fa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
