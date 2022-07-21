@@ -1,0 +1,80 @@
+#!/bin/sh
+
+set -eu
+
+set -x
+
+# : ${OPKG_LIBS:="-llzma -lldap -llber -lz -pthread"}
+: ${OPKG_LIBS:="-lz -pthread"}
+
+generate_configure_id() {
+	echo "$@" | sha256sum | awk '{ printf "build-opkg-%s", $1 }'
+}
+
+mark_configured() {
+	rm -f build-opkg-*
+	touch $1
+}
+
+# libarchive
+[ -f libarchive-3.5.2.tar.gz ] || wget http://libarchive.org/downloads/libarchive-3.5.2.tar.gz
+[ -d libarchive-3.5.2 ] || tar -xvf libarchive-3.5.2.tar.gz
+cd libarchive-3.5.2
+LIBARCHIVE_OPTS="\
+--without-zlib \
+--without-bz2lib \
+--without-libb2 \
+--without-lz4 \
+--without-zstd \
+--without-lzo2 \
+--without-cng \
+--without-nettle \
+--without-xml2 \
+--without-expat \
+--disable-acl \
+--disable-xattr \
+--enable-posix-regex-lib=libc \
+--disable-rpath \
+--disable-bsdcat \
+--disable-bsdtar \
+--disable-bsdcpio \
+--with-pic"
+LIBARCHIVE_ID=$(generate_configure_id "$LIBARCHIVE_OPTS")
+[ -f $LIBARCHIVE_ID ] || ( ./configure $LIBARCHIVE_OPTS && mark_configured $LIBARCHIVE_ID )
+mkdir -p root && make -j$(nproc) install DESTDIR=$(realpath root)
+cd ..
+
+# curl
+[ -f curl-7.79.1.tar.bz2 ] || wget https://curl.haxx.se/download/curl-7.79.1.tar.bz2
+[ -d curl-7.79.1 ] || tar -xvf curl-7.79.1.tar.bz2
+cd curl-7.79.1
+CURL_OPTS=--with-openssl
+CURL_ID=$(generate_configure_id "$CURL_OPTS")
+[ -f $CURL_ID ] || ( ./configure $CURL_OPTS && mark_configured $CURL_ID )
+mkdir -p root && make -j$(nproc) install DESTDIR=$(realpath root)
+cd ..
+
+# opkg
+[ -f opkg-0.4.5.tar.gz ] || wget http://downloads.yoctoproject.org/releases/opkg/opkg-0.4.5.tar.gz
+[ -d opkg-0.4.5 ] || tar -xvf opkg-0.4.5.tar.gz
+cd opkg-0.4.5
+OPKG_OPTS="\
+--with-static-libopkg \
+--without-libsolv \
+--enable-curl \
+--enable-openssl \
+--disable-gpg \
+--disable-dependency-tracking"
+OPKG_ID=$(generate_configure_id "$OPKG_OPTS" "$OPKG_LIBS")
+[ -f $OPKG_ID ] || ( \
+	AR_FLAGS=Tcru \
+	PKG_CONFIG_PATH=$(realpath ../libarchive-3.5.2/root/usr/local/lib/pkgconfig/):$(realpath ../curl-7.79.1/root/usr/local/lib/pkgconfig/) \
+	CURL_CFLAGS=-I$(realpath ../curl-7.79.1/root/usr/local/include/) \
+	CURL_LIBS=$(realpath ../curl-7.79.1/root/usr/local/lib/libcurl.a) \
+	LIBARCHIVE_CFLAGS=-I$(realpath ../libarchive-3.5.2/root/usr/local/include/) \
+	LIBARCHIVE_LIBS=$(realpath ../libarchive-3.5.2/root/usr/local/lib/libarchive.a) \
+	LIBS="$OPKG_LIBS" \
+	./configure $OPKG_OPTS && mark_configured $OPKG_ID \
+)
+make -j$(nproc)
+cd ..
