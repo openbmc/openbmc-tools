@@ -98,14 +98,14 @@ int main(int argc, const char **argv) {
   boost::asio::steady_timer timer(io);
   timer.expires_from_now(std::chrono::seconds(update_interval_seconds));
   timer.async_wait(std::bind_front(on_loop, &timer));
-  std::optional<sdbusplus::bus::match::match> match;
+  std::optional<sdbusplus::bus::match_t> match;
   if (watch_sensor_updates) {
     std::string expr = "type='signal',member='PropertiesChanged',path_"
                        "namespace='/xyz/openbmc_project/sensors'";
 
     match.emplace(
-        static_cast<sdbusplus::bus::bus &>(*connection), expr,
-        [](sdbusplus::message::message &message) {
+        static_cast<sdbusplus::bus_t &>(*connection), expr,
+        [](sdbusplus::message_t &message) {
           std::string objectName;
           std::vector<std::pair<std::string, std::variant<double>>> result;
           try {
