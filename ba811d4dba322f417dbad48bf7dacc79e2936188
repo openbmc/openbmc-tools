@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f19b9f1c_00cf262e",
+        "filename": "ipkdbg/Makefile",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2022-07-25T07:40:17Z",
+      "side": 1,
+      "message": "On a x86 machine, this fails due to \"powerpc64le-linux-gnu-strip: command not found\"\n\nIt looks like we need cross compile tools to make it build?\n\nIt could be better to detect the arch and only build/strip the tools for the host arch.",
+      "revId": "ba811d4dba322f417dbad48bf7dacc79e2936188",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bf30840_0e76f494",
+        "filename": "ipkdbg/ipkdbg.in",
+        "patchSetId": 3
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2022-07-25T07:40:17Z",
+      "side": 1,
+      "message": "This assume to download the config from a https server.\nCould it be used locally without a https server?",
+      "revId": "ba811d4dba322f417dbad48bf7dacc79e2936188",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
