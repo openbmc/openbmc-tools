@@ -1,0 +1,8 @@
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Patrick Williams <patrick@stwcx.xyz>
+Code-Review+1: Andrew Geissler <andrew@geissonator.com>
+Submitted-by: Patrick Williams <patrick@stwcx.xyz>
+Submitted-at: Thu, 11 Aug 2022 18:34:24 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/openbmc-tools/+/55325
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
