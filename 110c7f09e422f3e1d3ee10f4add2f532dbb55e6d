@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "496fb47d_3ed44db5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-08-12T12:33:49Z",
+      "side": 1,
+      "message": "Generally when you have a list like this in the commit message it\u0027s an indication that what you\u0027ve done needs to be split into separate commits. And looking at the patch, honestly it\u0027s kind of hard to keep track of what\u0027s going on even though they\u0027re just small cleanups.\n\nDo you mind splitting them out to make the changes easier to review?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 32
+      },
+      "revId": "110c7f09e422f3e1d3ee10f4add2f532dbb55e6d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
