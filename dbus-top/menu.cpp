@@ -75,7 +75,7 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
             {
                 s.push_back(' ');
             }
-            mvwprintw(win_, y, x, s.c_str());
+            mvwaddstr(win_, y, x, s.c_str());
             wattrset(win_, 0);
         }
         else

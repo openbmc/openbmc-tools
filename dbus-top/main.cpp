@@ -98,12 +98,12 @@ int DrawTextWithWidthLimit(WINDOW* win, std::string txt, int y, int x,
         ret++;
         if (static_cast<int>(txt.size()) > width)
         {
-            mvwprintw(win, y, x, txt.substr(0, width).c_str());
+            mvwaddstr(win, y, x, txt.substr(0, width).c_str());
             txt = txt.substr(width);
         }
         else
         {
-            mvwprintw(win, y, x, txt.c_str());
+            mvwaddstr(win, y, x, txt.c_str());
             break;
         }
         y++;

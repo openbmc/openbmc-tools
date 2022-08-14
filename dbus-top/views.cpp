@@ -420,7 +420,7 @@ void SensorDetailView::Render()
                         s.push_back(' ');
                     }
                 }
-                mvwprintw(win, y, x, s.c_str());
+                mvwaddstr(win, y, x, s.c_str());
                 wattrset(win, 0);
             }
             else
@@ -492,7 +492,7 @@ void SensorDetailView::Render()
         }
         else
         {
-            mvwprintw(win, y, x, "Sensor details not found");
+            mvwaddstr(win, y, x, "Sensor details not found");
         }
     }
     DrawBorderIfNeeded();
@@ -853,29 +853,29 @@ void DBusStatListView::Render()
         {
             mvwaddch(win, y1 - 3, x, '-');
         }
-        mvwprintw(win, y1 - 3, arrow_x - 8, "Press [Enter] to show/hide");
-        mvwprintw(win, y1 - 2, caption_x - 5,
+        mvwaddstr(win, y1 - 3, arrow_x - 8, "Press [Enter] to show/hide");
+        mvwaddstr(win, y1 - 2, caption_x - 5,
                   "DBus fields for aggregating and sorting results:");
         if (curr_menu_state_ == LeftSide)
         {
-            mvwprintw(win, y1 - 1, x1 - 4, "--[ Available Fields ]--");
-            mvwprintw(win, y1 - 1, x2 - 4, "--- Active Fields ---");
+            mvwaddstr(win, y1 - 1, x1 - 4, "--[ Available Fields ]--");
+            mvwaddstr(win, y1 - 1, x2 - 4, "--- Active Fields ---");
         }
         else
         {
-            mvwprintw(win, y1 - 1, x1 - 4, "--- Available Fields ---");
-            mvwprintw(win, y1 - 1, x2 - 4, "--[ Active Fields ]--");
+            mvwaddstr(win, y1 - 1, x1 - 4, "--- Available Fields ---");
+            mvwaddstr(win, y1 - 1, x2 - 4, "--[ Active Fields ]--");
         }
         if (curr_menu_state_ == LeftSide)
         {
-            mvwprintw(win, arrow_y, arrow_x, "-->");
-            mvwprintw(win, caption_y, caption_x,
+            mvwaddstr(win, arrow_y, arrow_x, "-->");
+            mvwaddstr(win, caption_y, caption_x,
                       "Press [Space] to move to the right");
         }
         else
         {
-            mvwprintw(win, arrow_y, arrow_x, "<--");
-            mvwprintw(win, caption_y, caption_x,
+            mvwaddstr(win, arrow_y, arrow_x, "<--");
+            mvwaddstr(win, caption_y, caption_x,
                       "Press [Space] to move to the left");
         }
     }
