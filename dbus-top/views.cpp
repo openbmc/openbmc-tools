@@ -454,14 +454,14 @@ void SensorDetailView::Render()
         const int col0 = idx0 / nrows + 1, col1 = idx1 / nrows;
         mvwprintw(win, 1, 2, "Columns %d-%d of %d", col0, col1,
                   total_num_columns);
-        mvwprintw(win, 1, rect.w - 15, "%u sensors", sensor_ids_.size());
+        mvwprintw(win, 1, rect.w - 15, "%zu sensors", sensor_ids_.size());
     }
     else if (state == SensorDetail)
     {
         // sensor_ids_ is the cached list of sensors, it should be the same size
         // as the actual number of sensors in the snapshot
         mvwprintw(win, 1, 2, "Details of sensor %s", curr_sensor_id_.c_str());
-        mvwprintw(win, 1, rect.w - 15, "Sensor %d/%u", choice_ + 1,
+        mvwprintw(win, 1, rect.w - 15, "Sensor %d/%zu", choice_ + 1,
                   sensor_ids_.size()); // 1-based
         std::vector<Sensor*> sensors =
             g_sensor_snapshot->FindSensorsBySensorID(curr_sensor_id_);
