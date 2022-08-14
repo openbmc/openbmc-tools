@@ -71,7 +71,7 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
                 wattrset(win_, A_REVERSE);
             }
             std::string s = items_[idx];
-            while (s.size() < col_width_)
+            while (static_cast<int>(s.size()) < col_width_)
             {
                 s.push_back(' ');
             }
@@ -299,7 +299,7 @@ void ArrowKeyNavigationMenu::AddItem(const std::string& s)
 
 bool ArrowKeyNavigationMenu::RemoveHighlightedItem(std::string* ret)
 {
-    if (choice_ < 0 || choice_ >= items_.size())
+    if (choice_ < 0 || choice_ >= static_cast<int>(items_.size()))
         return false;
     std::string r = items_[choice_];
     items_.erase(items_.begin() + choice_);
@@ -309,7 +309,7 @@ bool ArrowKeyNavigationMenu::RemoveHighlightedItem(std::string* ret)
     }
     else
     {
-        if (choice_ >= items_.size())
+        if (choice_ >= static_cast<int>(items_.size()))
         {
             choice_ = items_.size() - 1;
         }

@@ -454,7 +454,7 @@ void SensorDetailView::Render()
         const int col0 = idx0 / nrows + 1, col1 = idx1 / nrows;
         mvwprintw(win, 1, 2, "Columns %d-%d of %d", col0, col1,
                   total_num_columns);
-        mvwprintw(win, 1, rect.w - 15, "%d sensors", sensor_ids_.size());
+        mvwprintw(win, 1, rect.w - 15, "%u sensors", sensor_ids_.size());
     }
     else if (state == SensorDetail)
     {
