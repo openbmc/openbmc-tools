@@ -17,8 +17,9 @@
 #include "views.hpp"
 
 ArrowKeyNavigationMenu::ArrowKeyNavigationMenu(DBusTopWindow* view) :
-    win_(view->win), parent_(view), idx0_(INVALID), idx1_(INVALID),
-    h_padding_(2), col_width_(15), h_spacing_(2), choice_(INVALID)
+    win_(view->win), h_padding_(2), col_width_(15), h_spacing_(2),
+    idx0_(INVALID), idx1_(INVALID),
+    choice_(INVALID), parent_(view)
 {}
 
 void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
