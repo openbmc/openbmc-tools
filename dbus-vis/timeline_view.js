@@ -1809,6 +1809,27 @@ class DBusTimelineView extends TimelineView {
     labels.push('Interface   : ' + iface);
     labels.push('Member      : ' + member);
 
+    let packet_idx = -1;
+    if (msg_type == 'mc') {
+      packet_idx = 10;
+    } else if (msg_type == 'sig') {
+      packet_idx = 9;
+    }
+
+    if (packet_idx != -1) {
+      let packet = theHoveredReq[packet_idx];
+      if (packet.length >= 2) {
+        const args = packet[1].length;
+        if (args.length < 1) {
+          labels.push("(no args)");
+        } else {
+          for (let i = 0; i < packet[1].length; i ++) {
+            labels.push('args[' + i + "]: " + packet[1][i]);
+          }
+        }
+      }
+    }
+
     let w = 1, h = LINE_SPACING * labels.length + 2 * PAD;
     for (let i = 0; i < labels.length; i++) {
       w = Math.max(w, ctx.measureText(labels[i]).width);
