@@ -16,6 +16,24 @@
       "message": "I rather think you want to instead static_cast\u003csize_t\u003e(col_width_) after determining it\u0027s not negative. What you have done here risks overflowing a signed integer which is UB.",
       "revId": "95f031ce279c5ee2474603a6c35b4a93ea946ed2",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e9c29a1_a2f54905",
+        "filename": "dbus-top/menu.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2022-08-23T07:46:19Z",
+      "side": 1,
+      "message": "Done, now using static_cast\u003csize_t\u003e for integers when comparing int and size_t.",
+      "parentUuid": "09f53545_a117f9df",
+      "revId": "95f031ce279c5ee2474603a6c35b4a93ea946ed2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
