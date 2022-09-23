@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cae9c448_558f3926",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2022-09-23T16:55:14Z",
+      "side": 1,
+      "message": "Reviewed this, and while there\u0027s minor things (TABS ! ! ! !) considering the target is openbmc-tools, I\u0027m not that worried about any minor thing;\n\nOverall, I think this kind of capability would be phenomenally useful to have and build out.",
+      "revId": "e159d225af1f5f270e510111033d6b9052d612f9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d9b96cb7_57718dee",
