@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "9fbea7fc_28aa3266",
+        "filename": "ipkdbg/README.md",
+        "patchSetId": 7
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-09-27T09:14:10Z",
+      "side": 1,
+      "message": "Sure, I\u0027ll pick an existing tag name in openbmc/openbmc to help clarify.",
+      "parentUuid": "d9b96cb7_57718dee",
+      "revId": "e159d225af1f5f270e510111033d6b9052d612f9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a7bec373_cf2772fb",
         "filename": "ipkdbg/README.md",
         "patchSetId": 7
@@ -66,6 +84,24 @@
       "writtenOn": "2022-09-23T09:49:05Z",
       "side": 1,
       "message": "Could you add some description about how ipkdbg finds the database?\nShould the database be put in local filesystem or on a remote server?",
+      "revId": "e159d225af1f5f270e510111033d6b9052d612f9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c9509d66_e2fa6bea",
+        "filename": "ipkdbg/README.md",
+        "patchSetId": 7
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-09-27T09:14:10Z",
+      "side": 1,
+      "message": "Yeah, I\u0027ll add some more words to help out here. Maybe I\u0027ll write a case study as a blog post and link to that too? That way we have a concrete example.",
+      "parentUuid": "a7bec373_cf2772fb",
       "revId": "e159d225af1f5f270e510111033d6b9052d612f9",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
