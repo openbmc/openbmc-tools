@@ -191,7 +191,15 @@ function Preprocess_DBusPcap(data, timestamps) {
 
   let ret = [];
 
+  // Use two methods to pair method calls and method replies:
+  // 1. serial and reply_serial. This method works most of the time.
   let in_flight = {};
+
+  // 2. serial+sender and reply_serial+destination
+  // This handles re-used reply_serials. This can be seen in
+  // sdbus-c++ async examples.
+  let in_flight_2 = {};
+
   let in_flight_ipmi = {};
 
   for (let i = 0; i < data.length; i++) {
@@ -308,13 +316,32 @@ function Preprocess_DBusPcap(data, timestamps) {
 
         ret.push(entry);
         in_flight[serial] = (entry);
+        in_flight_2[serial+""+sender] = (entry);
+        console.log("in-flight serial=" + serial)
         break;
       }
       case 2: {  // method reply
-        let reply_serial = fixed_header[1][0][1];
+        let reply_serial = -999;
+        let destination = "";
+        for (let i=0; i<fixed_header[1].length; i++) {
+          let entry = fixed_header[1][i];
+          if (entry[0] == 5) {
+            reply_serial = entry[1];
+          } else if (entry[0] == 6) {
+            destination = entry[1];
+          }
+        }
+
         if (reply_serial in in_flight) {
           let x = in_flight[reply_serial];
           delete in_flight[reply_serial];
+          x[IDX_TIMESTAMP_END] = timestamp;
+          x[IDX_MC_OUTCOME] = 'ok';
+        }
+        const key = reply_serial + "" + destination;
+        if (key in in_flight_2) {
+          let x = in_flight_2[key];
+          delete in_flight_2[key];
           x[IDX_TIMESTAMP_END] = timestamp;
           x[IDX_MC_OUTCOME] = 'ok';
         }
@@ -331,7 +358,13 @@ function Preprocess_DBusPcap(data, timestamps) {
         break;
       }
       case 3: {  // error reply
-        let reply_serial = fixed_header[1][0][1];
+        let reply_serial = -999;
+        for (let i=0; i<fixed_header[1].length; i++) {
+          let entry = fixed_header[1][i];
+          if (entry[0] == 5) {
+            reply_serial = entry[1]; break;
+          }
+        }
         if (reply_serial in in_flight) {
           let x = in_flight[reply_serial];
           delete in_flight[reply_serial];
@@ -341,7 +374,7 @@ function Preprocess_DBusPcap(data, timestamps) {
       }
     }
   }
-
   if (g_ipmi_parsed_entries.length > 0) UpdateLayout();
+
   return ret;
 }
