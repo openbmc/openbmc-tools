@@ -191,7 +191,10 @@ function Preprocess_DBusPcap(data, timestamps) {
 
   let ret = [];
 
+  // The serial and sender in a method call should match
+  // the reply_serial and destination in a method response.
   let in_flight = {};
+
   let in_flight_ipmi = {};
 
   for (let i = 0; i < data.length; i++) {
@@ -307,14 +310,25 @@ function Preprocess_DBusPcap(data, timestamps) {
 
 
         ret.push(entry);
-        in_flight[serial] = (entry);
+        in_flight[serial+""+sender] = (entry);
         break;
       }
       case 2: {  // method reply
-        let reply_serial = fixed_header[1][0][1];
-        if (reply_serial in in_flight) {
-          let x = in_flight[reply_serial];
-          delete in_flight[reply_serial];
+        let reply_serial = -999;
+        let destination = "";
+        for (let i=0; i<fixed_header[1].length; i++) {
+          let entry = fixed_header[1][i];
+          if (entry[0] == 5) {
+            reply_serial = entry[1];
+          } else if (entry[0] == 6) {
+            destination = entry[1];
+          }
+        }
+
+        const key = reply_serial + "" + destination;
+        if (key in in_flight) {
+          let x = in_flight[key];
+          delete in_flight[key];
           x[IDX_TIMESTAMP_END] = timestamp;
           x[IDX_MC_OUTCOME] = 'ok';
         }
@@ -331,10 +345,21 @@ function Preprocess_DBusPcap(data, timestamps) {
         break;
       }
       case 3: {  // error reply
-        let reply_serial = fixed_header[1][0][1];
-        if (reply_serial in in_flight) {
-          let x = in_flight[reply_serial];
-          delete in_flight[reply_serial];
+        let reply_serial = -999;
+        let destination = "";
+        for (let i=0; i<fixed_header[1].length; i++) {
+          let entry = fixed_header[1][i];
+          if (entry[0] == 5) {
+            reply_serial = entry[1];
+          }else if (entry[0] == 6) {
+            destination = entry[1];
+          }
+        }
+
+        const key = reply_serial + "" + destination;
+        if (key in in_flight) {
+          let x = in_flight[key];
+          delete in_flight[key];
           x[IDX_TIMESTAMP_END] = timestamp;
           x[IDX_MC_OUTCOME] = 'error';
         }
