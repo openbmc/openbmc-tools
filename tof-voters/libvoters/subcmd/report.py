@@ -7,12 +7,9 @@ import os
 
 class subcmd:
     def __init__(self, parser: argparse._SubParsersAction) -> None:
-        p = parser.add_parser(
-            "report", help="Create final report"
-        )
+        p = parser.add_parser("report", help="Create final report")
 
         p.set_defaults(cmd=self)
-
 
     def run(self, args: argparse.Namespace) -> int:
         commits_fp = os.path.join(args.dir, "commits.json")
@@ -43,10 +40,14 @@ class subcmd:
 
             qualified = points >= 15
 
-            results[user] = { "qualified": qualified, "points": points,
-                    "commits": user_commits, "reviews": user_reviews }
+            results[user] = {
+                "qualified": qualified,
+                "points": points,
+                "commits": user_commits,
+                "reviews": user_reviews,
+            }
 
         with open(os.path.join(args.dir, "report.json"), "w") as outfile:
-            outfile.write(json.dumps(results, indent = 4))
+            outfile.write(json.dumps(results, indent=4))
 
         return 0

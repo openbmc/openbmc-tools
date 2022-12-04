@@ -6,9 +6,11 @@ import json
 from sys import argv
 
 for file in argv[1:]:
-   print("formatting file {}".format(file))
-   with open(file) as f:
-      j = json.load(f)
+    print("formatting file {}".format(file))
+    with open(file) as f:
+        j = json.load(f)
 
-   with open(file, 'w') as f:
-      f.write(json.dumps(j, indent=4, sort_keys=True, separators=(',', ': ')))
+    with open(file, "w") as f:
+        f.write(
+            json.dumps(j, indent=4, sort_keys=True, separators=(",", ": "))
+        )
