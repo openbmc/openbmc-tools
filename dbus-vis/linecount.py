@@ -10,5 +10,5 @@ try:
     for packet in stream:
         n += 1
     print(n)
-except Exception as e:
+except Exception:
     pass

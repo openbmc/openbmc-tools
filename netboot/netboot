@@ -3,25 +3,29 @@
 import argparse
 import sys
 import time
-import toml
 from os import path
 from telnetlib import Telnet
 from types import MethodType
+
+import toml
 from xdg import BaseDirectory
 
+
 def expect_or_raise(conn, patterns, timeout=None):
-    i, m, d = conn.expect([bytes(p, 'ascii') for p in patterns], timeout)
+    i, m, d = conn.expect([bytes(p, "ascii") for p in patterns], timeout)
     if i == -1:
         msg = "Match failed, expected '%s', got '%s'" % (str(patterns), d)
         print(msg, file=sys.stderr)
         raise ValueError
     return i, m, d
 
+
 def encode_and_write(conn, comm="", sep="\n"):
     # Slow down the writes to help poor ol' serial-over-telnet
     for c in comm + sep:
-        conn.write(bytes(c, 'ascii'))
+        conn.write(bytes(c, "ascii"))
         time.sleep(0.01)
+
 
 def init_telnet(host, port=0, timeout=None):
     conn = Telnet(host, port, timeout)
@@ -58,13 +62,16 @@ def main():
 
     try:
         conn.encode_and_write()
-        i, m, d = conn.expect_or_raise([
-            "%s login:" % (mach["platform"]),
-            "root@%s:.*#" % (mach["platform"]),
-            "root@%s:.*#" % (args.machine),
-            "ast#",
-            "# ",
-        ], 5)
+        i, m, d = conn.expect_or_raise(
+            [
+                "%s login:" % (mach["platform"]),
+                "root@%s:.*#" % (mach["platform"]),
+                "root@%s:.*#" % (args.machine),
+                "ast#",
+                "# ",
+            ],
+            5,
+        )
 
         if i != 3:
             if i == 0:
@@ -81,27 +88,35 @@ def main():
         for comm in mach["u-boot"]["commands"]:
             conn.encode_and_write(comm)
             if "tftp" in comm:
-                i, m, d = conn.expect_or_raise([
-                    r"Bytes transferred = \d+ \([0-9a-f]+ hex\)",
-                    "Not retrying...",
-                    r"## Warning:",
-                    r"[*]{3} ERROR:",
-                    "Abort",
-                    "Retry count exceeded; starting again",
-                ])
+                i, m, d = conn.expect_or_raise(
+                    [
+                        r"Bytes transferred = \d+ \([0-9a-f]+ hex\)",
+                        "Not retrying...",
+                        r"## Warning:",
+                        r"[*]{3} ERROR:",
+                        "Abort",
+                        "Retry count exceeded; starting again",
+                    ]
+                )
                 if i > 0:
                     print("Error detected, exiting", file=sys.stderr)
                     return
 
         if args.initramfs:
-            conn.encode_and_write("setenv bootargs console=ttyS4,115200n root=/dev/ram rw earlyprintk debug")
+            conn.encode_and_write(
+                "setenv bootargs "
+                + "console=ttyS4,115200n root=/dev/ram rw earlyprintk debug"
+            )
             conn.read_until(b"ast#")
         else:
             conn.encode_and_write("printenv set_bootargs")
-            i, m, d = conn.expect_or_raise([
-                "set_bootargs=.*$",
-                "## Error: \"set_bootargs\" not defined",
-            ], 1)
+            i, m, d = conn.expect_or_raise(
+                [
+                    "set_bootargs=.*$",
+                    '## Error: "set_bootargs" not defined',
+                ],
+                1,
+            )
             if i == 0:
                 conn.encode_and_write("run set_bootargs")
                 conn.read_until(b"ast#")
@@ -110,6 +125,7 @@ def main():
         conn.read_until(b"Starting kernel")
     finally:
         conn.close()
+
 
 if __name__ == "__main__":
     main()

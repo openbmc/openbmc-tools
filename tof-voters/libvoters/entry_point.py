@@ -2,7 +2,7 @@
 
 import argparse
 from importlib import import_module
-from typing import List
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Obtain TOF voter metrics")
@@ -22,7 +22,7 @@ def main() -> int:
         import_module("libvoters.subcmd.dump-gerrit"),
         import_module("libvoters.subcmd.report"),
     ]
-    commands = [x.subcmd(subparser) for x in commands] # type: ignore
+    commands = [x.subcmd(subparser) for x in commands]
 
     args = parser.parse_args()
 

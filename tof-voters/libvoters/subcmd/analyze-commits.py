@@ -42,7 +42,7 @@ class subcmd:
             if not os.path.isfile(path):
                 continue
 
-            if not re.match("[0-9]*\.json", f):
+            if not re.match("[0-9]*\\.json", f):
                 continue
 
             with open(path, "r") as file:

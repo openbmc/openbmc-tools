@@ -7,9 +7,8 @@ file may also be provided that contains a set of data that will be used to
 filter configured expected entries from being checked in the input JSON.
 """
 
-import os
-import sys
 import json
+import sys
 from argparse import ArgumentParser
 
 
@@ -107,7 +106,7 @@ def applyFilters(expected, filters):
         # $not - Performs a NOT operation on the specified expression and
         #        returns the documents that do not meet the expression.
         #        i.e.) {"$not": {"age": 4}}
-        "$not": doNot
+        "$not": doNot,
     }
 
     isExpected = {}
@@ -152,40 +151,51 @@ def findExpected(expected, input):
     return result
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = ArgumentParser(
         description="Expected JSON cross-checker. Similar to a JSON schema \
                      validator, however this cross-checks a set of expected \
                      property states against the contents of a JSON input \
                      file with the ability to apply an optional set of \
                      filters against what's expected based on the property \
-                     states within the provided filter JSON.")
+                     states within the provided filter JSON."
+    )
 
-    parser.add_argument('index',
-                        help='Index name into a set of entries within the \
-                              expected JSON file')
-    parser.add_argument('expected_json',
-                        help='JSON input file containing the expected set of \
+    parser.add_argument(
+        "index",
+        help="Index name into a set of entries within the \
+                              expected JSON file",
+    )
+    parser.add_argument(
+        "expected_json",
+        help="JSON input file containing the expected set of \
                               entries, by index name, to be contained within \
-                              the JSON input file')
-    parser.add_argument('input_json',
-                        help='JSON input file containing the JSON data to be \
-                              cross-checked against what is expected')
-    parser.add_argument('-f', '--filters', dest='filter_json',
-                        help='JSON file containing path:property:value \
+                              the JSON input file",
+    )
+    parser.add_argument(
+        "input_json",
+        help="JSON input file containing the JSON data to be \
+                              cross-checked against what is expected",
+    )
+    parser.add_argument(
+        "-f",
+        "--filters",
+        dest="filter_json",
+        help="JSON file containing path:property:value \
                               associations to optional filters configured \
-                              within the expected set of JSON entries')
+                              within the expected set of JSON entries",
+    )
 
     args = parser.parse_args()
 
-    with open(args.expected_json, 'r') as expected_json:
+    with open(args.expected_json, "r") as expected_json:
         expected = json.load(expected_json) or {}
-    with open(args.input_json, 'r') as input_json:
+    with open(args.input_json, "r") as input_json:
         input = json.load(input_json) or {}
 
     filters = {}
     if args.filter_json:
-        with open(args.filter_json, 'r') as filters_json:
+        with open(args.filter_json, "r") as filters_json:
             filters = json.load(filters_json) or {}
 
     if args.index in expected and expected[args.index] is not None:
