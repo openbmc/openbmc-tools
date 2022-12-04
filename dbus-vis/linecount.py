@@ -1,7 +1,8 @@
 # This script is used for printing out the number of packets in a pcap file
 
-from scapy.all import rdpcap
 import sys
+
+from scapy.all import rdpcap
 
 file_name = sys.argv[1]
 try:
@@ -10,5 +11,5 @@ try:
     for packet in stream:
         n += 1
     print(n)
-except Exception as e:
+except Exception:
     pass

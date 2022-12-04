@@ -2,12 +2,13 @@
 
 import argparse
 import json
-import libvoters.acceptable as acceptable
 import os
 import re
 from collections import defaultdict
-from libvoters.time import timestamp, TimeOfDay
 from typing import Any, Dict
+
+import libvoters.acceptable as acceptable
+from libvoters.time import TimeOfDay, timestamp
 
 
 class subcmd:
@@ -42,7 +43,7 @@ class subcmd:
             if not os.path.isfile(path):
                 continue
 
-            if not re.match("[0-9]*\.json", f):
+            if not re.match(r"[0-9]*\.json", f):
                 continue
 
             with open(path, "r") as file:

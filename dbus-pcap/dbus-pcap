@@ -3,31 +3,37 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2019 IBM Corp.
 
+import json
+import struct
+import sys
 from argparse import ArgumentParser
-from itertools import islice, cycle
 from collections import namedtuple
 from enum import Enum
+from itertools import islice
+
 from scapy.all import rdpcap
-import struct
-import json
-import sys
 
 RawMessage = namedtuple("RawMessage", "endian, header, data")
-FixedHeader = namedtuple("FixedHeader", "endian, type, flags, version, length, cookie")
+FixedHeader = namedtuple(
+    "FixedHeader", "endian, type, flags, version, length, cookie"
+)
 CookedHeader = namedtuple("CookedHeader", "fixed, fields")
 CookedMessage = namedtuple("CookedMessage", "header, body")
 TypeProperty = namedtuple("TypeProperty", "field, type, nature")
 TypeContainer = namedtuple("TypeContainer", "type, members")
 Field = namedtuple("Field", "type, data")
 
+
 class MessageEndian(Enum):
-    LITTLE = ord('l')
-    BIG = ord('B')
+    LITTLE = ord("l")
+    BIG = ord("B")
+
 
 StructEndianLookup = {
-    MessageEndian.LITTLE.value : "<",
-    MessageEndian.BIG.value : ">"
+    MessageEndian.LITTLE.value: "<",
+    MessageEndian.BIG.value: ">",
 }
+
 
 class MessageType(Enum):
     INVALID = 0
@@ -36,10 +42,12 @@ class MessageType(Enum):
     ERROR = 3
     SIGNAL = 4
 
+
 class MessageFlags(Enum):
     NO_REPLY_EXPECTED = 0x01
     NO_AUTO_START = 0x02
     ALLOW_INTERACTIVE_AUTHORIZATION = 0x04
+
 
 class MessageFieldType(Enum):
     INVALID = 0
@@ -53,30 +61,33 @@ class MessageFieldType(Enum):
     SIGNATURE = 8
     UNIX_FDS = 9
 
+
 class DBusType(Enum):
     INVALID = 0
-    BYTE = ord('y')
-    BOOLEAN = ord('b')
-    INT16 = ord('n')
-    UINT16 = ord('q')
-    INT32 = ord('i')
-    UINT32 = ord('u')
-    INT64 = ord('x')
-    UINT64 = ord('t')
-    DOUBLE = ord('d')
-    STRING = ord('s')
-    OBJECT_PATH = ord('o')
-    SIGNATURE = ord('g')
-    ARRAY = ord('a')
-    STRUCT = ord('(')
-    VARIANT = ord('v')
-    DICT_ENTRY = ord('{')
-    UNIX_FD = ord('h')
+    BYTE = ord("y")
+    BOOLEAN = ord("b")
+    INT16 = ord("n")
+    UINT16 = ord("q")
+    INT32 = ord("i")
+    UINT32 = ord("u")
+    INT64 = ord("x")
+    UINT64 = ord("t")
+    DOUBLE = ord("d")
+    STRING = ord("s")
+    OBJECT_PATH = ord("o")
+    SIGNATURE = ord("g")
+    ARRAY = ord("a")
+    STRUCT = ord("(")
+    VARIANT = ord("v")
+    DICT_ENTRY = ord("{")
+    UNIX_FD = ord("h")
+
 
 DBusContainerTerminatorLookup = {
-    chr(DBusType.STRUCT.value) : ')',
-    chr(DBusType.DICT_ENTRY.value) : '}',
+    chr(DBusType.STRUCT.value): ")",
+    chr(DBusType.DICT_ENTRY.value): "}",
 }
+
 
 class DBusTypeCategory(Enum):
     FIXED = {
@@ -89,7 +100,7 @@ class DBusTypeCategory(Enum):
         DBusType.INT64.value,
         DBusType.UINT64.value,
         DBusType.DOUBLE.value,
-        DBusType.UNIX_FD.value
+        DBusType.UNIX_FD.value,
     }
     STRING = {
         DBusType.STRING.value,
@@ -106,26 +117,32 @@ class DBusTypeCategory(Enum):
         DBusType.INVALID.value,
     }
 
+
 TypePropertyLookup = {
-    DBusType.BYTE.value : TypeProperty(DBusType.BYTE, 'B', 1),
+    DBusType.BYTE.value: TypeProperty(DBusType.BYTE, "B", 1),
     # DBus booleans are 32 bit, with only the LSB used. Extract as 'I'.
-    DBusType.BOOLEAN.value : TypeProperty(DBusType.BOOLEAN, 'I', 4),
-    DBusType.INT16.value : TypeProperty(DBusType.INT16, 'h', 2),
-    DBusType.UINT16.value : TypeProperty(DBusType.UINT16, 'H', 2),
-    DBusType.INT32.value : TypeProperty(DBusType.INT32, 'i', 4),
-    DBusType.UINT32.value : TypeProperty(DBusType.UINT32, 'I', 4),
-    DBusType.INT64.value : TypeProperty(DBusType.INT64, 'q', 8),
-    DBusType.UINT64.value : TypeProperty(DBusType.UINT64, 'Q', 8),
-    DBusType.DOUBLE.value : TypeProperty(DBusType.DOUBLE, 'd', 8),
-    DBusType.STRING.value : TypeProperty(DBusType.STRING, 's', DBusType.UINT32),
-    DBusType.OBJECT_PATH.value : TypeProperty(DBusType.OBJECT_PATH, 's', DBusType.UINT32),
-    DBusType.SIGNATURE.value : TypeProperty(DBusType.SIGNATURE, 's', DBusType.BYTE),
-    DBusType.ARRAY.value : TypeProperty(DBusType.ARRAY, None, DBusType.UINT32),
-    DBusType.STRUCT.value : TypeProperty(DBusType.STRUCT, None, 8),
-    DBusType.VARIANT.value : TypeProperty(DBusType.VARIANT, None, 1),
-    DBusType.DICT_ENTRY.value : TypeProperty(DBusType.DICT_ENTRY, None, 8),
-    DBusType.UNIX_FD.value : TypeProperty(DBusType.UINT32, None, 8),
+    DBusType.BOOLEAN.value: TypeProperty(DBusType.BOOLEAN, "I", 4),
+    DBusType.INT16.value: TypeProperty(DBusType.INT16, "h", 2),
+    DBusType.UINT16.value: TypeProperty(DBusType.UINT16, "H", 2),
+    DBusType.INT32.value: TypeProperty(DBusType.INT32, "i", 4),
+    DBusType.UINT32.value: TypeProperty(DBusType.UINT32, "I", 4),
+    DBusType.INT64.value: TypeProperty(DBusType.INT64, "q", 8),
+    DBusType.UINT64.value: TypeProperty(DBusType.UINT64, "Q", 8),
+    DBusType.DOUBLE.value: TypeProperty(DBusType.DOUBLE, "d", 8),
+    DBusType.STRING.value: TypeProperty(DBusType.STRING, "s", DBusType.UINT32),
+    DBusType.OBJECT_PATH.value: TypeProperty(
+        DBusType.OBJECT_PATH, "s", DBusType.UINT32
+    ),
+    DBusType.SIGNATURE.value: TypeProperty(
+        DBusType.SIGNATURE, "s", DBusType.BYTE
+    ),
+    DBusType.ARRAY.value: TypeProperty(DBusType.ARRAY, None, DBusType.UINT32),
+    DBusType.STRUCT.value: TypeProperty(DBusType.STRUCT, None, 8),
+    DBusType.VARIANT.value: TypeProperty(DBusType.VARIANT, None, 1),
+    DBusType.DICT_ENTRY.value: TypeProperty(DBusType.DICT_ENTRY, None, 8),
+    DBusType.UNIX_FD.value: TypeProperty(DBusType.UINT32, None, 8),
 }
+
 
 def parse_signature(sigstream):
     sig = ord(next(sigstream))
@@ -154,6 +171,7 @@ def parse_signature(sigstream):
 
     return TypeContainer._make(ty)
 
+
 class AlignedStream(object):
     def __init__(self, buf, offset=0):
         self.stash = (buf, offset)
@@ -167,7 +185,9 @@ class AlignedStream(object):
             prop = TypePropertyLookup[prop.nature.value]
         if prop.nature == DBusType.UINT32:
             prop = TypePropertyLookup[prop.nature.value]
-        advance = (prop.nature - (self.offset & (prop.nature - 1))) % prop.nature
+        advance = (
+            prop.nature - (self.offset & (prop.nature - 1))
+        ) % prop.nature
         _ = bytes(islice(self.stream, advance))
         self.offset += len(_)
 
@@ -188,23 +208,40 @@ class AlignedStream(object):
         offset = self.offset
         self.offset += len(remaining)
         if self.offset - self.stash[1] != len(self.stash[0]):
-            print("(self.offset - self.stash[1]): %d, len(self.stash[0]): %d"
-                % (self.offset - self.stash[1], len(self.stash[0])), file=sys.stderr)
+            print(
+                "(self.offset - self.stash[1]): %d, len(self.stash[0]): %d"
+                % (self.offset - self.stash[1], len(self.stash[0])),
+                file=sys.stderr,
+            )
             raise MalformedPacketError
         return remaining, offset
 
     def dump(self):
-        print("AlignedStream: absolute offset: {}".format(self.offset), file=sys.stderr)
-        print("AlignedStream: relative offset: {}".format(self.offset - self.stash[1]),
-                file=sys.stderr)
-        print("AlignedStream: remaining buffer:\n{}".format(self.drain()[0]), file=sys.stderr)
-        print("AlignedStream: provided buffer:\n{}".format(self.stash[0]), file=sys.stderr)
+        print(
+            "AlignedStream: absolute offset: {}".format(self.offset),
+            file=sys.stderr,
+        )
+        print(
+            "AlignedStream: relative offset: {}".format(
+                self.offset - self.stash[1]
+            ),
+            file=sys.stderr,
+        )
+        print(
+            "AlignedStream: remaining buffer:\n{}".format(self.drain()[0]),
+            file=sys.stderr,
+        )
+        print(
+            "AlignedStream: provided buffer:\n{}".format(self.stash[0]),
+            file=sys.stderr,
+        )
 
     def dump_assert(self, condition):
         if condition:
             return
         self.dump()
         assert condition
+
 
 def parse_fixed(endian, stream, tc):
     assert tc.type.value in TypePropertyLookup
@@ -216,9 +253,15 @@ def parse_fixed(endian, stream, tc):
     except struct.error as e:
         print(e, file=sys.stderr)
         print("parse_fixed: Error unpacking {}".format(val), file=sys.stderr)
-        print("parse_fixed: Attempting to unpack type {} with properties {}".format(tc.type, prop),
-              file=sys.stderr)
+        print(
+            (
+                "parse_fixed: Attempting to unpack type {} "
+                + "with properties {}"
+            ).format(tc.type, prop),
+            file=sys.stderr,
+        )
         stream.dump_assert(False)
+
 
 def parse_string(endian, stream, tc):
     assert tc.type.value in TypePropertyLookup
@@ -232,14 +275,21 @@ def parse_string(endian, stream, tc):
     try:
         stream.dump_assert(len(val) == size + 1)
         try:
-            return struct.unpack("{}{}".format(size, prop.type), val[:size])[0].decode()
+            return struct.unpack("{}{}".format(size, prop.type), val[:size])[
+                0
+            ].decode()
         except struct.error as e:
             stream.dump()
             raise AssertionError(e)
     except AssertionError as e:
-        print("parse_string: Error unpacking string of length {} from {}".format(size, val),
-                file=sys.stderr)
+        print(
+            "parse_string: Error unpacking string of length {} from {}".format(
+                size, val
+            ),
+            file=sys.stderr,
+        )
         raise e
+
 
 def parse_type(endian, stream, tc):
     if tc.type.value in DBusTypeCategory.FIXED.value:
@@ -253,6 +303,7 @@ def parse_type(endian, stream, tc):
 
     return val
 
+
 def parse_array(endian, stream, tc):
     arr = list()
     length = parse_fixed(endian, stream, TypeContainer(DBusType.UINT32, None))
@@ -265,6 +316,7 @@ def parse_array(endian, stream, tc):
             stream.align(tc)
     return arr
 
+
 def parse_struct(endian, stream, tcs):
     arr = list()
     stream.align(TypeContainer(DBusType.STRUCT, None))
@@ -272,10 +324,12 @@ def parse_struct(endian, stream, tcs):
         arr.append(parse_type(endian, stream, tc))
     return arr
 
+
 def parse_variant(endian, stream):
     sig = parse_string(endian, stream, TypeContainer(DBusType.SIGNATURE, None))
     tc = parse_signature(iter(sig))
     return parse_type(endian, stream, tc)
+
 
 def parse_container(endian, stream, tc):
     if tc.type == DBusType.ARRAY:
@@ -287,6 +341,7 @@ def parse_container(endian, stream, tc):
     else:
         stream.dump_assert(False)
 
+
 def parse_fields(endian, stream):
     sig = parse_signature(iter("a(yv)"))
     fields = parse_container(endian, stream, sig)
@@ -295,19 +350,24 @@ def parse_fields(endian, stream):
     stream.align(TypeContainer(DBusType.STRUCT, None))
     return list(map(lambda v: Field(MessageFieldType(v[0]), v[1]), fields))
 
+
 class MalformedPacketError(Exception):
     pass
+
 
 def parse_header(raw, ignore_error):
     assert raw.endian in StructEndianLookup.keys()
     endian = StructEndianLookup[raw.endian]
-    fixed = FixedHeader._make(struct.unpack("{}BBBBLL".format(endian), raw.header))
+    fixed = FixedHeader._make(
+        struct.unpack("{}BBBBLL".format(endian), raw.header)
+    )
     astream = AlignedStream(raw.data, len(raw.header))
     fields = parse_fields(endian, astream)
     data, offset = astream.drain()
-    if ignore_error == False and fixed.length > len(data):
+    if (not ignore_error) and fixed.length > len(data):
         raise MalformedPacketError
     return CookedHeader(fixed, fields), AlignedStream(data, offset)
+
 
 def parse_body(header, stream):
     assert header.fixed.endian in StructEndianLookup
@@ -326,6 +386,7 @@ def parse_body(header, stream):
             break
     return body
 
+
 def parse_message(raw):
     try:
         header, data = parse_header(raw, False)
@@ -339,20 +400,24 @@ def parse_message(raw):
         print(raw, file=sys.stderr)
         raise e
 
+
 def parse_packet(packet):
     data = bytes(packet)
     raw = RawMessage(data[0], data[:12], data[12:])
     try:
         msg = parse_message(raw)
-    except MalformedPacketError as e:
+    except MalformedPacketError:
         print("Got malformed packet: {}".format(raw), file=sys.stderr)
-        # For a message that is so large that its payload data could not be parsed,
-        # just parse its header, then set its data field to empty.
+        # For a message that is so large that its payload data could not be
+        # parsed, just parse its header, then set its data field to empty.
         header, data = parse_header(raw, True)
         msg = CookedMessage(header, [])
     return msg
 
+
 CallEnvelope = namedtuple("CallEnvelope", "cookie, origin")
+
+
 def parse_session(session, matchers, track_calls):
     calls = set()
     for packet in session:
@@ -362,52 +427,74 @@ def parse_session(session, matchers, track_calls):
                 yield packet.time, cooked
             elif any(all(r(cooked) for r in m) for m in matchers):
                 if cooked.header.fixed.type == MessageType.METHOD_CALL.value:
-                    s = [f for f in cooked.header.fields
-                            if f.type == MessageFieldType.SENDER][0]
+                    s = [
+                        f
+                        for f in cooked.header.fields
+                        if f.type == MessageFieldType.SENDER
+                    ][0]
                     calls.add(CallEnvelope(cooked.header.fixed.cookie, s.data))
                 yield packet.time, cooked
             elif track_calls:
                 if cooked.header.fixed.type != MessageType.METHOD_RETURN.value:
                     continue
-                rs = [f for f in cooked.header.fields
-                        if f.type == MessageFieldType.REPLY_SERIAL][0]
-                d = [f for f in cooked.header.fields
-                        if f.type == MessageFieldType.DESTINATION][0]
+                rs = [
+                    f
+                    for f in cooked.header.fields
+                    if f.type == MessageFieldType.REPLY_SERIAL
+                ][0]
+                d = [
+                    f
+                    for f in cooked.header.fields
+                    if f.type == MessageFieldType.DESTINATION
+                ][0]
                 ce = CallEnvelope(rs.data, d.data)
                 if ce in calls:
                     calls.remove(ce)
                     yield packet.time, cooked
-        except MalformedPacketError as e:
+        except MalformedPacketError:
             pass
+
 
 def gen_match_type(rule):
     mt = MessageType.__members__[rule.value.upper()]
     return lambda p: p.header.fixed.type == mt.value
 
+
 def gen_match_sender(rule):
     mf = Field(MessageFieldType.SENDER, rule.value)
     return lambda p: any(f == mf for f in p.header.fields)
+
 
 def gen_match_interface(rule):
     mf = Field(MessageFieldType.INTERFACE, rule.value)
     return lambda p: any(f == mf for f in p.header.fields)
 
+
 def gen_match_member(rule):
     mf = Field(MessageFieldType.MEMBER, rule.value)
     return lambda p: any(f == mf for f in p.header.fields)
+
 
 def gen_match_path(rule):
     mf = Field(MessageFieldType.PATH, rule.value)
     return lambda p: any(f == mf for f in p.header.fields)
 
+
 def gen_match_destination(rule):
     mf = Field(MessageFieldType.DESTINATION, rule.value)
     return lambda p: any(f == mf for f in p.header.fields)
 
+
 ValidMatchKeys = {
-        "type", "sender", "interface", "member", "path", "destination"
+    "type",
+    "sender",
+    "interface",
+    "member",
+    "path",
+    "destination",
 }
 MatchRule = namedtuple("MatchExpression", "key, value")
+
 
 # https://dbus.freedesktop.org/doc/dbus-specification.html#message-bus-routing-match-rules
 def parse_match_rules(exprs):
@@ -415,39 +502,56 @@ def parse_match_rules(exprs):
     for mexpr in exprs:
         rules = list()
         for rexpr in mexpr.split(","):
-            rule = MatchRule._make(map(lambda s: str.strip(s, "'"), rexpr.split("=")))
-            assert rule.key in ValidMatchKeys, "Invalid expression: %" % rule
+            rule = MatchRule._make(
+                map(lambda s: str.strip(s, "'"), rexpr.split("="))
+            )
+            assert rule.key in ValidMatchKeys, f"Invalid expression: {rule}"
             rules.append(globals()["gen_match_{}".format(rule.key)](rule))
         matchers.append(rules)
     return matchers
+
 
 def packetconv(obj):
     if isinstance(obj, Enum):
         return obj.value
     raise TypeError
 
+
 def main():
     parser = ArgumentParser()
-    parser.add_argument("--json", action="store_true",
-            help="Emit a JSON representation of the messages")
-    parser.add_argument("--no-track-calls", action="store_true", default=False,
-            help="Make a call response pass filters")
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Emit a JSON representation of the messages",
+    )
+    parser.add_argument(
+        "--no-track-calls",
+        action="store_true",
+        default=False,
+        help="Make a call response pass filters",
+    )
     parser.add_argument("file", help="The pcap file")
-    parser.add_argument("expressions", nargs="*",
-            help="DBus message match expressions")
+    parser.add_argument(
+        "expressions", nargs="*", help="DBus message match expressions"
+    )
     args = parser.parse_args()
     stream = rdpcap(args.file)
     matchers = parse_match_rules(args.expressions)
     try:
         if args.json:
-            for (_, msg) in parse_session(stream, matchers, not args.no_track_calls):
+            for (_, msg) in parse_session(
+                stream, matchers, not args.no_track_calls
+            ):
                 print("{}".format(json.dumps(msg, default=packetconv)))
         else:
-            for (time, msg) in parse_session(stream, matchers, not args.no_track_calls):
+            for (time, msg) in parse_session(
+                stream, matchers, not args.no_track_calls
+            ):
                 print("{}: {}".format(time, msg))
                 print()
     except BrokenPipeError:
         pass
+
 
 if __name__ == "__main__":
     main()
