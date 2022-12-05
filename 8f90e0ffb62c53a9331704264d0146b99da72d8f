@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5b015565_20798502",
+        "filename": "pretty-journal/pretty-journal.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-12-05T12:18:19Z",
+      "side": 1,
+      "message": "Black is \"opinionated\" which is a fancy way of saying \"I don\u0027t give you any options\".  Let me see if I can rewrite this abomination in a way that isn\u0027t so terrible.",
+      "parentUuid": "838c2bfd_b730990b",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 17
+      },
+      "revId": "8f90e0ffb62c53a9331704264d0146b99da72d8f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "31f15642_e763939b",
         "filename": "tof-voters/libvoters/subcmd/analyze-commits.py",
         "patchSetId": 1
