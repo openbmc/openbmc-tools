@@ -34,6 +34,24 @@
       "parentUuid": "0c6cb1d2_6486f500",
       "revId": "f5fc5af54c1c5223504b9c949c2864c76e7b7acf",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2ef3d71_c129a241",
+        "filename": "pretty-journal/pretty-journal.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-12-05T18:54:44Z",
+      "side": 0,
+      "message": "oh, python2 is still the default on my mac, which is where I run this. And sure, I\u0027ll add it on my list to get this over to python3 before the end of the year. For now, I\u0027d say just ignore with your formatting commit after this?",
+      "parentUuid": "ae0ce82e_cfa4ccb0",
+      "revId": "f5fc5af54c1c5223504b9c949c2864c76e7b7acf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
