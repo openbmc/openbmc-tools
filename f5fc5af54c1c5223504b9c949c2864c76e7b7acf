@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e75ad3d4_b2a0d563",
+        "filename": "tof-voters/libvoters/entry_point.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-12-05T02:27:17Z",
+      "side": 0,
+      "message": "Did you actually want to delete this?",
+      "range": {
+        "startLine": 25,
+        "startChar": 55,
+        "endLine": 25,
+        "endChar": 69
+      },
+      "revId": "f5fc5af54c1c5223504b9c949c2864c76e7b7acf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
