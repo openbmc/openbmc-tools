@@ -120,6 +120,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "03c9471b_71fd0cb2",
+        "filename": "pretty-journal/pretty-journal.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-12-05T12:20:59Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b659cdd8_4b9d52da",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 17
+      },
+      "revId": "8f90e0ffb62c53a9331704264d0146b99da72d8f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "31f15642_e763939b",
