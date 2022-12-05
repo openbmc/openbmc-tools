@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "838c2bfd_b730990b",
+        "filename": "pretty-journal/pretty-journal.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-12-05T10:31:43Z",
+      "side": 1,
+      "message": "Are there any rules we can tweak to make it look less terrible? Or can we change the code layout so the formatter doesn\u0027t mangle it so hard?",
+      "parentUuid": "2772a71c_f436da3b",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 17
+      },
+      "revId": "8f90e0ffb62c53a9331704264d0146b99da72d8f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "31f15642_e763939b",
         "filename": "tof-voters/libvoters/subcmd/analyze-commits.py",
         "patchSetId": 1
