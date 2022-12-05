@@ -16,6 +16,24 @@
       "message": "Hmm, I still use this fairly often. BMC dumps by default only have the pretty version of the journal (with all the meta data). This is a useful script to quickly convert it to a normal journal.",
       "revId": "f5fc5af54c1c5223504b9c949c2864c76e7b7acf",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae0ce82e_cfa4ccb0",
+        "filename": "pretty-journal/pretty-journal.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-12-05T17:36:09Z",
+      "side": 0,
+      "message": "How does it work if it is python2?  Would you be willing to update it to python3?",
+      "parentUuid": "0c6cb1d2_6486f500",
+      "revId": "f5fc5af54c1c5223504b9c949c2864c76e7b7acf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
