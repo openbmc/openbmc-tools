@@ -7,10 +7,10 @@ set -eou pipefail
 
 if [ $# -lt 2 ]
 then
-	echo Usage: $0 [USER@]HOST EVENTSET [EVENTSET...]
-	echo
-	echo Valid EVENTSETs: fsi, occ, sbefifo, timer, sched
-	exit 1
+    echo Usage: $0 [USER@]HOST EVENTSET [EVENTSET...]
+    echo
+    echo Valid EVENTSETs: fsi, occ, sbefifo, timer, sched
+    exit 1
 fi
 
 TRACE_TARGET="$1"
@@ -20,8 +20,8 @@ TRACE_EVENT_SET="$@"
 TRACESCRIPT_PATH="$(mktemp obmc-fsi-trace.XXXXXX)"
 TRACESCRIPT="$(basename "${TRACESCRIPT_PATH}")"
 
-on_exit() {
-	rm -f "${TRACESCRIPT_PATH}"
+function on_exit() {
+    rm -f "${TRACESCRIPT_PATH}"
 }
 
 trap on_exit EXIT

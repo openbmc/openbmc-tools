@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-from enum import Enum
 from datetime import datetime, timezone
+from enum import Enum
 
 
 class TimeOfDay(Enum):

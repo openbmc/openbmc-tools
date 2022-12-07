@@ -539,12 +539,12 @@ def main():
     matchers = parse_match_rules(args.expressions)
     try:
         if args.json:
-            for (_, msg) in parse_session(
+            for _, msg in parse_session(
                 stream, matchers, not args.no_track_calls
             ):
                 print("{}".format(json.dumps(msg, default=packetconv)))
         else:
-            for (time, msg) in parse_session(
+            for time, msg in parse_session(
                 stream, matchers, not args.no_track_calls
             ):
                 print("{}: {}".format(time, msg))

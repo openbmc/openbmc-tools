@@ -1,27 +1,27 @@
 {
-  "name": "openbmc_ipmi_timeline_vis",
-  "version": "0.0.1",
-  "description": "OpenBMC IPMI Timeline Visualizer",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/quadpixels/openbmc_ipmi_timeline_vis.git"
-  },
-  "keywords": [
-    "OpenBMC",
-    "IPMI"
-  ],
-  "devDependencies": {
-    "electron": "^18.2.4"
-  },
-  "dependencies": {
-    "electron-dialog": "^2.0.0",
-    "file-system": "^2.2.2",
-    "md5-file": "^5.0.0",
-    "tar-stream": "^2.1.2",
-    "targz": "^1.0.1"
-  }
+    "name": "openbmc_ipmi_timeline_vis",
+    "version": "0.0.1",
+    "description": "OpenBMC IPMI Timeline Visualizer",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/quadpixels/openbmc_ipmi_timeline_vis.git"
+    },
+    "keywords": [
+        "OpenBMC",
+        "IPMI"
+    ],
+    "devDependencies": {
+        "electron": "^18.2.4"
+    },
+    "dependencies": {
+        "electron-dialog": "^2.0.0",
+        "file-system": "^2.2.2",
+        "md5-file": "^5.0.0",
+        "tar-stream": "^2.1.2",
+        "targz": "^1.0.1"
+    }
 }

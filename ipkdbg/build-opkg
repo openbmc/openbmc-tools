@@ -8,12 +8,12 @@ set -x
 : ${OPKG_LIBS:="-lz -pthread"}
 
 generate_configure_id() {
-	echo "$@" | sha256sum | awk '{ printf "build-opkg-%s", $1 }'
+    echo "$@" | sha256sum | awk '{ printf "build-opkg-%s", $1 }'
 }
 
 mark_configured() {
-	rm -f build-opkg-*
-	touch $1
+    rm -f build-opkg-*
+    touch $1
 }
 
 # libarchive
@@ -67,14 +67,14 @@ OPKG_OPTS="\
 --disable-dependency-tracking"
 OPKG_ID=$(generate_configure_id "$OPKG_OPTS" "$OPKG_LIBS")
 [ -f $OPKG_ID ] || ( \
-	AR_FLAGS=Tcru \
-	PKG_CONFIG_PATH=$(realpath ../libarchive-3.5.2/root/usr/local/lib/pkgconfig/):$(realpath ../curl-7.79.1/root/usr/local/lib/pkgconfig/) \
-	CURL_CFLAGS=-I$(realpath ../curl-7.79.1/root/usr/local/include/) \
-	CURL_LIBS=$(realpath ../curl-7.79.1/root/usr/local/lib/libcurl.a) \
-	LIBARCHIVE_CFLAGS=-I$(realpath ../libarchive-3.5.2/root/usr/local/include/) \
-	LIBARCHIVE_LIBS=$(realpath ../libarchive-3.5.2/root/usr/local/lib/libarchive.a) \
-	LIBS="$OPKG_LIBS" \
-	./configure $OPKG_OPTS && mark_configured $OPKG_ID \
-)
+        AR_FLAGS=Tcru \
+        PKG_CONFIG_PATH=$(realpath ../libarchive-3.5.2/root/usr/local/lib/pkgconfig/):$(realpath ../curl-7.79.1/root/usr/local/lib/pkgconfig/) \
+        CURL_CFLAGS=-I$(realpath ../curl-7.79.1/root/usr/local/include/) \
+        CURL_LIBS=$(realpath ../curl-7.79.1/root/usr/local/lib/libcurl.a) \
+        LIBARCHIVE_CFLAGS=-I$(realpath ../libarchive-3.5.2/root/usr/local/include/) \
+        LIBARCHIVE_LIBS=$(realpath ../libarchive-3.5.2/root/usr/local/lib/libarchive.a) \
+        LIBS="$OPKG_LIBS" \
+        ./configure $OPKG_OPTS && mark_configured $OPKG_ID \
+    )
 make -j$(nproc)
 cd ..

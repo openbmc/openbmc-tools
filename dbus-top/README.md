@@ -8,7 +8,6 @@ Other contributors: Sui Chen (suichen@google.com) Alex Qiu (xqiu@google.com)
 
 Created: May 17, 2021
 
-
 ## Problem Description
 
 Design and Implementation of a top-like tool for DBus. This tool shows metrics
@@ -24,34 +23,35 @@ might otherwise require the user to type long commands or scripts.
 This tool adds to the set of command-line based tools that run directly on the
 BMC. Using a tool that directly runs on the BMC, a user can debug problems
 in-situ, without needing to extract data from the BMC to the host for offline
-analysis. This tool resembles a typical top-like user interface, giving the
-user a top-down view of various DBus states. This tool is designed in the same
-logic as similarly-purposed, existing tools, each focusing on one particular
-field such as ctop (for containers), htop (for viewing process stats),
-iotop (for I/O throughput), iftop (for network traffic).
+analysis. This tool resembles a typical top-like user interface, giving the user
+a top-down view of various DBus states. This tool is designed in the same logic
+as similarly-purposed, existing tools, each focusing on one particular field
+such as ctop (for containers), htop (for viewing process stats), iotop (for I/O
+throughput), iftop (for network traffic).
 
 ## Requirements
 
 Constraints:
-1. BMC consoles may not be capable of displaying all text styles supported
-   in ncurses Dependency on libncurses which might add ~130KB overhead
-   to the BMC’s Flash space.
-2. Monitoring DBus should not incur so much performance overhead as to
-   distort measured values.
-3. Users are OpenBMC users and developers: This tool should help beginners
-   learn the basics of OpenBMC, as well as help seasoned developers quickly
-   locate a problem.
+
+1. BMC consoles may not be capable of displaying all text styles supported in
+   ncurses Dependency on libncurses which might add ~130KB overhead to the BMC’s
+   Flash space.
+2. Monitoring DBus should not incur so much performance overhead as to distort
+   measured values.
+3. Users are OpenBMC users and developers: This tool should help beginners learn
+   the basics of OpenBMC, as well as help seasoned developers quickly locate a
+   problem.
 
 Scope:
-1. This tool is standalone, self-sufficient, with minimum dependency
-   on existing software packages (only depends on basic packages like
-   systemd, libdbus, sdbus, sdbusplus, and libncurses.)
-   Data size, transaction rates, bandwidth: We will be looking at
-   typically hundreds of DBus messages per second and around 1 MB/s data
-   throughput. The BMC’s processing power and memory capacity are sufficient
-   for the scale of the data this tool is processing.
-2. This tool should work on a live DBus as well as on a capture file
-   (a pcap file).
+
+1. This tool is standalone, self-sufficient, with minimum dependency on existing
+   software packages (only depends on basic packages like systemd, libdbus,
+   sdbus, sdbusplus, and libncurses.) Data size, transaction rates, bandwidth:
+   We will be looking at typically hundreds of DBus messages per second and
+   around 1 MB/s data throughput. The BMC’s processing power and memory capacity
+   are sufficient for the scale of the data this tool is processing.
+2. This tool should work on a live DBus as well as on a capture file (a pcap
+   file).
 3. This tool should work both on the host or the BMC. The UI design is scaled to
    work with large numbers of sensors and different console sizes.
 
@@ -60,7 +60,7 @@ Scope:
 The proposed design is to layout a multi-window UI similar to how a tiled window
 manager does:
 
-```
+```text
 +----------------------------------------------------------------------------+
 |Message Type          | msg/s        History                 (Total msg/s)  |
 |Method Call             45.00        -  .       .       .       .    -2300  |
@@ -90,26 +90,32 @@ manager does:
 
 The UI has 3 windows:
 
-1. Top, summary window: This window is divided into two sections:
-  - The dbus traffic dump that shows the method calls, method returns,signals
-    and errors in every dbus callback. This is significant because it shows the
-    latency between every call back and the other section that shows the graph
-    can benefit from this.
-  - The other part shows a history graph of these
-    corresponding data and it is designed this way to show users a pictorial
-    representation of the callback metrics.
+### Top, summary window
 
-2. Bottom-left, sensor detail window: This window has two states:
-  - The window shows the list of all sensors (as defined by DBus objects
-    implementing the xyz.openbmc_project.Sensor.Value) by default
-  - When a sensor is selected, it shows the corresponding details including
-    sensor name, the dbus connection, PID and the dbus service associated with
-    the sensor. This will be helpful in understanding what is connected to the
-    sensor in a case of performance related to the sensor.
+This window is divided into two sections:
+
+- The dbus traffic dump that shows the method calls, method returns,signals and
+  errors in every dbus callback. This is significant because it shows the
+  latency between every call back and the other section that shows the graph can
+  benefit from this.
+- The other part shows a history graph of these corresponding data and it is
+  designed this way to show users a pictorial representation of the callback
+  metrics.
+
+### Bottom-left, sensor detail window
+
+This window has two states:
+
+- The window shows the list of all sensors (as defined by DBus objects
+  implementing the xyz.openbmc_project.Sensor.Value) by default
+- When a sensor is selected, it shows the corresponding details including sensor
+  name, the dbus connection, PID and the dbus service associated with the
+  sensor. This will be helpful in understanding what is connected to the sensor
+  in a case of performance related to the sensor.
 
 The following is how the window might look once a sensor has been selected:
 
-```
+```text
 +-------------------------------------------------+
 | Details for sensor cputemp0        Sensor 1/192 |
 | [DBus Info]                                     |
@@ -128,14 +134,16 @@ The following is how the window might look once a sensor has been selected:
 +-------------------------------------------------+
 ```
 
-3. Bottom-right, DBus stats list view window: This window shows the stats of
-DBus connections in a list, aggregated by the fields of the user’s choice. These
-fields include sender, destination, path, interface, and message type.
+### Bottom-right, DBus stats list view window
+
+This window shows the stats of DBus connections in a list, aggregated by the
+fields of the user’s choice. These fields include sender, destination, path,
+interface, and message type.
 
 A menu is available that allows the user to select what fields to use to
 aggregate the entries in the window.
 
-```
+```text
 +----------------------------------------+
 |Available Fields          Active Fields |
 |                                        |
@@ -148,10 +156,9 @@ aggregate the entries in the window.
 
 The windows can be resized, or shown/hidden individually.
 
-
 Overview of the Program Structure:
 
-```
+```text
       UI Thread               Analysis Thread          Capture Thread
      _______^_______        _________^__________      _________^______
     /               \      /                    \    /                \
@@ -191,12 +198,11 @@ API impact: none
 Security impact: Being confirmed.
 
 Performance impact: Will only have a small impact when the program is running.
-                    No impact when it’s not running.
+No impact when it’s not running.
 
 Developer impact: For machines that do not install libncurses by default, adding
-                  this tool might incur a ~130KB overhead due to the libncurses
-                  library. No space overhead if the machine already includes
-                  libncurses.
+this tool might incur a ~130KB overhead due to the libncurses library. No space
+overhead if the machine already includes libncurses.
 
 ## Testing
 

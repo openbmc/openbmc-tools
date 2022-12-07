@@ -1,27 +1,25 @@
-Description
-===========
+# trace
 
-The trace script automates the process of enabling named sets of tracepoints
-and dumping the trace file over the SSH connection, then cleaning up after
-itself.
+## Description
 
-Usage
-=====
+The trace script automates the process of enabling named sets of tracepoints and
+dumping the trace file over the SSH connection, then cleaning up after itself.
+
+## Usage
 
 To run:
 
-```
+```text
 Usage: ./trace [USER@]HOST EVENTSET [EVENTSET...]
 
 Valid EVENTSETs: fsi, occ, sbefifo, timer, sched
-
 ```
 
 To stop the trace output and disable the tracepoints, hit `Return`.
 
 For example, capturing the defined tracepoints for the `sched` event set:
 
-```
+```sh
 $ ./trace root@my-bmc sched
 + set -eou pipefail
 + set -x

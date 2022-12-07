@@ -1,9 +1,9 @@
-Netboot a remote OpenBMC host via telnet (and hopefully at some stage, ssh).
+# Netboot: a remote OpenBMC host via telnet (and hopefully at some stage, ssh)
 
 To configure, edit `${HOME}/.config/obmc-scripts/netboot` to configure a
 machine:
 
-```
+```toml
 [foo]
 platform = "bar"
 user = "baz"
@@ -23,6 +23,6 @@ password = "quux"
 
 Then netboot your machine:
 
-```
-$ ./netboot foo
+```sh
+./netboot foo
 ```

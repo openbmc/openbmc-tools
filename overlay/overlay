@@ -32,15 +32,15 @@ overlay_remove() {
         exit 1
     else
         echo "${o_options}" |
-            fstab_option_iter |
-            while read FS_MNTOPT
-            do
-                case $FS_MNTOPT in
-                    upperdir=*|workdir=*)
-                        rm -rf "$(echo $FS_MNTOPT | fstab_option_value)"
-                        ;;
-                esac
-            done
+        fstab_option_iter |
+        while read FS_MNTOPT
+        do
+            case $FS_MNTOPT in
+                upperdir=*|workdir=*)
+                    rm -rf "$(echo $FS_MNTOPT | fstab_option_value)"
+                    ;;
+            esac
+        done
     fi
 }
 

@@ -1,27 +1,27 @@
-## `ipkdbg`: Generate gdb environments from opkg package archives
+# `ipkdbg`: Generate gdb environments from opkg package archives
 
 `ipkdbg` automates the process of generating `gdb` environments for interactive
 debugging and coredump analysis of split-debug binaries by exploiting bitbake's
 runtime package management support outside the context of the BMC.
 
-### Use of `ipkdbg`
+## Use of `ipkdbg`
 
 Assuming the presence of the [appropriate integration](#theory-of-integration),
 using `ipkdbg` requires minimal fuss.
 
-```
+```text
 SYNOPSIS
-	ipkdbg [-q] RELEASE FILE CORE [PACKAGE...]
+    ipkdbg [-q] RELEASE FILE CORE [PACKAGE...]
 ```
 
 It handles the following use-cases:
 
-#### Core Dump Analysis
+### Core Dump Analysis
 
 After extracting a core file from the BMC an interactive `gdb` session can be
 set up against it with:
 
-```
+```sh
 $ ipkdbg 2.11.0 - my-application.core
 ...
 (gdb)
@@ -37,7 +37,7 @@ Where:
 Note that for convenience `ipkdbg` automatically runs `bt` in the `gdb` session
 once the core has been loaded to provide a backtrace.
 
-Note that we don't need to specify any packages to install into the rootfs *if*
+Note that we don't need to specify any packages to install into the rootfs _if_
 the image package database is available. `ipkdbg` will perform a reverse-lookup
 to map the absolute binary path extracted from the core to the package that
 installed it. From there `opkg` will resolve all the dependencies. Additionally,
@@ -47,23 +47,23 @@ install them as well.
 If an image package database is not available then `ipkdbg` will require that
 the necessary packages are listed on the command-line.
 
-#### Scripted Backtrace Extraction
+### Scripted Backtrace Extraction
 
 For use in scripting environments to automate backtrace extraction `ipkdbg` has
 the `-q` option to quit `gdb` immediately after the backtrace is printed. The
 invocation looks like:
 
-```
-$ ipkdbg -q 2.11.0 - my-application.core
+```sh
+ipkdbg -q 2.11.0 - my-application.core
 ```
 
-#### Interactive debug
+### Interactive debug
 
 Interactive debugging is handled by attaching `gdbserver` on the BMC to the
 running instance of `/usr/bin/my-application` on the BMC. `ipkdbg` is then used
 to generate the `gdb` environment:
 
-```
+```sh
 $ ipkdbg 2.11.0 /usr/bin/my-application -
 ...
 (gdb)
@@ -76,7 +76,7 @@ Where:
 3. `/usr/bin/my-application` is the absolute path of the application to debug
 4. `-` is the CORE parameter. `-` specifies that there is no core file
 
-Note that we don't need to specify any packages to install into the rootfs *if*
+Note that we don't need to specify any packages to install into the rootfs _if_
 the image package database is available. `ipkdbg` will perform a reverse-lookup
 to map the absolute binary path provided on the command-line to the package that
 installed it. From there `opkg` will resolve all the dependencies. Additionally,
@@ -88,11 +88,11 @@ the necessary packages are listed on the command-line.
 
 Once the `(gdb)` prompt is reached the usual remote debugging command applies:
 
-```
+```text
 (gdb) target remote $BMC:1234
 ```
 
-#### Whoops, I Forgot A Package
+### Whoops, I Forgot A Package
 
 To save exiting the `gdb` session and re-invoking `ipkdbg` to add a package to
 the rootfs environment, `ipkdbg` installs an `opkg` helper into the PATH of the
@@ -101,7 +101,7 @@ command, and then run `opkg install ...` to install the necessary packages. Exit
 the shell subprocess to return to your `gdb` prompt with the new package
 included in the `gdb` environment.
 
-### Theory of Maintenance
+## Theory of Maintenance
 
 `ipkdbg` is intended to operate with minimal assumptions about its environment.
 The assumptions it does make are:
@@ -130,9 +130,10 @@ the [`Makefile`](Makefile). The `opkg` path for a given architecture, distro and
 release combination is defined by the following directory hierarchy in terms of
 [`os-release(5)`][os-release]:
 
-[os-release]: https://www.man7.org/linux/man-pages/man5/os-release.5.html#OPTIONS
+[os-release]:
+  https://www.man7.org/linux/man-pages/man5/os-release.5.html#OPTIONS
 
-```
+```sh
 $(uname -m)/${ID}/${VERSION_ID}/opkg
 ```
 
@@ -141,11 +142,12 @@ This hierarchy must be placed under a `bin/` directory alongside the
 
 To avoid licensing and distribution legal issues openbmc-tools does not provide
 pre-built `opkg` binaries. You must build your own and integrate them into the
-hierarchy under `bin/` outlined above. To this end, [the
-`build-opkg` script is provided](build-opkg). It probably won't work without
-tinkering for your target distro, but it might get you 90% of the way there.
+hierarchy under `bin/` outlined above. To this end,
+[the `build-opkg` script is provided](build-opkg). It probably won't work
+without tinkering for your target distro, but it might get you 90% of the way
+there.
 
-### Maintenance in Practice
+## Maintenance in Practice
 
 Once you have built the required `opkg` binaries and integrated them into the
 hierarchy under `bin/` alongside the `Makefile`, run `make` to generate the
@@ -156,7 +158,7 @@ practical prior to archiving and compression. It is worth committing the
 binaries under `bin/` to ensure that the build for your output `ipkdbg` script
 is reproducible.
 
-### Theory of Integration
+## Theory of Integration
 
 For `ipkdbg` to do its job via `opkg` it must be possible for it to acquire an
 `opkg.conf` that describes the location of the package archive for your target
@@ -174,21 +176,21 @@ The packages can be extracted from the bitbake build tree by archiving
 `tmp/deploy/ipk` once `bitbake obmc-phosphor-image && bitbake package-index` has
 exited successfully.
 
-Finally, `ipkdbg` works best when it has access to the image's installed
-package database.  This can be captured from the build tree when the build is
-configured with [`INC_IPK_IMAGE_GEN = "1"`][incremental-builds] by archiving
-the directory hierarchy under
-`./tmp/work/*/obmc-phosphor-image/1.0-r0/temp/saved` with the following
-incantation:
+Finally, `ipkdbg` works best when it has access to the image's installed package
+database. This can be captured from the build tree when the build is configured
+with [`INC_IPK_IMAGE_GEN = "1"`][incremental-builds] by archiving the directory
+hierarchy under `./tmp/work/*/obmc-phosphor-image/1.0-r0/temp/saved` with the
+following incantation:
 
-```
-$ tar -cJf opkg-database.tar.xz \
-	-C ./tmp/work/*/obmc-phosphor-image/1.0-r0/temp/saved/target/ \
-	info lists status
+```sh
+tar -cJf opkg-database.tar.xz \
+    -C ./tmp/work/*/obmc-phosphor-image/1.0-r0/temp/saved/target/ \
+    info lists status
 ```
 
 `ipkdbg` assumes that the appropriate `opkg-database.tar.xz` can be fetched
 using `wget` and that its URL can be generated in the same manner as that for
 `opkg.conf`.
 
-[incremental-builds]: https://git.openembedded.org/openembedded-core/commit/?id=adf587e55c0f9bc74f0bef415273c937401baebb
+[incremental-builds]:
+  https://git.openembedded.org/openembedded-core/commit/?id=adf587e55c0f9bc74f0bef415273c937401baebb

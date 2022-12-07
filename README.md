@@ -8,24 +8,24 @@ undocumented, dysfunctional or utterly broken. Please help us improve!
 
 ## Repository Rules
 
-* _Always_ inspect what you will be executing
-* Some hacking on your part is to be expected
+- _Always_ inspect what you will be executing
+- Some hacking on your part is to be expected
 
 ## If you're still with us
 
 Then this repository aims to be the default destination for your otherwise
-un-homed scripts. As such we are setting the bar for submission pretty low,
-and we aim to make the process as easy as possible.
+un-homed scripts. As such we are setting the bar for submission pretty low, and
+we aim to make the process as easy as possible.
 
 ## Sending patches
 
 Please use gerrit for all patches to this repository:
 
-* [Gerrit](https://gerrit.openbmc-project.xyz/) Repository
+- [Gerrit](https://gerrit.openbmc-project.xyz/) Repository
 
 Do note that you will need to be party to the OpenBMC CLA before your
-contributions can be accepted. See [Gerrit Setup and CLA][1]
-for more information.
+contributions can be accepted. See [Gerrit Setup and CLA][1] for more
+information.
 
 ## What we will do once we have your patches
 
@@ -46,4 +46,5 @@ the repository to your PATH might be a bit of a dice-roll. We may also move or
 remove scripts from time to time as part of housekeeping. It's probably best to
 copy things out if you need stability.
 
-[1]: https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#submitting-changes-via-gerrit-server
+[1]:
+  https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#submitting-changes-via-gerrit-server

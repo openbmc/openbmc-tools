@@ -17,44 +17,44 @@ DD=/bin/dd
 
 for arg in "$@"
 do
-	case "$arg" in
-		if=*)
-			ARG_IF="${arg#*=}"
-			;;
-		of=*)
-			ARG_OF="${arg#*=}"
-			;;
-		bs=*)
-			ARG_BS="${arg#*=}"
-			;;
-		count=*)
-			ARG_COUNT="${arg#*=}"
-			;;
-		skip=*)
-			ARG_SKIP="${arg#*=}"
-			;;
-		seek=*)
-			ARG_SEEK="${arg#*=}"
-			;;
-		conv=notrunc)
-			ARG_CONV_NOTRUNC=1
-			;;
-		*)
-			ARG_APPEND+="${arg#*=}"
-			;;
-	esac
+    case "$arg" in
+        if=*)
+            ARG_IF="${arg#*=}"
+            ;;
+        of=*)
+            ARG_OF="${arg#*=}"
+            ;;
+        bs=*)
+            ARG_BS="${arg#*=}"
+            ;;
+        count=*)
+            ARG_COUNT="${arg#*=}"
+            ;;
+        skip=*)
+            ARG_SKIP="${arg#*=}"
+            ;;
+        seek=*)
+            ARG_SEEK="${arg#*=}"
+            ;;
+        conv=notrunc)
+            ARG_CONV_NOTRUNC=1
+            ;;
+        *)
+            ARG_APPEND+="${arg#*=}"
+            ;;
+    esac
 done
 
 # If conv=notrunc isn't supplied, invoke system dd
 if [ -z "$ARG_CONV_NOTRUNC" ]
 then
-	exec $DD "$@"
+    exec $DD "$@"
 fi
 
 # If conv=notrunc is supplied and system dd supports it, invoke system dd
 if $DD conv=notrunc < /dev/null > /dev/null 2> /dev/null
 then
-	exec $DD "$@"
+    exec $DD "$@"
 fi
 
 # Otherwise, emulate conv=notrunc support
@@ -66,28 +66,28 @@ fi
 # $ dd if=foo of=bar bs=1 seek=100 conv=notrunc
 if [ "$ARG_IF" = "$ARG_OF" ]
 then
-	>&2 echo "Add support for self-modification"
-	exit 1
+    >&2 echo "Add support for self-modification"
+    exit 1
 fi
 
 cleanup()
 {
-	rm -f $OF_FILE
+    rm -f $OF_FILE
 }
 
 filesize()
 {
-	# busybox stat(1) doesn't support --format=%s
-	wc -c "$1" | awk '{print $1}'
+    # busybox stat(1) doesn't support --format=%s
+    wc -c "$1" | awk '{print $1}'
 }
 
 trap cleanup EXIT
 
 if [ -z "$ARG_OF" ]
 then
-	DATA_SOURCE=
+    DATA_SOURCE=
 else
-	DATA_SOURCE='if='$ARG_OF
+    DATA_SOURCE='if='$ARG_OF
 fi
 
 # Intermediate output file
@@ -96,41 +96,41 @@ OF_FILE=$(mktemp)
 # Generate the prefix
 if [ -z "$ARG_SEEK" ]
 then
-	PREFIX_COUNT=
-	INSERT_SEEK=
+    PREFIX_COUNT=
+    INSERT_SEEK=
 else
-	PREFIX_COUNT='count='$ARG_SEEK
-	INSERT_SEEK='seek='$ARG_SEEK
+    PREFIX_COUNT='count='$ARG_SEEK
+    INSERT_SEEK='seek='$ARG_SEEK
 fi
 
 if [ -z "$ARG_BS" ]
 then
-	PREFIX_BS=
-	INSERT_BS=
+    PREFIX_BS=
+    INSERT_BS=
 else
-	PREFIX_BS='bs='$ARG_BS
-	INSERT_BS='bs='$ARG_BS
+    PREFIX_BS='bs='$ARG_BS
+    INSERT_BS='bs='$ARG_BS
 fi
 
 if [ -z "$ARG_SKIP" ]
 then
-	INSERT_SKIP=
+    INSERT_SKIP=
 else
-	INSERT_SKIP='skip='$ARG_SKIP
+    INSERT_SKIP='skip='$ARG_SKIP
 fi
 
 if [ -z "$ARG_IF" ]
 then
-	INSERT_IF=
+    INSERT_IF=
 else
-	INSERT_IF='if='$ARG_IF
+    INSERT_IF='if='$ARG_IF
 fi
 
 if [ -z "$ARG_COUNT" ]
 then
-	INSERT_COUNT=
+    INSERT_COUNT=
 else
-	INSERT_COUNT='count='$ARG_COUNT
+    INSERT_COUNT='count='$ARG_COUNT
 fi
 
 # Create the prefix
@@ -143,7 +143,7 @@ OF_SUFFIX_OFF=$(filesize "$OF_FILE")
 
 if [ -z "$ARG_OF" ]
 then
-	OF_SUFFIX_OFF=$(($OF_SUFFIX_OFF - $OF_UPDATE_OFF))
+    OF_SUFFIX_OFF=$(($OF_SUFFIX_OFF - $OF_UPDATE_OFF))
 fi
 
 # Append the suffix

@@ -78,7 +78,7 @@ class subcmd:
                     comments_per_user[reviewer] += 1
 
             print(project, id_number)
-            for (user, count) in comments_per_user.items():
+            for user, count in comments_per_user.items():
                 if count < 3:
                     continue
                 print("    ", user, count)
