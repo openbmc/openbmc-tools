@@ -10,6 +10,7 @@ set -eu
 : ${IPKDBG_CONF_USER:=$USER}
 : ${IPKDBG_WGET_OPTS:="--quiet"}
 : ${IPKDBG_ZSTD:=zstd}
+IPKDBG_SERVER_OVERRIDE=${IPKDBG_SERVER_OVERRIDE:-""}
 
 ipkdbg_error() {
     /bin/echo -e "$@" | fold >&2
@@ -151,7 +152,7 @@ else
             exit 1
         fi
         ;;
-    ubuntu*)
+    ubuntu* | debian*)
         IPKDBG_GDB=gdb-multiarch
         if [ -z "$(command -v $IPKDBG_GDB)" ]
         then
@@ -297,6 +298,15 @@ ipkdbg_opkg_conf_install() {
     fi
 }
 
+ipkdbg_opkg_conf_server_override() {
+    local conf=$1
+
+    if [ ! -z "$IPKDBG_SERVER_OVERRIDE" ]; then
+        sed 's#http://[^/]*#'"${IPKDBG_SERVER_OVERRIDE}"'#g; s#/$##' $conf > $conf.new
+        mv $conf.new $conf
+    fi
+}
+
 ipkdbg_opkg_db_gen_path() {
     local build=$1
     ipkdbg_build_gen_path $build bmc_ipk/opkg-database.tar.xz
@@ -365,6 +375,7 @@ ipkdbg_opkg_find_extra() {
 }
 
 ipkdbg_opkg_conf_install $IPKDBG_BUILD $IPKDBG_CONF
+ipkdbg_opkg_conf_server_override $IPKDBG_CONF
 
 # Extract the binary path from the core
 if [ '-' = "$IPKDBG_FILE" -a '-' != "$IPKDBG_CORE" ]
