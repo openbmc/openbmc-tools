@@ -5,7 +5,7 @@ import json
 import os
 import re
 from collections import defaultdict
-from typing import Any, Dict
+from typing import Dict
 
 import libvoters.acceptable as acceptable
 from libvoters.time import TimeOfDay, timestamp
