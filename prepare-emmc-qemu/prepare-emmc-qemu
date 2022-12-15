@@ -2,7 +2,7 @@
 
 set -eu
 
-function print_help() {
+print_help() {
     script_name=$(basename $0)
     echo NAME
     echo '\t'$script_name: Assemble an OpenBMC eMMC image that can be booted under QEMU
@@ -19,7 +19,7 @@ function print_help() {
     echo '\t'$script_name 'p10bmc' '~/src/openbmc/openbmc/build/p10bmc'
 }
 
-function detect_xzdec() {
+detect_xzdec() {
     if command -v xz >/dev/null
     then
         echo xz -dc
