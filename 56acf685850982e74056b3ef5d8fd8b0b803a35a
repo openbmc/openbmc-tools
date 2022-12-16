@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "25b4e8fe_a18af782",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2022-12-16T09:41:35Z",
+      "side": 1,
+      "message": "Generally I\u0027d prefer that these be two separate changes. This is usually indicated by using a bullet out numbered list of things in your commit message. It\u0027s not a problem this time, but something to keep in mind for the future.",
+      "revId": "56acf685850982e74056b3ef5d8fd8b0b803a35a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
