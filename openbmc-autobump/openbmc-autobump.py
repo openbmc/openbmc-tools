@@ -40,25 +40,34 @@ def git_clone_or_reset(local_name, remote, args):
         git.reset("--hard", "FETCH_HEAD", _cwd=local_name)
 
 
-def extract_project_from_uris(uris):
+def extract_project_from_uris(uris, args):
     # remove SRC_URI = and quotes (does not handle escaped quotes)
     uris = uris.split('"')[1]
     for uri in uris.split():
         if "github.com/openbmc" not in uri:
             continue
 
+        segments = uri.split(";")
+        branch = args.branch
+
+        for s in segments[1:]:
+            if "branch=" not in s:
+                continue
+            branch = s.split("=")[1]
+
         # remove fetcher arguments
-        uri = uri.split(";")[0]
+        uri = segments[0]
         # the project is the right-most path segment
-        return uri.split("/")[-1].replace(".git", "")
+        return (uri.split("/")[-1].replace(".git", ""), branch)
 
     return None
 
 
-def extract_sha_from_recipe(recipe):
+def extract_sha_from_recipe(recipe, args):
     with open(recipe) as fp:
         uris = ""
         project = None
+        branch = None
         sha = None
 
         for line in fp:
@@ -71,14 +80,16 @@ def extract_sha_from_recipe(recipe):
                     # In uris we've gathered a complete (possibly multi-line)
                     # assignment to a bitbake variable that ends with _URI.
                     # Try to pull an OpenBMC project out of it.
-                    project = extract_project_from_uris(uris)
-                    if project is None:
+                    uri = extract_project_from_uris(uris, args)
+                    if uri is None:
                         # We didn't find a project.  Unset uris and look for
                         # another bitbake variable that ends with _URI.
                         uris = ""
+                    else:
+                        (project, branch) = uri
 
-            if project and sha:
-                return (project, sha)
+            if project and branch and sha:
+                return (project, branch, sha)
 
         raise RuntimeError("No SRCREV or URI found in {}".format(recipe))
 
@@ -94,7 +105,15 @@ def find_candidate_recipes(meta, args):
 
     match_suffixes = ("bb", "bbclass", "inc")
     pathspecs = ("*.{}".format(x) for x in match_suffixes)
-    grep_args = ("-l", "-e", "_URI", "--and", "-e", "github.com/openbmc")
+    grep_args = (
+        "--no-color",
+        "-l",
+        "-e",
+        "_URI",
+        "--and",
+        "-e",
+        "github.com/openbmc",
+    )
     grep_args = (*grep_args, *pathspecs)
     try:
         return git.grep(*grep_args, _cwd=meta).stdout.decode("utf-8").split()
@@ -112,11 +131,13 @@ def find_and_process_bumps(meta, args):
     for recipe in candidate_recipes:
         full_recipe_path = os.path.join(meta, recipe)
         recipe_basename = os.path.basename(full_recipe_path)
-        project_name, recipe_sha = extract_sha_from_recipe(full_recipe_path)
+        project_name, recipe_branch, recipe_sha = extract_sha_from_recipe(
+            full_recipe_path, args
+        )
 
         remote_fmt_args = (args.ssh_config_host, project_name)
         remote = "ssh://{}/openbmc/{}".format(*remote_fmt_args)
-        ls_remote_args = [remote, "refs/heads/{}".format(args.branch)]
+        ls_remote_args = [remote, "refs/heads/{}".format(recipe_branch)]
         try:
             project_sha = git("ls-remote", *ls_remote_args)
             project_sha = project_sha.stdout.decode("utf-8").split()[0]
