@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a07df94c_26213490",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2023-01-26T16:26:37Z",
+      "side": 1,
+      "message": "Tested and verified we now get autobumps with recipes that are using branch\u003dmain.",
+      "revId": "ffb4d52e0c9ca6dadbc55feb4f94795be1be1732",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
