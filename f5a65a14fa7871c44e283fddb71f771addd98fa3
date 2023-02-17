@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5335d563_e75a95d6",
+        "filename": "dbus-top/meson.build",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2023-02-17T03:41:50Z",
+      "side": 1,
+      "message": "Delete these?",
+      "revId": "f5a65a14fa7871c44e283fddb71f771addd98fa3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
