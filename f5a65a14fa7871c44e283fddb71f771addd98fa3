@@ -1,6 +1,52 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c982939_c8094fce",
+        "filename": "dbus-top/dbus_top_recipe.bb",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2023-02-22T23:58:14Z",
+      "side": 1,
+      "message": "Nit: can change to `\"git://github.com/openbmc/openbmc-tools;protocol\u003dhttps;branch\u003dmaster\"` to eliminate two Bitbake warnings:\n\n* WARNING: URL: git://github.com/openbmc/openbmc-tools uses git protocol which is no longer supported by github. Please change to ;protocol\u003dhttps in the url.\n\n* WARNING: URL: git://github.com/openbmc/openbmc-tools;protocol\u003dhttps does not set any branch parameter. The future default branch used by tools and repositories is uncertain and we will therefore soon require this is set in all git urls.",
+      "range": {
+        "startLine": 8,
+        "startChar": 11,
+        "endLine": 8,
+        "endChar": 51
+      },
+      "revId": "f5a65a14fa7871c44e283fddb71f771addd98fa3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2531b05_4ce1a5cf",
+        "filename": "dbus-top/dbus_top_recipe.bb",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2023-02-22T23:58:14Z",
+      "side": 1,
+      "message": "Nit: remove the trailing `/` to fix a Bitbake warning?",
+      "range": {
+        "startLine": 11,
+        "startChar": 28,
+        "endLine": 11,
+        "endChar": 29
+      },
+      "revId": "f5a65a14fa7871c44e283fddb71f771addd98fa3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5335d563_e75a95d6",
@@ -32,6 +78,24 @@
       "side": 1,
       "message": "right, they can be replaced by line 44.",
       "parentUuid": "5335d563_e75a95d6",
+      "revId": "f5a65a14fa7871c44e283fddb71f771addd98fa3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81bc7007_6666463e",
+        "filename": "dbus-top/meson.build",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2023-02-22T23:58:14Z",
+      "side": 1,
+      "message": "+1, I\u0027ve tested locally and it seems replacing these 3 lines with line 44 works.",
+      "parentUuid": "22eba768_219b51a7",
       "revId": "f5a65a14fa7871c44e283fddb71f771addd98fa3",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
