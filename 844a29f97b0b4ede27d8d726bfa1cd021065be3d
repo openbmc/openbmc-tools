@@ -16,6 +16,23 @@
       "message": "Anyone have comments on this?",
       "revId": "844a29f97b0b4ede27d8d726bfa1cd021065be3d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7774446_a2b59f1c",
+        "filename": "dbus-top/meson.build",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2023-02-28T14:47:35Z",
+      "side": 1,
+      "message": "We tend to not like dead code, we have git for history. Can we just delete these?",
+      "revId": "844a29f97b0b4ede27d8d726bfa1cd021065be3d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
