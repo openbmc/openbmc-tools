@@ -1,6 +1,6 @@
 project('dbus-sensor-tester', 'cpp',
         version : '1.0',
-        meson_version: '>=0.57.0',
+        meson_version: '>=0.58.0',
         default_options: [
             'b_lto_mode=default',
             'b_lto_threads=0',
@@ -124,7 +124,7 @@ dependencies += boost
 srcfiles_sensortest = [
 ]
 
-systemd_system_unit_dir = systemd.get_variable(pkgconfig: 'systemdsystemunitdir')
+systemd_system_unit_dir = systemd.get_variable('systemdsystemunitdir')
 bindir = get_option('prefix') + '/' +get_option('bindir')
 
 # Generate the executable
