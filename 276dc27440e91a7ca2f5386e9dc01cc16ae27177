@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "771f2e7c_21018ef0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2023-05-17T00:23:19Z",
+      "side": 1,
+      "message": "\u003e Oh no! 💥 💔 💥\n\u003e 22 files reformatted, 9 files left unchanged, 4 files failed to reformat.\n\nHahah, shellcheck went to down on this repo :)",
+      "revId": "276dc27440e91a7ca2f5386e9dc01cc16ae27177",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
