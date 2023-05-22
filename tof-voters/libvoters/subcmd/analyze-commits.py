@@ -8,6 +8,7 @@ from collections import defaultdict
 from typing import Dict
 
 import libvoters.acceptable as acceptable
+from libvoters import UserChanges, changes_factory
 from libvoters.time import TimeOfDay, timestamp
 
 
@@ -36,7 +37,7 @@ class subcmd:
         before = timestamp(args.before, TimeOfDay.AM)
         after = timestamp(args.after, TimeOfDay.PM)
 
-        changes_per_user: Dict[str, list[int]] = defaultdict(list)
+        changes_per_user: Dict[str, UserCommits] = defaultdict(changes_factory)
 
         for f in sorted(os.listdir(args.dir)):
             path = os.path.join(args.dir, f)
@@ -69,7 +70,7 @@ class subcmd:
 
             project = data["project"]
             id_number = data["number"]
-            user = data["owner"]["username"]
+            username = data["owner"]["username"]
 
             if not acceptable.project(project):
                 print("Rejected project:", project, id_number)
@@ -93,11 +94,14 @@ class subcmd:
                 print("Rejected for limited changes:", project, id_number)
                 continue
 
-            print(project, id_number, user)
+            print(project, id_number, username)
             for f in touched_files:
                 print(f"    {f}")
 
-            changes_per_user[user].append(id_number)
+            user = changes_per_user[username]
+            user["name"] = data["owner"]["name"]
+            user["email"] = data["owner"]["email"]
+            user["changes"].append(id_number)
 
         with open(os.path.join(args.dir, "commits.json"), "w") as outfile:
             outfile.write(json.dumps(changes_per_user, indent=4))

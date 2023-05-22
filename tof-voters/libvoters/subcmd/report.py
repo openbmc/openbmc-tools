@@ -31,9 +31,11 @@ class subcmd:
         with open(reviews_fp, "r") as reviews_file:
             reviews = json.load(reviews_file)
 
-        for user in sorted(set(commits.keys()).union(reviews.keys())):
-            user_commits = len(commits.get(user, []))
-            user_reviews = len(reviews.get(user, []))
+        contributions = commits | reviews
+
+        for user in sorted(contributions.keys()):
+            user_commits = len(commits.get(user, {}).get("changes", []))
+            user_reviews = len(reviews.get(user, {}).get("changes", []))
 
             points = user_commits * 3 + user_reviews
             print(user, points, user_commits, user_reviews)
@@ -41,6 +43,8 @@ class subcmd:
             qualified = points >= 15
 
             results[user] = {
+                "name": contributions[user]["name"],
+                "email": contributions[user]["email"],
                 "qualified": qualified,
                 "points": points,
                 "commits": user_commits,

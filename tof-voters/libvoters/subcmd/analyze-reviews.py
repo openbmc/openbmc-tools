@@ -8,6 +8,7 @@ from collections import defaultdict
 from typing import Dict
 
 import libvoters.acceptable as acceptable
+from libvoters import UserChanges, changes_factory, UserComments, comments_factory
 from libvoters.time import TimeOfDay, timestamp
 
 
@@ -36,7 +37,7 @@ class subcmd:
         before = timestamp(args.before, TimeOfDay.AM)
         after = timestamp(args.after, TimeOfDay.PM)
 
-        changes_per_user: Dict[str, list[int]] = defaultdict(list)
+        changes_per_user: Dict[str, UserChanges] = defaultdict(changes_factory)
 
         for f in sorted(os.listdir(args.dir)):
             path = os.path.join(args.dir, f)
@@ -56,7 +57,7 @@ class subcmd:
             if not acceptable.project(project):
                 print("Rejected project:", project, id_number)
 
-            comments_per_user: Dict[str, int] = defaultdict(int)
+            comments_per_user: Dict[str, UserComments] = defaultdict(comments_factory)
 
             for patch_set in data["patchSets"]:
                 created_on = data["createdOn"]
@@ -75,14 +76,40 @@ class subcmd:
                     if not acceptable.file(project, comment["file"]):
                         continue
 
-                    comments_per_user[reviewer] += 1
+                    user = comments_per_user[reviewer]
+                    user["name"] = comment["reviewer"]["name"]
+                    # We actually have a case where a reviewer does not have an email recorded[1]:
+                    #
+                    # [1]: https://gerrit.openbmc.org/c/openbmc/phosphor-pid-control/+/60303/comment/ceff60b9_9d2debe0/
+                    #
+                    # {"file": "conf.hpp",
+                    #  "line": 39,
+                    #  "reviewer": {"name": "Akshat Jain", "username": "AkshatZen"},
+                    #  "message": "If we design SensorInput as base class and have derived ..."}
+                    # Traceback (most recent call last):
+                    #   File "/mnt/host/andrew/home/andrew/src/openbmc/openbmc-tools/tof-voters/./voters", line 7, in <module>
+                    #     sys.exit(main())
+                    #              ^^^^^^
+                    #   File "/mnt/host/andrew/home/andrew/src/openbmc/openbmc-tools/tof-voters/libvoters/entry_point.py", line 33, in main
+                    #     return int(args.cmd.run(args))
+                    #                ^^^^^^^^^^^^^^^^^^
+                    #   File "/mnt/host/andrew/home/andrew/src/openbmc/openbmc-tools/tof-voters/libvoters/subcmd/analyze-reviews.py", line 82, in run
+                    #     user["email"] = comment["reviewer"]["email"]
+                    #                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+                    # KeyError: 'email'
+                    if "email" in comment["reviewer"]:
+                        user["email"] = comment["reviewer"]["email"]
+                    user["comments"] += 1
 
             print(project, id_number)
-            for user, count in comments_per_user.items():
-                if count < 3:
+            for username, review in comments_per_user.items():
+                if review["comments"] < 3:
                     continue
-                print("    ", user, count)
-                changes_per_user[user].append(id_number)
+                print("    ", user, review["comments"])
+                user = changes_per_user[username]
+                user["name"] = review["name"]
+                user["email"] = review["email"]
+                user["changes"].append(id_number)
 
         with open(os.path.join(args.dir, "reviews.json"), "w") as outfile:
             outfile.write(json.dumps(changes_per_user, indent=4))
