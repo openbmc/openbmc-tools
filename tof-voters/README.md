@@ -15,8 +15,7 @@ The typical use of the tool is something like this:
 ./voters analyze-commits --before "2022-01-01" --after "2021-06-30"
 ./voters analyze-reviews --before "2022-01-01" --after "2021-06-30"
 ./voters report
-cat data/report.json | \
-    jq "with_entries(select(.value.qualified) | .value = .value.points)"
+jq '[ .[] | select(.qualified) | {(.name): .points} ] | add | to_entries | sort_by(.value) | reverse | from_entries' data/report.json
 ```
 
 The above will yield a JSON dictionary of "users:points" where 'qualified' is
@@ -24,8 +23,8 @@ set in the users' dictionary from `report.json` like:
 
 ```json
 {
-    "user1": 16,
-    "user2": 19,
+    "User Name 2": 19,
+    "User Name 1": 16,
     ...
 }
 ```
