@@ -1,0 +1,8 @@
+Code-Review+2: Patrick Williams <patrick@stwcx.xyz>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Andrew Jeffery <andrew@aj.id.au>
+Submitted-by: Andrew Jeffery <andrew@aj.id.au>
+Submitted-at: Mon, 22 May 2023 12:25:45 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/openbmc-tools/+/63649
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
