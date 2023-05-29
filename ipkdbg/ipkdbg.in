@@ -11,6 +11,7 @@ set -eu
 : ${IPKDBG_WGET_OPTS:="--quiet"}
 : ${IPKDBG_ZSTD:=zstd}
 IPKDBG_SERVER_OVERRIDE=${IPKDBG_SERVER_OVERRIDE:-""}
+IPKDBG_WORKSPACE=${WORKSPACE:-""}
 
 ipkdbg_error() {
     /bin/echo -e "$@" | fold >&2
@@ -203,7 +204,7 @@ then
 fi
 
 IPKDBG_DATA=$(awk '/^__ARCHIVE_BEGIN__$/ { print NR + 1; exit 0 }' $0)
-IPKDBG_WORK=$(mktemp -t --directory ipkdbg.XXX)
+IPKDBG_WORK=$(mktemp -t --directory ipkdbg.XXX --tmpdir=${IPKDBG_WORKSPACE})
 IPKDBG_BINS=${IPKDBG_WORK}/tools
 IPKDBG_ROOT=${IPKDBG_WORK}/root
 IPKDBG_CONF=${IPKDBG_WORK}/opkg.conf

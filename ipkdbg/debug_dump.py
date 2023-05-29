@@ -155,7 +155,16 @@ class dump_env:
         self.path = path
         self.revision = revision
         self.machine = machine
-        self.wd = tempfile.mkdtemp(prefix="ipkdbg_")
+        run_env = os.environ.copy()
+
+        # if had "WORKSPACE"
+        if "WORKSPACE" in run_env:
+            self.wd = tempfile.mkdtemp(
+                dir=run_env["WORKSPACE"], prefix="ipkdbg_"
+            )
+        else:
+            self.wd = tempfile.mkdtemp(prefix="ipkdbg_")
+
         self.dump_tar = "{}/dump.tar.gz".format(self.wd)
         logger.debug("Processing dump in {}".format(self.wd))
 
@@ -253,6 +262,7 @@ class dump_env:
         if "gzip compressed data" not in os.popen(cmd).read():
             raise Exception("Not a tar.gz file: {}".format(path))
 
+        self.dump_tar = path
         self.extract_dump()
         dir = os.path.join(self.wd, self.dir_in_tar)
         # get coredump zst file
