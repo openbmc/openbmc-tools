@@ -1,6 +1,6 @@
 project('dbus-sensor-tester', 'cpp',
         version : '1.0',
-        meson_version: '>=0.58.0',
+        meson_version: '>=1.1.1',
         default_options: [
             'b_lto_mode=default',
             'b_lto_threads=0',
@@ -8,7 +8,7 @@ project('dbus-sensor-tester', 'cpp',
             'b_ndebug=if-release',
             'buildtype=debugoptimized',
             'cpp_rtti=false',
-            'cpp_std=c++20',
+            'cpp_std=c++23',
             'warning_level=3',
             'werror=true',
            ])
@@ -19,8 +19,8 @@ project_pretty_name = 'dbus-sensor-tester'
 
 # Validate the c++ Standard
 
-if get_option('cpp_std') != 'c++20'
-    error('This project requires c++20 support')
+if get_option('cpp_std') != 'c++23'
+    error('This project requires c++23 support')
 endif
 
 # Get compiler and default build type
