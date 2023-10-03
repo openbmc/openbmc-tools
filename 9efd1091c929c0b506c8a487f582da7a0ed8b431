@@ -22,6 +22,40 @@
       },
       "revId": "9efd1091c929c0b506c8a487f582da7a0ed8b431",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2952d71a_0c68b33c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2023-10-03T05:50:53Z",
+      "side": 1,
+      "message": "I\u0027m wondering if there\u0027s a better home for this tool. It\u0027s quite dependent on the `attributes` tool, presumably from the pdbg suite of tools. Is this not something that could be maintained alongside that?\n\nMy other thoughts are that [dtc](https://git.kernel.org/pub/scm/utils/dtc/dtc.git/tree/README.md) can already parse a dtb into yaml:\n\n```\n$ dtc -I dtb -O dts ./arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dtb 2\u003e/dev/null | dtc -I dts -O yaml 2\u003e/dev/null | head\n---\n- model: [\"Rainier 2U\"]\n  compatible: [\"ibm,rainier-bmc\\0aspeed,ast2600\"]\n  \u0027#address-cells\u0027: [[0x1]]\n  \u0027#size-cells\u0027: [[0x1]]\n  interrupt-parent: [[0x1]]\n  aliases:\n    i2c0: [\"/ahb/apb/bus@1e78a000/i2c-bus@80\"]\n    i2c1: [\"/ahb/apb/bus@1e78a000/i2c-bus@100\"]\n    i2c2: [\"/ahb/apb/bus@1e78a000/i2c-bus@180\"]\n```\n\nFurther, the readme describes how libfdt can be used in python directly:\n\nhttps://git.kernel.org/pub/scm/utils/dtc/dtc.git/tree/README.md#n11\n\nThat said, you\u0027ve already implemented the tool, and that counts for a bit. `pretty-attributes` is a bit generic as Matt mentioned. I think I\u0027d prefer a name that indicates it\u0027s specific to Power systems.",
+      "revId": "9efd1091c929c0b506c8a487f582da7a0ed8b431",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9b65d50_b3851a10",
+        "filename": "Pretty_Attributes/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2023-10-03T05:50:53Z",
+      "side": 1,
+      "message": "Why not install it that way?",
+      "revId": "9efd1091c929c0b506c8a487f582da7a0ed8b431",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
