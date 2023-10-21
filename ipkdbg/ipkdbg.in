@@ -415,8 +415,12 @@ exec $IPKDBG_OPKG_BIN -f $IPKDBG_CONF -o $IPKDBG_ROOT \$@
 EOF
 chmod +x ${IPKDBG_BINS}/opkg
 
+LIB_SEARCH_PATH=$(find $IPKDBG_ROOT -type d -name lib  | tr '\n' ':' | sed 's/:$//')
+LIB_SEARCH_PATH=${LIB_SEARCH_PATH:-.}
+
 PATH=${IPKDBG_BINS}:${PATH} $IPKDBG_GDB -q \
     -iex "set solib-absolute-prefix $IPKDBG_ROOT" \
+    -iex "set solib-search-path $LIB_SEARCH_PATH" \
     -iex "add-auto-load-safe-path $IPKDBG_ROOT" \
     -iex "set directories $IPKDBG_ROOT" \
     -iex "cd $IPKDBG_ROOT" \
