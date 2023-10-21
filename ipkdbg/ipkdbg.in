@@ -399,7 +399,7 @@ then
 fi
 
 # Force installation of gcc-runtime-dbg to give us debug symbols for libstdc++
-IPKDBG_PKGS="gcc-runtime-dbg $IPKDBG_PKGS"
+IPKDBG_PKGS="gcc-runtime-dbg boost-dbg $IPKDBG_PKGS"
 
 if [ -n "$IPKDBG_OPKG_CACHE" ]
 then
