@@ -16,6 +16,24 @@
       "message": "Do you know why these aren\u0027t found by `ipkdbg_opkg_find_extra()`? It contains the logic that should find these.",
       "revId": "1391e5241c61f7bf5858a6f440257d907123a02a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc3c0a29_cb90fac3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1001371
+      },
+      "writtenOn": "2023-10-26T05:41:28Z",
+      "side": 1,
+      "message": "for example `phosphor-ipmi-host-dbg`, \n```\n/tmp/ipkdbg.HBs/tools/bin/opkg -V1 --conf /tmp/ipkdbg.HBs/opkg.conf -o /tmp/ipkdbg.HBs/root infophosphor-ipmi-host-dbg\n\nPackage: phosphor-ipmi-host-dbg\nVersion: 1.0+git0+27a62ecab8-r1\nRecommends: boost-coroutine-dbg, fmt-dbg, glibc-dbg, libcrypto-dbg, libgcc-dbg, libmapper-dbg, libpam-dbg, libstdc++-dbg, libsystemd-dbg, phosphor-dbus-interfaces-dbg, phosphor-logging-base-dbg, sdbusplus-dbg, sdeventplus-dbg\n\n```\n\nthey suggest debug package is `boost-coroutine-dbg`, \n\nbut I can\u0027t find it,\n```\n/tmp/ipkdbg.HBs/tools/bin/opkg -V1 --conf /tmp/ipkdbg.HBs/opkg.conf -o /tmp/ipkdbg.HBs/root find boost-coroutine-dbg\n```\n\nboost-dbg provided.\n```\n/tmp/ipkdbg.HBs/tools/bin/opkg -V1 --conf /tmp/ipkdbg.HBs/opkg.conf -o /tmp/ipkdbg.HBs/root files boost-dbg\n\nPackage boost-dbg (1.78.0-r0) is installed on root and has the following files:\n/tmp/ipkdbg.HBs/root/usr/lib/.debug/libboost_context.so.1.78.0\n/tmp/ipkdbg.HBs/root/usr/lib/.debug/libboost_coroutine.so.1.78.0\n/tmp/ipkdbg.HBs/root/usr/lib/.debug/libboost_thread.so.1.78.0\n/tmp/ipkdbg.HBs/root/usr/lib/.debug/libboost_chrono.so.1.78.0\n```\n\nmaybe we need debugging the package depends name generation in the yocto.\nbut i don\u0027t know how to do that.",
+      "parentUuid": "6b91a55f_99489a29",
+      "revId": "1391e5241c61f7bf5858a6f440257d907123a02a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
