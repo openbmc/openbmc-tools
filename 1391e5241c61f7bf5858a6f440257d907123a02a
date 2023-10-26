@@ -34,6 +34,24 @@
       "parentUuid": "6b91a55f_99489a29",
       "revId": "1391e5241c61f7bf5858a6f440257d907123a02a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b48a3034_10e5bad4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2023-10-26T05:50:31Z",
+      "side": 1,
+      "message": "For the record there was some discussion about this in discord:\n\nhttps://discord.com/channels/775381525260664832/867820390406422538/1166963836771909713",
+      "parentUuid": "dc3c0a29_cb90fac3",
+      "revId": "1391e5241c61f7bf5858a6f440257d907123a02a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
