@@ -16,6 +16,24 @@
       "message": "Perhaps we can just set `sysroot` instead?\n\nhttps://visualgdb.com/gdbreference/commands/set_sysroot\n\nThat page also mentions `solib-absolute-prefix`, but doesn\u0027t really explain it. Can you do some experiments and report back?",
       "revId": "1e096dc33cca9379ae4aec34429d312d6e3e4c56",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e67099e_5c0027f3",
+        "filename": "ipkdbg/ipkdbg.in",
+        "patchSetId": 1
+      },
+      "lineNbr": 423,
+      "author": {
+        "id": 1001371
+      },
+      "writtenOn": "2023-10-26T09:23:35Z",
+      "side": 1,
+      "message": "I\u0027m refer to `https://stackoverflow.com/questions/24896034/solib-absolute-prefix-vs-solib-search-path-in-gdb`\n\ni did some experiments, But it didn\u0027t quite meet my expectations, so I have to debug why this happened.\n\nwe have 2 places that have the libfoo.so\n\n* /lib/ibfoo.so \n* /home/zhangjian/tmp.A2x/root/lib/ibfoo.so \n \n```\nldd a.out                             \n    libfoo.so \u003d\u003e /lib/libfoo.so (0x00007fee18839000)\n```\n\nCase1:\n* gdb /home/zhangjian/tmp.A2x/a.out /home/zhangjian/tmp.A2x/core\n```\n#0  0x00007f3e8b38c105 in bar() () from /lib/libfoo.so\n(gdb) info sharedlibrary \nFrom                To                  Syms Read   Shared Object Library\n0x00007f3e8b38c040  0x00007f3e8b38c10e  Yes (*)     /lib/libfoo.so\n0x00007f3e8b2580a0  0x00007f3e8b32fb8e  Yes (*)     /lib/x86_64-linux-gnu/libstdc++.so.6\n0x00007f3e8b1a7310  0x00007f3e8b1b7b5d  Yes (*)     /lib/x86_64-linux-gnu/libgcc_s.so.1\n0x00007f3e8aff1320  0x00007f3e8b14a119  Yes         /lib/x86_64-linux-gnu/libc.so.6\n0x00007f3e8ae98200  0x00007f3e8af31c98  Yes         /lib/x86_64-linux-gnu/libm.so.6\n0x00007f3e8b3aa090  0x00007f3e8b3c92a0  Yes         /lib64/ld-linux-x86-64.so.2\n```\nCase2: \n* gdb /home/zhangjian/tmp.A2x/a.out /home/zhangjian/tmp.A2x/core -iex \"set solib-absolute-prefix /home/zhangjian/tmp.A2x/root\" \n```\n(gdb) info sharedlibrary \nFrom                To                  Syms Read   Shared Object Library\n0x00007f3e8b38c040  0x00007f3e8b38c10e  Yes (*)     /home/zhangjian/tmp.A2x/lib/libfoo.so\n                                        No          /lib/x86_64-linux-gnu/libstdc++.so.6\n                                        No          /lib/x86_64-linux-gnu/libgcc_s.so.1\n                                        No          /lib/x86_64-linux-gnu/libc.so.6\n                                        No          /lib/x86_64-linux-gnu/libm.so.6\n                                        No          /lib64/ld-linux-x86-64.so.2\n```\n\nCase3: \n* gdb /home/zhangjian/tmp.A2x/a.out /home/zhangjian/tmp.A2x/core -iex \"set solib-absolute-prefix /home/zhangjian/tmp.A2x/root\"  -iex \"add-auto-load-safe-path /home/zhangjian/tmp.A2x/root\" -iex \"set directories /home/zhangjian/tmp.A2x/root\"\n```\n(gdb) info sharedlibrary \nFrom                To                  Syms Read   Shared Object Library\n0x00007f3e8b38c040  0x00007f3e8b38c10e  Yes (*)     /home/zhangjian/tmp.A2x/root/lib/libfoo.so\n                                        No          /lib/x86_64-linux-gnu/libstdc++.so.6\n                                        No          /lib/x86_64-linux-gnu/libgcc_s.so.1\n                                        No          /lib/x86_64-linux-gnu/libc.so.6\n                                        No          /lib/x86_64-linux-gnu/libm.so.6\n                                        No          /lib64/ld-linux-x86-64.so.2\n\n```",
+      "parentUuid": "96b9ffb0_46c5212a",
+      "revId": "1e096dc33cca9379ae4aec34429d312d6e3e4c56",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
