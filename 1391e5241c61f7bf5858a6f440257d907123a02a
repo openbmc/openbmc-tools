@@ -52,6 +52,24 @@
       "parentUuid": "dc3c0a29_cb90fac3",
       "revId": "1391e5241c61f7bf5858a6f440257d907123a02a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8e4b275_18d41575",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2023-10-27T05:51:02Z",
+      "side": 1,
+      "message": "Ah, it feels like the bitbake metadata might be broken (as this is a transitive dependency, not a direct dependency that would be resolved by the ipkdbg hacks).",
+      "parentUuid": "b48a3034_10e5bad4",
+      "revId": "1391e5241c61f7bf5858a6f440257d907123a02a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
