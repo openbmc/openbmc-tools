@@ -435,7 +435,11 @@ def parse_session(session, matchers, track_calls):
                     calls.add(CallEnvelope(cooked.header.fixed.cookie, s.data))
                 yield packet.time, cooked
             elif track_calls:
-                if cooked.header.fixed.type != MessageType.METHOD_RETURN.value:
+                responseTypes = {
+                    MessageType.METHOD_RETURN.value,
+                    MessageType.ERROR.value,
+                }
+                if cooked.header.fixed.type not in responseTypes:
                     continue
                 rs = [
                     f
