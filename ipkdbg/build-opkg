@@ -5,7 +5,7 @@ set -eu
 set -x
 
 # : ${OPKG_LIBS:="-llzma -lldap -llber -lz -pthread"}
-: ${OPKG_LIBS:="-lz -pthread"}
+: ${OPKG_LIBS:="-lz -pthread -lzstd"}
 
 generate_configure_id() {
     echo "$@" | sha256sum | awk '{ printf "build-opkg-%s", $1 }'
@@ -25,12 +25,12 @@ LIBARCHIVE_OPTS="\
 --without-bz2lib \
 --without-libb2 \
 --without-lz4 \
---without-zstd \
 --without-lzo2 \
 --without-cng \
 --without-nettle \
 --without-xml2 \
 --without-expat \
+--with-zstd \
 --disable-acl \
 --disable-xattr \
 --enable-posix-regex-lib=libc \
@@ -55,14 +55,15 @@ mkdir -p root && make -j$(nproc) install DESTDIR=$(realpath root)
 cd ..
 
 # opkg
-[ -f opkg-0.4.5.tar.gz ] || wget http://downloads.yoctoproject.org/releases/opkg/opkg-0.4.5.tar.gz
-[ -d opkg-0.4.5 ] || tar -xvf opkg-0.4.5.tar.gz
-cd opkg-0.4.5
+[ -f opkg-0.6.3.tar.gz ] || wget http://downloads.yoctoproject.org/releases/opkg/opkg-0.6.3.tar.gz
+[ -d opkg-0.6.3 ] || tar -xvf opkg-0.6.3.tar.gz
+cd opkg-0.6.3
 OPKG_OPTS="\
 --with-static-libopkg \
 --without-libsolv \
 --enable-curl \
 --enable-openssl \
+--enable-zstd \
 --disable-gpg \
 --disable-dependency-tracking"
 OPKG_ID=$(generate_configure_id "$OPKG_OPTS" "$OPKG_LIBS")
