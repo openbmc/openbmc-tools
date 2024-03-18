@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b4a0e6d_e0e286b9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2024-03-18T04:40:38Z",
+      "side": 1,
+      "message": "Hi Jian, thanks for the change. I\u0027d just like a little more info in the commit message. I\u0027ve made a comment inline.",
+      "revId": "95936210053c5149c1919b94d8fb8a32f17a5048",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1762fe50_ea41db4b",
+        "filename": "ipkdbg/build-opkg",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2024-03-18T04:40:38Z",
+      "side": 1,
+      "message": "Is the bump necessary? Is there something about 0.6.3 explicitly?\n\nIf it is necessary can you add a bit of discussion to the commit message?",
+      "revId": "95936210053c5149c1919b94d8fb8a32f17a5048",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
