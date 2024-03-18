@@ -1,0 +1,8 @@
+Code-Review+2: Andrew Jeffery <andrew@codeconstruct.com.au>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+Submitted-at: Mon, 18 Mar 2024 05:13:43 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/openbmc-tools/+/70068
+Comments-Total: 3
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
