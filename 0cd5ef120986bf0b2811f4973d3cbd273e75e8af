@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1273984d_87e0b76d",
+        "filename": "i2c/tree.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2024-03-22T01:20:13Z",
+      "side": 1,
+      "message": "Do you mind adding a `requirements.txt` or something to specify this as a dependency?",
+      "range": {
+        "startLine": 6,
+        "startChar": 5,
+        "endLine": 6,
+        "endChar": 12
+      },
+      "revId": "0cd5ef120986bf0b2811f4973d3cbd273e75e8af",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
