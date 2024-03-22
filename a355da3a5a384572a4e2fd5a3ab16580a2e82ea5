@@ -41,6 +41,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "97a8c68d_c2dd29b4",
+        "filename": "ipkdbg/debug_dump.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2024-03-22T11:15:31Z",
+      "side": 1,
+      "message": "This is intended, because otherwise when the user presses ctrl-c the tool exits.\n(At least) I usually hit ctrl-c to break my input, and I do not want the gdb session to be terminated in this case.",
+      "parentUuid": "1d10d7be_ec78d058",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 41
+      },
+      "revId": "a355da3a5a384572a4e2fd5a3ab16580a2e82ea5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d6244e41_84f7386d",
@@ -54,6 +78,30 @@
       "writtenOn": "2024-03-20T22:02:08Z",
       "side": 1,
       "message": "Can you unpack why this is done outside of the implementation of ipkdbg? Can we put it straight into ipkdbg rather than in a wrapper script?",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 11
+      },
+      "revId": "a355da3a5a384572a4e2fd5a3ab16580a2e82ea5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "01d7e75a_06c4d86d",
+        "filename": "ipkdbg/debug_dump.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2024-03-22T11:15:31Z",
+      "side": 1,
+      "message": "This wrapper is introduced to make it work in our (bytedance) environment, and I intend to make it \"configurable\" by using the environments.\n\nI feel Python is easier to use and so handle the environment checks here.",
+      "parentUuid": "d6244e41_84f7386d",
       "range": {
         "startLine": 25,
         "startChar": 0,
