@@ -89,6 +89,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "41ac06e4_e1cb01b4",
+        "filename": "ipkdbg/debug_dump.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1001371
+      },
+      "writtenOn": "2024-03-22T09:38:14Z",
+      "side": 1,
+      "message": "Yes, you are right. I didn\u0027t notice that ipkdbg had already implemented the relevant function before, and I did the duplicate work. It has been deleted.",
+      "parentUuid": "528f9fb8_5483b21d",
+      "range": {
+        "startLine": 143,
+        "startChar": 3,
+        "endLine": 154,
+        "endChar": 1
+      },
+      "revId": "a355da3a5a384572a4e2fd5a3ab16580a2e82ea5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e2b940dd_ad10cf9c",
         "filename": "ipkdbg/debug_dump.py",
         "patchSetId": 2
@@ -100,6 +124,30 @@
       "writtenOn": "2024-03-20T22:02:08Z",
       "side": 1,
       "message": "ipkdbg already handles this too. Why is it necessary in the wrapper script?",
+      "range": {
+        "startLine": 225,
+        "startChar": 3,
+        "endLine": 243,
+        "endChar": 9
+      },
+      "revId": "a355da3a5a384572a4e2fd5a3ab16580a2e82ea5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "156bf040_ed2b0d1c",
+        "filename": "ipkdbg/debug_dump.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1001371
+      },
+      "writtenOn": "2024-03-22T09:38:14Z",
+      "side": 1,
+      "message": "Yes, you are right. I didn\u0027t notice that ipkdbg had already implemented the relevant function before, and I did the duplicate work. It has been deleted.",
+      "parentUuid": "e2b940dd_ad10cf9c",
       "range": {
         "startLine": 225,
         "startChar": 3,
