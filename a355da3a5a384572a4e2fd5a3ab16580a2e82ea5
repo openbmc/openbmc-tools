@@ -114,6 +114,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b1c2147e_d19e64f7",
+        "filename": "ipkdbg/debug_dump.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2024-03-25T02:44:17Z",
+      "side": 1,
+      "message": "\u003e I feel Python is easier to use and so handle the environment checks here.\n\nRight, but I feel like scripts wrapping scripts starts to turn the concept into even more of a house of cards than it already is. I\u0027d prefer we try to integrate functionality directly into `ipkdbg` unless there\u0027s a functional reason not to.",
+      "parentUuid": "01d7e75a_06c4d86d",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 11
+      },
+      "revId": "a355da3a5a384572a4e2fd5a3ab16580a2e82ea5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "528f9fb8_5483b21d",
         "filename": "ipkdbg/debug_dump.py",
         "patchSetId": 2
