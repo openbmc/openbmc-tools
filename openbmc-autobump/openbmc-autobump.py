@@ -18,11 +18,17 @@
 
 import argparse
 import os
+import re
 import sys
 
+# This tool only works with sh==1.12.14, attempting to use a newer version of
+# the sh library will result in the tool failing to work.
 import sh
 
 git = sh.git.bake("--no-pager")
+SPECIAL_PKGSUFFIX = (
+    "-native -cross -initial -intermediate -crosssdk -cross-canadian"
+)
 
 
 def log(msg, args):
@@ -136,6 +142,11 @@ def find_and_process_bumps(meta, args):
         project_name, recipe_branch, recipe_sha = extract_sha_from_recipe(
             full_recipe_path, args
         )
+        pn = recipe_basename.split("_")[0]
+        bpn = pn
+        for suffix in SPECIAL_PKGSUFFIX.split(" "):
+            if pn.endswith(suffix):
+                bpn = pn.removesuffix(suffix)
 
         remote_fmt_args = (args.ssh_config_host, project_name)
         remote = "ssh://{}/openbmc/{}".format(*remote_fmt_args)
@@ -191,6 +202,18 @@ def find_and_process_bumps(meta, args):
         recipe_content = recipe_content.replace(recipe_sha, project_sha)
         with open(full_recipe_path, "w") as fd:
             fd.write(recipe_content)
+
+        # NPM recipes require copying the package-lock.json file from the
+        # project's repo into the Yocto tree as npm-shrinkwrap.json in order
+        # to properly fetch dependencies.
+        if re.search(r"inherit.*npm", recipe_content):
+            npm_shrinkwrap = (
+                os.path.dirname(full_recipe_path)
+                + f"/{bpn}/npm-shrinkwrap.json"
+            )
+            sh.mkdir("-p", os.path.dirname(npm_shrinkwrap))
+            sh.cp(f"{bpn}/package-lock.json", npm_shrinkwrap)
+            git.add(npm_shrinkwrap.removeprefix(f"{meta}/"), _cwd=meta)
 
         git.add(recipe, _cwd=meta)
 
