@@ -54,6 +54,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "501646ce_8e15a8f6",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1001140
+      },
+      "writtenOn": "2024-07-01T20:53:14Z",
+      "side": 1,
+      "message": "I\u0027ve removed the LICENSE stuff for now. I believe it is useful/proper to include, but given that the current webui-vue recipe does not contain this information I\u0027d like to decouple properly handling licensing information from the ability to do offline builds.",
+      "parentUuid": "b07fd906_da0a8f23",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "95923f2e_95eb2f87",
