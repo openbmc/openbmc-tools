@@ -16,6 +16,24 @@
       "message": "Why can\u0027t this be generalized to handle any recipe with a `package-lock.json` and uses `npm.bbclass`?",
       "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93849df6_ff073530",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1001140
+      },
+      "writtenOn": "2024-07-01T14:02:02Z",
+      "side": 1,
+      "message": "It could be, but do we even want that? I don\u0027t think we want to actually encourage more NPM packages in OpenBMC?",
+      "parentUuid": "95923f2e_95eb2f87",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
