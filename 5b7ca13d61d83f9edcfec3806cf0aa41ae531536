@@ -141,6 +141,24 @@
       "parentUuid": "f3d43506_297f7d3e",
       "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34886799_e6f2837c",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2024-07-02T05:38:16Z",
+      "side": 1,
+      "message": "Not IMO. It sounds like it\u0027s not hard to make generic if necessary (\"similar amount of lines\")?",
+      "parentUuid": "159c6d9e_08fa1ab6",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
