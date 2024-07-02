@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "95687a21_afc1d07e",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-07-02T17:50:45Z",
+      "side": 1,
+      "message": "sh change the return format not too many versions ago.  The machine where this script runs as part of the infrastructure is using an old version.\n\nI think that you have to add some `str(result)` casts in most cases to work the way it use to work.  Something like the old versions use to return a string and the new versions return some kind of handle object.",
+      "parentUuid": "7a2ab966_265b4dfd",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ecb8d54a_47fd08ef",
         "filename": "openbmc-autobump/openbmc-autobump.py",
         "patchSetId": 3
