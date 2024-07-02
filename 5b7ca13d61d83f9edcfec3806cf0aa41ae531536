@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7a2ab966_265b4dfd",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2024-07-02T17:38:33Z",
+      "side": 1,
+      "message": "Any details on why this is the case?  Is it something we could just trivially fix?",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ecb8d54a_47fd08ef",
         "filename": "openbmc-autobump/openbmc-autobump.py",
         "patchSetId": 3
@@ -68,6 +85,24 @@
       "side": 1,
       "message": "I\u0027ve removed the LICENSE stuff for now. I believe it is useful/proper to include, but given that the current webui-vue recipe does not contain this information I\u0027d like to decouple properly handling licensing information from the ability to do offline builds.",
       "parentUuid": "b07fd906_da0a8f23",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ef32fc7_f6f569d5",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2024-07-02T17:38:33Z",
+      "side": 1,
+      "message": "\u003e How often is a new dependency added? Is this even worth automating?\n\nAlmost every time we update the packagelock file, SOMETHING changes (even if it\u0027s just a version, we need to point at the license for that versioN). Yes, it needs to be automated.",
+      "parentUuid": "501646ce_8e15a8f6",
       "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -192,6 +227,24 @@
       "writtenOn": "2024-07-02T17:23:19Z",
       "side": 1,
       "message": "\u003e ... I am annoyed ...\n\nWelcome to open source development. 😋\n\n\u003e ... work on a repo that states ...\n\nWe probably should move this tool to openbmc-build-scripts.  @Andrew G.",
+      "parentUuid": "5ff04b46_ba93e3f5",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b02becb9_09cc153a",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1000153
+      },
+      "writtenOn": "2024-07-02T17:38:33Z",
+      "side": 1,
+      "message": "\u003e I\u0027m not mad about being asked to redo work\n\nIs it a lot of work to check that a file exists?  I must be missing something.  I don\u0027t see anywhere else in this file where we\u0027ve hard coded a single bb recipe name, so hopefully that was a hint?\n\n\nAdmittedly, the autobump script doesn\u0027t really fit under the description of \"un-homed\" and it\u0027s used quite heavily;  its existence in this repo doesn\u0027t really do that justice.  Arguably it should go in openbmc-build-scripts these days? but that\u0027s a discussion for another time.",
       "parentUuid": "5ff04b46_ba93e3f5",
       "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
