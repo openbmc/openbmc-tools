@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bfb88eb4_f2efd90a",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1001140
+      },
+      "writtenOn": "2024-07-02T18:40:38Z",
+      "side": 1,
+      "message": "I believe it is the other way around, the new version just uses strings, the old version uses something similar to (or maybe the same as?) a CompletedProcess object.\n\nNot knowing anything about the environment in which this is run I wasn\u0027t comfortable making changes that required any environmental changes. I settled for leaving an easy to find comment, though I could see maybe dropping a requirements.txt or a pyproject.toml file as being a good idea too.\n\nIn any case, I believe that fixing this is well outside the scope of this specific change, though I am willing to do that work after this change is accepted.",
+      "parentUuid": "95687a21_afc1d07e",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ecb8d54a_47fd08ef",
         "filename": "openbmc-autobump/openbmc-autobump.py",
         "patchSetId": 3
@@ -264,6 +282,24 @@
       "side": 1,
       "message": "\u003e I\u0027m not mad about being asked to redo work\n\nIs it a lot of work to check that a file exists?  I must be missing something.  I don\u0027t see anywhere else in this file where we\u0027ve hard coded a single bb recipe name, so hopefully that was a hint?\n\n\nAdmittedly, the autobump script doesn\u0027t really fit under the description of \"un-homed\" and it\u0027s used quite heavily;  its existence in this repo doesn\u0027t really do that justice.  Arguably it should go in openbmc-build-scripts these days? but that\u0027s a discussion for another time.",
       "parentUuid": "5ff04b46_ba93e3f5",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54112eb8_1cbb256b",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1001140
+      },
+      "writtenOn": "2024-07-02T18:40:38Z",
+      "side": 1,
+      "message": "Unfortunately no, it was not a hint to me, I never even really had that as a consideration.\n\nIn any case I\u0027ll fix this up today.",
+      "parentUuid": "b02becb9_09cc153a",
       "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
