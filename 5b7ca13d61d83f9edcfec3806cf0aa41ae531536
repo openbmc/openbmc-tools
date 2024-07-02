@@ -159,6 +159,24 @@
       "parentUuid": "159c6d9e_08fa1ab6",
       "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ff04b46_ba93e3f5",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1001140
+      },
+      "writtenOn": "2024-07-02T13:09:58Z",
+      "side": 1,
+      "message": "I\u0027m more pointing out that the requested work was done, but only after the fact was it determined that it was done \"wrong\" (this is entirely subjective!) even though it was never requested to be done in one way or another, nor is there any documentation on the project requesting a \"generic style\" versus a \"hardcoded style\".\n\nI can redo this, though I\u0027ll probably wind up pulling in the pathlib module because I find it significantly easier to work with for the requested operations (basically any sort of file operations), which will result in a larger change.\n\nI\u0027m not mad about being asked to redo work, I am annoyed that I\u0027m expected to be able to read minds! Doubly so for work on a repo that states:\n\n\"Then this repository aims to be the default destination for your otherwise un-homed scripts. As such we are setting the bar for submission pretty low, and we aim to make the process as easy as possible.\"",
+      "parentUuid": "34886799_e6f2837c",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
