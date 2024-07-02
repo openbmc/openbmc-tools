@@ -177,6 +177,24 @@
       "parentUuid": "34886799_e6f2837c",
       "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5dde3bba_8afbc480",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2024-07-02T17:23:19Z",
+      "side": 1,
+      "message": "\u003e ... I am annoyed ...\n\nWelcome to open source development. 😋\n\n\u003e ... work on a repo that states ...\n\nWe probably should move this tool to openbmc-build-scripts.  @Andrew G.",
+      "parentUuid": "5ff04b46_ba93e3f5",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
