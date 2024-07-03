@@ -320,6 +320,24 @@
       "parentUuid": "54112eb8_1cbb256b",
       "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a079ff39_695bed3f",
+        "filename": "openbmc-autobump/openbmc-autobump.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2024-07-03T00:51:46Z",
+      "side": 1,
+      "message": "I think my statement was misunderstood (and was not clearly worded). I wasn\u0027t trying to suggest I want it fixed, I was suggesting that I\u0027m fine to submit it with the hard-coded approach as it _didn\u0027t_ sound hard to fix that down the track. I was happy to submit it as is so long as everyone else was happy.\n\nI think that jives with\n\n\u003e As such we are setting the bar for submission pretty low\n\nand that there isn\u0027t any inconsistency here, just a misunderstanding of my response.\n\n\u003e Admittedly, the autobump script doesn\u0027t really fit under the description of \"un-homed\" and it\u0027s used quite heavily\n\nYes, it should be moved elsewhere.",
+      "parentUuid": "97006c7d_ad8e5deb",
+      "revId": "5b7ca13d61d83f9edcfec3806cf0aa41ae531536",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
