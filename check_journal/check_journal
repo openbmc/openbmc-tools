@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+import json
+
+import requests
+import urllib3
+
+"""
+Script for vmembers_counterifying correct paging of the Redfish LogService for the Journal.
+"""
+
+hostname = "192.168.7.2"
+entries_uri = (
+    f"https://{hostname}/redfish/v1/Managers/bmc/LogServices/Journal/Entries"
+)
+verify_ssl = False
+
+
+def login(session):
+    response = session.post(
+        f"https://{hostname}/redfish/v1/SessionService/Sessions",
+        verify=verify_ssl,
+        json={"UserName": "root", "Password": "0penBmc"},
+    )
+    response.raise_for_status()
+
+    auth = response.headers["X-Auth-Token"]
+
+    session.headers.update({"X-Auth-Token": auth})
+
+
+def get_golden(session):
+    response = session.get(
+        entries_uri,
+        verify=verify_ssl,
+    )
+    response.raise_for_status()
+
+    members = response.json()["Members"]
+
+    return members
+
+
+def main():
+    urllib3.disable_warnings()
+    session = requests.Session()
+
+    login(session)
+    members = get_golden(session)
+
+    failing = 0
+
+    print("Checking paging")
+    for top in [3, 2, 1]:
+        print(f"Checking {len(members)} pages with top {top}")
+        for page in range(0, len(members)):
+            skip = page
+            page_uri = f"{entries_uri}?$top={top}&$skip={skip}"
+            response3 = session.get(page_uri, verify=verify_ssl)
+            response3.raise_for_status()
+
+            # checking single paging
+            members3 = response3.json()["Members"]
+            if len(members3) != top:
+                print(f"Fail, size didn't match.  Size was {len(members3)}")
+            for index in range(0, len(members3)):
+                if skip + index >= len(members):
+                    print("Skipping entries created after golden page")
+                    continue
+                if members3[index] != members[skip + index]:
+                    print(f"Fail {page_uri} ")
+                    print(json.dumps(members3[0], indent=4))
+                    print("Returned Does not equal expected")
+                    print(json.dumps(members[page], indent=4))
+                    failing += 1
+                    continue
+
+            print(f"Checked {page_uri}")
+
+    print("Checking individual lookup")
+    for member_to_check in members:
+        odata_id = member_to_check["@odata.id"]
+        entry_uri = "https://192.168.7.2" + odata_id
+        response2 = session.get(
+            entry_uri,
+            verify=verify_ssl,
+        )
+        response2.raise_for_status()
+
+        member = response2.json()
+        if member != member_to_check:
+            print(f"Fail {entry_uri} ")
+            print("{response2} != {member_to_check}")
+            failing += 1
+            continue
+        print(f"Checked {entry_uri}")
+
+    if failing == 0:
+        print("ALL TESTS PASSED")
+    else:
+        print(f"{failing} TESTS FAILED")
+
+
+if __name__ == "__main__":
+    main()
