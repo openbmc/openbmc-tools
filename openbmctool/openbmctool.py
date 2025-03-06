@@ -130,7 +130,7 @@ def gettoken(args):
    resp = mysess.post('https://'+args.host+'/login', headers=jsonHeader,json={"data":[args.user,args.PW]},verify=False)
    if resp.status_code == 200:
        cookie = resp.headers['Set-Cookie']
-       match = re.search('SESSION=(\w+);', cookie)
+       match = re.search('BMCWEB-SESSION=(\w+);', cookie)
        return match.group(1)
 
 
@@ -435,7 +435,7 @@ def login(host, username, pw,jsonFormat, allowExpiredPassword):
         r = mysess.post('https://'+host+'/login', headers=jsonHeader, json = {"data": [username, pw]}, verify=False, timeout=baseTimeout)
         if r.status_code == 200:
             cookie = r.headers['Set-Cookie']
-            match = re.search('SESSION=(\w+);', cookie)
+            match = re.search('BMCWEB-SESSION=(\w+);', cookie)
             if match:
                 xAuthHeader['X-Auth-Token'] = match.group(1)
                 jsonHeader.update(xAuthHeader)
