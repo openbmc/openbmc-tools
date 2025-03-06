@@ -8,7 +8,12 @@ from collections import defaultdict
 from typing import Dict
 
 import libvoters.acceptable as acceptable
-from libvoters import UserChanges, UserComments, changes_factory, comments_factory
+from libvoters import (
+    UserChanges,
+    UserComments,
+    changes_factory,
+    comments_factory,
+)
 from libvoters.time import TimeOfDay, timestamp
 
 
