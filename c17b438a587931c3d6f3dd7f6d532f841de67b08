@@ -1,0 +1,7 @@
+Code-Review+2: Andrew Geissler <geissonator@yahoo.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: ManojKiran Eda <manojkiran.eda@gmail.com>
+Submitted-at: Fri, 13 Jun 2025 03:42:14 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/openbmc-tools/+/80966
+Project: openbmc/openbmc-tools
+Branch: refs/heads/master
