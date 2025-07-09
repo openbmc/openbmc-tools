@@ -6,7 +6,6 @@
 
 - `sensor_yaml_config.py` A tool to help write IPMI sensor yaml config.
   **Note**: This script requires python3.6 or above.
-
   - To sort the yaml config:
 
   ```sh
