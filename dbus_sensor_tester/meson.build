@@ -124,7 +124,7 @@ dependencies += boost
 srcfiles_sensortest = [
 ]
 
-systemd_system_unit_dir = systemd.get_variable('systemdsystemunitdir')
+systemd_system_unit_dir = systemd.get_variable('systemd_system_unit_dir')
 bindir = get_option('prefix') + '/' +get_option('bindir')
 
 # Generate the executable
