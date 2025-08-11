@@ -104,12 +104,7 @@ endif
 # automatically during the configure step
 dependencies = []
 
-sdbusplus = dependency('sdbusplus', required: false, include_type: 'system')
-if not sdbusplus.found()
-    sdbusplus_proj = subproject('sdbusplus', required: true)
-    sdbusplus = sdbusplus_proj.get_variable('sdbusplus_dep')
-    sdbusplus = sdbusplus.as_system('system')
-endif
+sdbusplus = dependency('sdbusplus')
 dependencies += sdbusplus
 
 cli11 = dependency('cli11', required: false, include_type: 'system')
