@@ -21,6 +21,7 @@ def main() -> int:
         import_module("libvoters.subcmd.analyze-reviews"),
         import_module("libvoters.subcmd.dump-gerrit"),
         import_module("libvoters.subcmd.report"),
+        import_module("libvoters.subcmd.verify-files"),
     ]
     commands = [x.subcmd(subparser) for x in commands]  # type: ignore
 
