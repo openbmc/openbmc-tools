@@ -13,6 +13,7 @@ def project(name: str) -> bool:
 
     reject_repo = [
         "openbmc/s2600wf-misc",
+        "openbmc/witherspoon-pfault-analysis",
     ]
 
     for r in reject_repo:
@@ -33,15 +34,17 @@ def file(proj: str, filename: str) -> bool:
             ".*/google/",
             ".*/ibm/",
             ".*/intel/",
+            ".*oem/.*",
             "MAINTAINERS",
             "OWNERS",
+            "gen/.*",
             "ibm-.*",
             "ibm_.*",
         ],
         "openbmc/entity-manager": ["configurations/.*"],
         "openbmc/libmctp": ["docs/bindings/vendor-.*"],
         "openbmc/openbmc": ["meta-(?!phosphor).*", "poky/.*"],
-        "openbmc/openbmc-test-automation": ["oem/.*", "openpower/.*"],
+        "openbmc/openbmc-test-automation": ["openpower/.*"],
         "openbmc/openpower-libhei": [
             "test/simulator/sample_data/.*",
             "test/simulator/test_*cases/.*",
@@ -51,6 +54,9 @@ def file(proj: str, filename: str) -> bool:
             ".*/pel/.*",
             ".*/ras-data/.*",
         ],
+        "openbmc/phosphor-dbus-interfaces": [
+            "yaml/com/.*",
+        ],
         "openbmc/phosphor-debug-collector": [
             "dump-extensions/.*",
             "tools/dreport.d/ibm.d/.*",
@@ -59,6 +65,10 @@ def file(proj: str, filename: str) -> bool:
         "openbmc/phosphor-power": [".*/config_files/.*"],
         "openbmc/phosphor-led-manager": ["configs/.*"],
         "openbmc/phosphor-logging": [".*/openpower-pels/.*"],
+        "openbmc/pldm": [
+            ".*oem_.*",
+            "configurations/.*",
+        ],
         "openbmc/webui-vue": [
             "src/env/.*",
         ],
