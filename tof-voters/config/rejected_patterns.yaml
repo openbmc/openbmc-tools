@@ -1,0 +1,78 @@
+# Rejected patterns for projects and files
+rejected_repos:
+  - openbmc/s2600wf-misc
+  - openbmc/witherspoon-pfault-analysis
+
+rejected_project_regex:
+  - ".*-oem"
+  - "openbmc/google-.*"
+  - "openbmc/ibm-.*"
+  - "openbmc/intel-.*"
+  - "openbmc/meta-.*"
+
+rejected_files:
+  - "/COMMIT_MSG"
+  - "/PATCHSET_LEVEL"
+
+rejected_file_regex:
+  # Global patterns that apply to all projects
+  all:
+    - ".*/create_pel.*"
+    - ".*/google/"
+    - ".*/ibm/"
+    - ".*/intel/"
+    - ".*oem/.*"
+    - "MAINTAINERS"
+    - "OWNERS"
+    - "gen/.*"
+    - "ibm-.*"
+    - "ibm_.*"
+
+  # Project-specific patterns
+  openbmc/entity-manager:
+    - "configurations/.*"
+
+  openbmc/libmctp:
+    - "docs/bindings/vendor-.*"
+
+  openbmc/openbmc:
+    - "meta-(?!phosphor).*"
+    - "poky/.*"
+
+  openbmc/openbmc-test-automation:
+    - "openpower/.*"
+
+  openbmc/openpower-libhei:
+    - "test/simulator/sample_data/.*"
+    - "test/simulator/test_*cases/.*"
+    - "xml/.*"
+
+  openbmc/openpower-hw-diags:
+    - ".*/pel/.*"
+    - ".*/ras-data/.*"
+
+  openbmc/phosphor-dbus-interfaces:
+    - "yaml/com/.*"
+
+  openbmc/phosphor-debug-collector:
+    - "dump-extensions/.*"
+    - "tools/dreport.d/ibm.d/.*"
+
+  openbmc/phosphor-fan-presence:
+    - ".*/config_files/.*"
+
+  openbmc/phosphor-power:
+    - ".*/config_files/.*"
+
+  openbmc/phosphor-led-manager:
+    - "configs/.*"
+
+  openbmc/phosphor-logging:
+    - ".*/openpower-pels/.*"
+
+  openbmc/pldm:
+    - ".*oem_.*"
+    - "configurations/.*"
+
+  openbmc/webui-vue:
+    - "src/env/.*"
