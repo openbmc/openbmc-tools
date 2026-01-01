@@ -76,6 +76,11 @@ class subcmd:
                     continue
 
                 for comment in patch_set["comments"]:
+                    if (
+                        "reviewer" not in comment
+                        or "username" not in comment["reviewer"]
+                    ):
+                        continue
                     reviewer = comment["reviewer"]["username"]
 
                     if reviewer == author:
