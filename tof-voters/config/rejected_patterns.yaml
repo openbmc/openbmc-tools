@@ -38,6 +38,7 @@ rejected_file_regex:
     openbmc/openbmc:
         - "meta-(?!phosphor).*"
         - "poky/.*"
+        - "upstream-layers/.*"
 
     openbmc/openbmc-test-automation:
         - "openpower/.*"
