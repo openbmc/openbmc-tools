@@ -88,7 +88,7 @@ def extract_sha_from_recipe(recipe, args):
                         # another bitbake variable that ends with _URI.
                         uris = ""
                     else:
-                        (project, branch) = uri
+                        project, branch = uri
 
             if project and branch and sha:
                 return (project, branch, sha)
