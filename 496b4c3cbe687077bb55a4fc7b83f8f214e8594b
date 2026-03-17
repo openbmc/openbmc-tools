@@ -16,6 +16,24 @@
       "message": "This seems bizarre. `bbdbg` isn\u0027t particularly complex. Can we provide more details here?",
       "revId": "496b4c3cbe687077bb55a4fc7b83f8f214e8594b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "760859ef_405b2807",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2026-03-17T13:38:22Z",
+      "side": 1,
+      "message": "Left output results in the commit message.",
+      "parentUuid": "8f593d14_3c12a6df",
+      "revId": "496b4c3cbe687077bb55a4fc7b83f8f214e8594b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
