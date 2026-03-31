@@ -1,0 +1,385 @@
+#!/usr/bin/env python3
+"""
+Nginx Access Log Analyzer
+Analyzes nginx access logs to identify bot traffic and recommend IP ranges for blocking.
+"""
+
+import re
+import sys
+from collections import defaultdict, Counter
+from ipaddress import ip_network
+from typing import Dict, List, Tuple
+import argparse
+
+
+class NginxLogAnalyzer:
+    """Analyzes nginx access logs for bot traffic patterns."""
+    
+    # Known bot user agents to detect
+    BOT_PATTERNS = [
+        r'ClaudeBot', r'GPTBot', r'ChatGPT', r'Amazonbot',
+        r'meta-externalagent', r'PerplexityBot', r'Baiduspider',
+        r'YandexBot', r'AliyunSecBot', r'AhrefsBot', r'SemrushBot',
+        r'DotBot', r'MJ12bot', r'PetalBot', r'Sogou', r'IbouBot',
+        r'Thinkbot', r'OAI-SearchBot'
+    ]
+    
+    # Legitimate crawlers (usually want to allow)
+    LEGITIMATE_BOTS = [
+        r'Googlebot', r'bingbot', r'Slurp', r'DuckDuckBot', r'Applebot'
+    ]
+    
+    def __init__(self, log_file: str, threshold: int = 1000):
+        """
+        Initialize the analyzer.
+        
+        Args:
+            log_file: Path to nginx access log file
+            threshold: Minimum request count to consider an IP/range suspicious
+        """
+        self.log_file = log_file
+        self.threshold = threshold
+        self.ip_counts = Counter()
+        self.user_agents = defaultdict(int)
+        self.status_codes = defaultdict(lambda: defaultdict(int))
+        self.login_attempts = Counter()
+        self.bot_ips = defaultdict(set)
+        self.total_requests = 0
+        
+    def parse_log_line(self, line: str) -> Dict:
+        """Parse a single nginx log line."""
+        # Standard nginx log format pattern
+        pattern = r'(\S+) - - \[(.*?)\] "(.*?)" (\d+) (\d+) "(.*?)" "(.*?)"'
+        match = re.match(pattern, line)
+        
+        if not match:
+            return None
+            
+        return {
+            'ip': match.group(1),
+            'timestamp': match.group(2),
+            'request': match.group(3),
+            'status': int(match.group(4)),
+            'size': int(match.group(5)),
+            'referrer': match.group(6),
+            'user_agent': match.group(7)
+        }
+    
+    def is_bot(self, user_agent: str) -> Tuple[bool, str]:
+        """Check if user agent is a bot and return bot type."""
+        for pattern in self.BOT_PATTERNS:
+            if re.search(pattern, user_agent, re.IGNORECASE):
+                return True, pattern
+        return False, None
+    
+    def is_legitimate_bot(self, user_agent: str) -> bool:
+        """Check if user agent is a legitimate crawler."""
+        for pattern in self.LEGITIMATE_BOTS:
+            if re.search(pattern, user_agent, re.IGNORECASE):
+                return True
+        return False
+    
+    def analyze(self):
+        """Analyze the log file."""
+        print(f"Analyzing {self.log_file}...")
+        
+        with open(self.log_file, 'r', encoding='utf-8', errors='ignore') as f:
+            for line_num, line in enumerate(f, 1):
+                if line_num % 100000 == 0:
+                    print(f"  Processed {line_num:,} lines...")
+                
+                parsed = self.parse_log_line(line)
+                if not parsed:
+                    continue
+                
+                self.total_requests += 1
+                ip = parsed['ip']
+                user_agent = parsed['user_agent']
+                status = parsed['status']
+                request = parsed['request']
+                
+                # Count IPs
+                self.ip_counts[ip] += 1
+                
+                # Count user agents
+                self.user_agents[user_agent] += 1
+                
+                # Track status codes by IP
+                self.status_codes[ip][status] += 1
+                
+                # Track login attempts
+                if '/login/' in request:
+                    self.login_attempts[ip] += 1
+                
+                # Identify bots
+                is_bot, bot_type = self.is_bot(user_agent)
+                if is_bot:
+                    self.bot_ips[bot_type].add(ip)
+        
+        print(f"  Total requests analyzed: {self.total_requests:,}\n")
+    
+    def get_ip_range(self, ip: str, prefix_len: int = 24) -> str:
+        """Get the network range for an IP address."""
+        try:
+            network = ip_network(f"{ip}/{prefix_len}", strict=False)
+            return str(network)
+        except ValueError:
+            return None
+    
+    def aggregate_ip_ranges(self, ips: List[str], min_ips: int = 3) -> Dict[str, int]:
+        """
+        Aggregate IPs into /24 and /16 ranges.
+        
+        Args:
+            ips: List of IP addresses
+            min_ips: Minimum number of IPs in a range to consider it
+            
+        Returns:
+            Dictionary of ranges and their request counts
+        """
+        range_counts_24 = defaultdict(int)
+        range_counts_16 = defaultdict(int)
+        
+        for ip in ips:
+            count = self.ip_counts[ip]
+            
+            # /24 ranges
+            range_24 = self.get_ip_range(ip, 24)
+            if range_24:
+                range_counts_24[range_24] += count
+            
+            # /16 ranges
+            range_16 = self.get_ip_range(ip, 16)
+            if range_16:
+                range_counts_16[range_16] += count
+        
+        # Filter ranges with enough IPs
+        filtered_24 = {r: c for r, c in range_counts_24.items() 
+                      if len([ip for ip in ips if self.get_ip_range(ip, 24) == r]) >= min_ips}
+        filtered_16 = {r: c for r, c in range_counts_16.items() 
+                      if len([ip for ip in ips if self.get_ip_range(ip, 16) == r]) >= min_ips}
+        
+        return filtered_24, filtered_16
+    
+    def generate_report(self):
+        """Generate analysis report with blocking recommendations."""
+        print("=" * 80)
+        print("NGINX ACCESS LOG ANALYSIS REPORT")
+        print("=" * 80)
+        print(f"\nTotal Requests: {self.total_requests:,}")
+        print(f"Unique IPs: {len(self.ip_counts):,}")
+        print(f"Analysis Threshold: {self.threshold:,} requests\n")
+        
+        # Top IPs by request count
+        print("-" * 80)
+        print("TOP 20 IPs BY REQUEST COUNT")
+        print("-" * 80)
+        print(f"{'IP Address':<20} {'Requests':<12} {'% of Total':<12} {'403s':<8} {'Login Attempts'}")
+        print("-" * 80)
+        
+        for ip, count in self.ip_counts.most_common(20):
+            pct = (count / self.total_requests) * 100
+            forbidden = self.status_codes[ip].get(403, 0)
+            logins = self.login_attempts.get(ip, 0)
+            print(f"{ip:<20} {count:<12,} {pct:<11.2f}% {forbidden:<8} {logins}")
+        
+        # Bot analysis
+        print("\n" + "-" * 80)
+        print("BOT TRAFFIC ANALYSIS")
+        print("-" * 80)
+        
+        bot_recommendations = []
+        
+        for bot_type, ips in sorted(self.bot_ips.items(), key=lambda x: len(x[1]), reverse=True):
+            total_requests = sum(self.ip_counts[ip] for ip in ips)
+            pct = (total_requests / self.total_requests) * 100
+            
+            print(f"\n{bot_type}:")
+            print(f"  Unique IPs: {len(ips)}")
+            print(f"  Total Requests: {total_requests:,} ({pct:.2f}%)")
+            
+            # Get IP ranges
+            ranges_24, ranges_16 = self.aggregate_ip_ranges(list(ips))
+            
+            if ranges_24:
+                print("  Top /24 ranges:")
+                for range_ip, count in sorted(ranges_24.items(), key=lambda x: x[1], reverse=True)[:5]:
+                    range_pct = (count / self.total_requests) * 100
+                    print(f"    {range_ip:<20} {count:>8,} requests ({range_pct:.2f}%)")
+                    if count >= self.threshold:
+                        bot_recommendations.append({
+                            'range': range_ip,
+                            'requests': count,
+                            'bot_type': bot_type,
+                            'percentage': range_pct
+                        })
+            
+            if ranges_16:
+                print("  Top /16 ranges:")
+                for range_ip, count in sorted(ranges_16.items(), key=lambda x: x[1], reverse=True)[:3]:
+                    range_pct = (count / self.total_requests) * 100
+                    print(f"    {range_ip:<20} {count:>8,} requests ({range_pct:.2f}%)")
+        
+        # High-volume IP ranges
+        print("\n" + "-" * 80)
+        print("HIGH-VOLUME IP RANGES (Non-Bot)")
+        print("-" * 80)
+        
+        high_volume_ips = [ip for ip, count in self.ip_counts.items() 
+                          if count >= self.threshold]
+        
+        ranges_24, ranges_16 = self.aggregate_ip_ranges(high_volume_ips, min_ips=5)
+        
+        range_recommendations = []
+        
+        if ranges_24:
+            print("\nTop /24 ranges:")
+            for range_ip, count in sorted(ranges_24.items(), key=lambda x: x[1], reverse=True)[:15]:
+                pct = (count / self.total_requests) * 100
+                ips_in_range = [ip for ip in high_volume_ips if self.get_ip_range(ip, 24) == range_ip]
+                print(f"  {range_ip:<20} {count:>8,} requests ({pct:.2f}%) - {len(ips_in_range)} IPs")
+                
+                if count >= self.threshold * 2:
+                    range_recommendations.append({
+                        'range': range_ip,
+                        'requests': count,
+                        'ip_count': len(ips_in_range),
+                        'percentage': pct
+                    })
+        
+        if ranges_16:
+            print("\nTop /16 ranges:")
+            for range_ip, count in sorted(ranges_16.items(), key=lambda x: x[1], reverse=True)[:10]:
+                pct = (count / self.total_requests) * 100
+                ips_in_range = [ip for ip in high_volume_ips if self.get_ip_range(ip, 16) == range_ip]
+                print(f"  {range_ip:<20} {count:>8,} requests ({pct:.2f}%) - {len(ips_in_range)} IPs")
+        
+        # Login attempt analysis
+        print("\n" + "-" * 80)
+        print("TOP IPs BY LOGIN ATTEMPTS")
+        print("-" * 80)
+        
+        login_recommendations = []
+        for ip, count in self.login_attempts.most_common(15):
+            total = self.ip_counts[ip]
+            pct = (count / total) * 100 if total > 0 else 0
+            print(f"  {ip:<20} {count:>6,} login attempts ({pct:.1f}% of their traffic)")
+            
+            if count >= 100:
+                login_recommendations.append({
+                    'ip': ip,
+                    'login_attempts': count,
+                    'total_requests': total
+                })
+        
+        # Status code analysis
+        print("\n" + "-" * 80)
+        print("STATUS CODE SUMMARY")
+        print("-" * 80)
+        
+        all_status_codes = Counter()
+        for ip_statuses in self.status_codes.values():
+            for status, count in ip_statuses.items():
+                all_status_codes[status] += count
+        
+        for status, count in sorted(all_status_codes.items()):
+            pct = (count / self.total_requests) * 100
+            print(f"  {status}: {count:>10,} ({pct:.2f}%)")
+        
+        # RECOMMENDATIONS
+        print("\n" + "=" * 80)
+        print("BLOCKING RECOMMENDATIONS")
+        print("=" * 80)
+        
+        print("\n1. BOT TRAFFIC TO BLOCK:")
+        print("-" * 80)
+        
+        if bot_recommendations:
+            for rec in sorted(bot_recommendations, key=lambda x: x['requests'], reverse=True):
+                print(f"  deny {rec['range']:<20}  # {rec['bot_type']} - {rec['requests']:,} requests ({rec['percentage']:.2f}%)")
+        else:
+            print("  No bot ranges exceed threshold")
+        
+        print("\n2. HIGH-VOLUME IP RANGES TO CONSIDER:")
+        print("-" * 80)
+        
+        if range_recommendations:
+            for rec in sorted(range_recommendations, key=lambda x: x['requests'], reverse=True)[:10]:
+                print(f"  deny {rec['range']:<20}  # {rec['requests']:,} requests ({rec['percentage']:.2f}%) - {rec['ip_count']} IPs")
+        else:
+            print("  No ranges exceed threshold")
+        
+        print("\n3. USER-AGENT BLOCKING:")
+        print("-" * 80)
+        
+        bot_agents = set()
+        for ua, count in self.user_agents.items():
+            is_bot, bot_type = self.is_bot(ua)
+            if is_bot and count >= 100:
+                bot_agents.add(bot_type)
+        
+        if bot_agents:
+            agent_list = '|'.join(sorted(bot_agents))
+            print(f'  if ($http_user_agent ~* "({agent_list})") {{')
+            print('      return 403;')
+            print('  }')
+        else:
+            print("  No significant bot user agents detected")
+        
+        print("\n4. INDIVIDUAL IPs WITH EXCESSIVE LOGIN ATTEMPTS:")
+        print("-" * 80)
+        
+        if login_recommendations:
+            for rec in login_recommendations[:10]:
+                print(f"  deny {rec['ip']:<20}  # {rec['login_attempts']:,} login attempts")
+        else:
+            print("  No IPs with excessive login attempts")
+        
+        print("\n" + "=" * 80)
+        print("NOTES:")
+        print("=" * 80)
+        print("- Review recommendations before applying")
+        print("- Test in staging environment first")
+        print("- Monitor for false positives after deployment")
+        print("- Consider rate limiting as alternative to blocking")
+        print("- Legitimate bots (Google, Bing) are not included in recommendations")
+        print("=" * 80)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Analyze nginx access logs and recommend IP blocking rules',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  %(prog)s access.log
+  %(prog)s access.log --threshold 500
+  %(prog)s /var/log/nginx/access.log --threshold 2000
+        """
+    )
+    
+    parser.add_argument('log_file', help='Path to nginx access log file')
+    parser.add_argument('--threshold', type=int, default=1000,
+                       help='Minimum request count to flag as suspicious (default: 1000)')
+    
+    args = parser.parse_args()
+    
+    try:
+        analyzer = NginxLogAnalyzer(args.log_file, args.threshold)
+        analyzer.analyze()
+        analyzer.generate_report()
+    except FileNotFoundError:
+        print(f"Error: Log file '{args.log_file}' not found", file=sys.stderr)
+        sys.exit(1)
+    except KeyboardInterrupt:
+        print("\n\nAnalysis interrupted by user", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
+
+# Made with Bob
