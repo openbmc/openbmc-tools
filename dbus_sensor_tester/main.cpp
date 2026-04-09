@@ -77,8 +77,7 @@ int main(int argc, const char **argv) {
   std::string name = "foobar";
   sensorInterfaces.reserve(number_of_sensors);
   for (size_t sensorIndex = 0; sensorIndex < number_of_sensors; sensorIndex++) {
-    sdbusplus::message::object_path path(
-        "/xyz/openbmc_project/sensors/temperature/");
+    sdbusplus::object_path path("/xyz/openbmc_project/sensors/temperature/");
     path /= name + std::to_string(sensorIndex);
     std::shared_ptr<sdbusplus::asio::dbus_interface> sensorInterface =
         objectServer.add_interface(path.str,
