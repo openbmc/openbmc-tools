@@ -97,7 +97,7 @@ int main(int argc, const char **argv) {
   boost::asio::steady_timer timer(io);
   timer.expires_from_now(std::chrono::seconds(update_interval_seconds));
   timer.async_wait(std::bind_front(on_loop, &timer));
-  std::optional<sdbusplus::bus::match_t> match;
+  std::optional<sdbusplus::match> match;
   if (watch_sensor_updates) {
     std::string expr = "type='signal',member='PropertiesChanged',path_"
                        "namespace='/xyz/openbmc_project/sensors'";
