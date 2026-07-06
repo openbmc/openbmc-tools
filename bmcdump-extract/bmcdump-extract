@@ -1,0 +1,763 @@
+#!/usr/bin/env python3
+"""
+bmcdump-extract - unpack a BMC dump and dig through it for OOM/panic info.
+
+Usage:
+    bmcdump-extract oom dump_file
+    bmcdump-extract oom --out /my_dump/dump_file
+    bmcdump-extract oom /path/to/dump_file
+"""
+
+import argparse
+import os
+import re
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+PAGE_KB = 4  # 4 KiB pages, both ARM and x86 BMCs use this
+
+
+def extract_bmc_dump(dump_file: Path, out_dir: Path | None = None) -> Path:
+    """BMC dumps are: 628-byte header + zstd blob + tar. Strip, decompress, unpack."""
+    out_dir = out_dir or Path(tempfile.mkdtemp(prefix="bmc_dump_"))
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    zst_path = out_dir / "output.zst"
+    tar_path = out_dir / "output"
+
+    print(f"extracting {dump_file.name} -> {out_dir}")
+
+    ret = subprocess.run(
+        ["dd", f"if={dump_file}", f"of={zst_path}", "bs=1", "skip=628"],
+        capture_output=True,
+    )
+    if ret.returncode != 0:
+        sys.exit(f"dd failed: {ret.stderr.decode(errors='replace')}")
+
+    ret = subprocess.run(
+        ["unzstd", str(zst_path), "-o", str(tar_path)], capture_output=True
+    )
+    if ret.returncode != 0:
+        sys.exit(f"unzstd failed: {ret.stderr.decode(errors='replace')}")
+
+    ret = subprocess.run(
+        ["tar", "-xvf", str(tar_path)], capture_output=True, cwd=out_dir
+    )
+    entries = ret.stdout.decode(errors="replace").strip().splitlines()
+    # tar returns 1 on things like trailing-block warnings, that's not fatal on its own
+    if ret.returncode != 0 and not entries:
+        sys.exit(f"tar failed: {ret.stderr.decode(errors='replace')}")
+
+    # most dumps extract to a single top-level dir, cd into it if so
+    top_level = {e.split("/")[0] for e in entries if e}
+    if len(top_level) == 1:
+        candidate = out_dir / top_level.pop()
+        if candidate.is_dir():
+            out_dir = candidate
+
+    print(f"done: {out_dir}\n")
+    return out_dir
+
+
+def pages_to_mb(pages):
+    return pages * PAGE_KB / 1024
+
+
+def kb_to_mb(kb):
+    return kb / 1024
+
+
+def strip_ts(line):
+    """Drop the <N> or [   123.456] prefix kernel log lines get."""
+    line = re.sub(r"^<\d+>", "", line)
+    return re.sub(r"^\[\s*\d+\.\d+\]\s*", "", line)
+
+
+def make_proc_entry(groups, has_anon_cols):
+    if has_anon_cols:
+        (
+            pid,
+            uid,
+            tgid,
+            total_vm,
+            rss,
+            rss_anon,
+            rss_file,
+            rss_shmem,
+            pgtables,
+            swapents,
+            oom_score,
+            name,
+        ) = groups
+    else:
+        pid, uid, tgid, total_vm, rss, pgtables, swapents, oom_score, name = (
+            groups
+        )
+        rss_anon = rss_file = rss_shmem = "0"
+    return {
+        "pid": int(pid),
+        "uid": int(uid),
+        "tgid": int(tgid),
+        "total_vm": int(total_vm),
+        "rss": int(rss),
+        "rss_anon": int(rss_anon),
+        "rss_file": int(rss_file),
+        "rss_shmem": int(rss_shmem),
+        "pgtables_bytes": int(pgtables),
+        "swapents": int(swapents),
+        "oom_score_adj": int(oom_score),
+        "name": name.strip(),
+    }
+
+
+class BMCDumpAnalyzer:
+    """Parses a dmesg/ramoops file out of an extracted BMC dump and reports on OOMs/panics."""
+
+    def __init__(self, dump_dir):
+        self.dump_dir = Path(dump_dir)
+        self.oom_detected = False
+        self.kernel_panic = False
+        self.process_table = []
+        self.mem_info = {}
+        self.top_process = None
+
+    def find_dmesg_file(self):
+        candidates = set()
+        for pat in ("**/dmesg*", "**/ramoops*", "**/kmsg*"):
+            candidates.update(
+                f for f in self.dump_dir.glob(pat) if f.is_file()
+            )
+        if not candidates:
+            return None
+        f = sorted(candidates)[0]
+        print(f"using {f.name} ({f.stat().st_size // 1024} KB)")
+        return f
+
+    def find_smaps_files(self):
+        found = set(self.dump_dir.glob("**/smaps*")) | set(
+            self.dump_dir.glob("**/proc_*/smaps*")
+        )
+        return sorted(found)
+
+    def find_summary_file(self):
+        summaries = list(self.dump_dir.glob("**/summary.log"))
+        return summaries[0] if summaries else None
+
+    def parse_process_table(self, content):
+        lines = [strip_ts(ln) for ln in content.splitlines()]
+
+        header_idx = next(
+            (
+                i
+                for i, ln in enumerate(lines)
+                if "Tasks state (memory values in pages):" in ln
+            ),
+            None,
+        )
+        if header_idx is None:
+            return []
+
+        # newer kernels print rss_anon/rss_file/rss_shmem columns, older ones don't
+        has_anon_cols = any(
+            "rss_anon" in ln for ln in lines[header_idx : header_idx + 5]
+        )
+        if has_anon_cols:
+            pat = r"\[\s*(\d+)\]\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(-?\d+)\s+(.*)"
+        else:
+            pat = r"\[\s*(\d+)\]\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(-?\d+)\s+(.*)"
+        pattern = re.compile(pat)
+
+        processes = []
+        for line in lines[header_idx + 1 :]:
+            stripped = line.strip()
+            if (
+                not stripped
+                or stripped.startswith("---")
+                or "pid" in stripped.lower()
+                and "[" in stripped
+            ):
+                continue
+            if stripped.startswith(("Mem-Info:", "oom-kill")):
+                break
+            match = pattern.search(stripped)
+            if match:
+                processes.append(
+                    make_proc_entry(match.groups(), has_anon_cols)
+                )
+        return processes
+
+    def parse_mem_info(self, content):
+        lines = [strip_ts(ln) for ln in content.splitlines()]
+
+        start = next(
+            (i for i, ln in enumerate(lines) if "Mem-Info:" in ln), None
+        )
+        if start is None:
+            return {}
+        end = next(
+            (
+                i
+                for i in range(start + 1, len(lines))
+                if lines[i]
+                .strip()
+                .startswith(("Tasks state", "Out of memory", "oom-kill"))
+            ),
+            len(lines),
+        )
+
+        info = {}
+
+        def grab(pattern, s, key=None):
+            m = re.search(pattern, s)
+            if m:
+                if key:
+                    info[key] = int(m.group(1))
+                return int(m.group(1))
+            return None
+
+        for line in (ln.strip() for ln in lines[start:end]):
+            if not line:
+                continue
+            if "kB" not in line:
+                for field in (
+                    "active_anon",
+                    "inactive_anon",
+                    "active_file",
+                    "inactive_file",
+                    "slab_reclaimable",
+                    "slab_unreclaimable",
+                    "mapped",
+                    "pagetables",
+                ):
+                    if f"{field}:" in line:
+                        grab(rf"\b{field}:(\d+)", line, field)
+                if "shmem:" in line and "Node" not in line:
+                    grab(r"\bshmem:(\d+)", line, "shmem")
+                if "free:" in line and not any(
+                    x in line for x in ("Node", "Normal", "HighMem")
+                ):
+                    grab(r"\bfree:(\d+)", line, "free")
+
+            if "Node 0 active_anon:" in line:
+                m = re.search(
+                    r"active_anon:(\d+)kB\s+inactive_anon:(\d+)kB", line
+                )
+                if m:
+                    info["active_anon_kb"], info["inactive_anon_kb"] = int(
+                        m.group(1)
+                    ), int(m.group(2))
+                m = re.search(
+                    r"active_file:(\d+)kB\s+inactive_file:(\d+)kB", line
+                )
+                if m:
+                    info["active_file_kb"], info["inactive_file_kb"] = int(
+                        m.group(1)
+                    ), int(m.group(2))
+                grab(r"shmem:(\d+)kB", line, "shmem_kb")
+                grab(r"kernel_stack:(\d+)kB", line, "kernel_stack_kb")
+                grab(r"pagetables:(\d+)kB", line, "pagetables_kb")
+
+            if "Normal free:" in line:
+                grab(r"free:(\d+)kB", line, "normal_free_kb")
+                m = re.search(
+                    r"min:(\d+)kB\s+low:(\d+)kB\s+high:(\d+)kB", line
+                )
+                if m:
+                    info["min_kb"], info["low_kb"], info["high_kb"] = (
+                        int(x) for x in m.groups()
+                    )
+                m = re.search(r"present:(\d+)kB\s+managed:(\d+)kB", line)
+                if m:
+                    info["present_kb"], info["managed_kb"] = int(
+                        m.group(1)
+                    ), int(m.group(2))
+
+            grab(r"(\d+)\s+pages RAM", line, "total_pages_ram")
+            grab(r"(\d+)\s+pages reserved", line, "reserved_pages")
+            grab(r"(\d+)\s+pages HighMem", line, "highmem_pages")
+
+        return info
+
+    def check_oom_and_panic(self, content):
+        oom = bool(re.search(r"invoked oom-killer|Out of memory", content))
+        panic = "Kernel panic" in content
+        oops = bool(
+            re.search(
+                r"Internal error: Oops|Unable to handle kernel|BUG: |divide error|general protection fault",
+                content,
+            )
+        )
+
+        reason = None
+        if panic:
+            m = re.search(r"Kernel panic[^\n]*", content)
+        elif oops:
+            m = (
+                re.search(r"Unable to handle[^\n]*", content)
+                or re.search(r"Internal error: Oops[^\n]*", content)
+                or re.search(r"BUG:[^\n]*", content)
+            )
+        else:
+            m = None
+        if m:
+            reason = strip_ts(m.group(0)).strip()
+
+        return oom, panic, oops, reason
+
+    def parse_smaps_rollup(self, smaps_file):
+        try:
+            content = smaps_file.read_text(errors="ignore")
+        except OSError:
+            return None
+        result = {
+            m.group(1): int(m.group(2))
+            for m in re.finditer(r"(\w+):\s+(\d+)\s+kB", content)
+        }
+        return result or None
+
+    def parse_oops_context(self, content):
+        lines = [strip_ts(ln) for ln in content.splitlines()]
+        ctx = {}
+        reg_info = []
+        for line in lines:
+            s = line.strip()
+            if not s:
+                continue
+
+            if "ctx_uptime" not in ctx:
+                m = re.search(r"\[\s*(\d+\.\d+)\]", line)
+                if m and (
+                    "cut here" in s
+                    or "Unable to handle" in s
+                    or "Internal error" in s
+                ):
+                    ctx["ctx_uptime"] = m.group(1)
+
+            m = re.match(
+                r"CPU:\s*(\d+).*?PID:\s*(\d+)\s+Comm:\s*(\S+.*?)\s+((?:Not |Tainted).+?)\s+#\d+",
+                s,
+            )
+            if m:
+                ctx["cpu"], ctx["pid"] = m.group(1), m.group(2)
+                ctx["comm"] = m.group(3).strip("()")
+                ctx["taint"] = m.group(4).strip()
+
+            m = re.search(r"(\d+\.\d+\.\d+\S*)\s+#\d+", s)
+            if m and "kver" not in ctx:
+                ctx["kver"] = m.group(1)
+
+            m = re.match(r"Process\s+(.+?)\s+\(pid:\s*(\d+)", s)
+            if m:
+                ctx["fault_proc"], ctx["fault_pid"] = m.group(1).strip(
+                    "()"
+                ), m.group(2)
+
+            m = re.match(r"Hardware name:\s+(.+)", s)
+            if m and "hw" not in ctx:
+                ctx["hw"] = m.group(1).strip()
+
+            m = re.match(r"(PC|LR) is at\s+(\S+)", s)
+            if m:
+                ctx[m.group(1).lower()] = m.group(2)
+
+            m = re.match(r"(Register r\d+ information):\s+(.+)", s)
+            if m:
+                reg_info.append(f"{m.group(1)}: {m.group(2)}")
+
+        return ctx, reg_info
+
+    def parse_call_trace(self, content):
+        lines = [strip_ts(ln) for ln in content.splitlines()]
+        trace = []
+        in_trace = False
+        for line in lines:
+            s = line.strip()
+            if re.search(r"Call trace:|Backtrace:", s, re.IGNORECASE):
+                in_trace = True
+                continue
+            if not in_trace:
+                continue
+            if re.search(r"---\[ end trace", s) or s.startswith(
+                "Kernel panic"
+            ):
+                break
+            if re.match(r"^[0-9a-f]{4}:", s):
+                continue
+            if s:
+                trace.append(s)
+        return trace
+
+    def analyze_dmesg(self, dmesg_file):
+        print(f"\n--- {dmesg_file.name} ---\n")
+        try:
+            content = dmesg_file.read_text(errors="ignore")
+        except OSError as e:
+            print(f"couldn't read {dmesg_file}: {e}")
+            return
+
+        first_line = content.split("\n", 1)[0].strip()
+        if re.match(
+            r"^(Oops|Panic|Emergency|Shutdown|Console)#\d+", first_line
+        ):
+            print(f"ramoops record: {first_line}")
+
+        self.oom_detected, self.kernel_panic, oops_detected, crash_reason = (
+            self.check_oom_and_panic(content)
+        )
+
+        if (self.kernel_panic or oops_detected) and not self.oom_detected:
+            self._report_crash(content, crash_reason)
+            return
+
+        if not self.oom_detected:
+            print("no OOM event in this file")
+            self.process_table = self.parse_process_table(content)
+            if self.process_table:
+                print(
+                    f"found process table ({len(self.process_table)} entries, no OOM trigger)\n"
+                )
+                self.analyze_processes(context="pre-crash snapshot")
+            return
+
+        print(
+            "OOM event detected"
+            + (" - kernel panicked" if self.kernel_panic else "")
+        )
+        if crash_reason:
+            print(f"  {crash_reason}")
+        print()
+
+        self.process_table = self.parse_process_table(content)
+        if not self.process_table:
+            print("warning: couldn't parse the process memory table")
+        else:
+            print(
+                f"found {len(self.process_table)} processes in the memory table\n"
+            )
+            self.analyze_processes()
+
+        self.mem_info = self.parse_mem_info(content)
+        if not self.mem_info:
+            print("warning: couldn't parse the Mem-Info section")
+        else:
+            self.print_mem_info()
+
+    def _report_crash(self, content, crash_reason):
+        label = (
+            "kernel panic (non-OOM)" if self.kernel_panic else "kernel oops"
+        )
+        print(f"{label}")
+        if crash_reason:
+            print(f"  {crash_reason}")
+        print()
+
+        ctx, reg_info = self.parse_oops_context(content)
+        if ctx:
+            print("crash context:")
+            proc = ctx.get("fault_proc") or ctx.get("comm")
+            pid = ctx.get("fault_pid") or ctx.get("pid")
+            if proc:
+                print(f"  faulting process : {proc}  (PID {pid or '?'})")
+            for label, key in (
+                ("CPU", "cpu"),
+                ("kernel version", "kver"),
+                ("taint", "taint"),
+                ("hardware", "hw"),
+                ("PC", "pc"),
+                ("LR", "lr"),
+            ):
+                if key in ctx:
+                    print(f"  {label:<15}: {ctx[key]}")
+            if "ctx_uptime" in ctx:
+                print(f"  uptime at crash : {ctx['ctx_uptime']} s")
+            print()
+
+        if reg_info:
+            print("register info:")
+            for r in reg_info:
+                print(f"  {r}")
+            print()
+
+        trace = self.parse_call_trace(content)
+        if trace:
+            print("call trace:")
+            for frame in trace:
+                print(f"  {frame}")
+            print()
+
+        self.process_table = self.parse_process_table(content)
+        if self.process_table:
+            print(f"found process table ({len(self.process_table)} entries)\n")
+            self.analyze_processes(context="at crash")
+
+    def analyze_processes(self, context=""):
+        if not self.process_table:
+            return
+
+        by_rss = sorted(
+            self.process_table, key=lambda p: p["rss"], reverse=True
+        )
+        self.top_process = by_rss[0]
+        total_rss = sum(p["rss"] for p in self.process_table)
+
+        title = "top 10 processes by RSS" + (
+            f" ({context})" if context else ""
+        )
+        print(title)
+        print("-" * 80)
+
+        has_anon = any(p["rss_anon"] > 0 for p in self.process_table)
+        has_swap = any(p["swapents"] > 0 for p in self.process_table)
+
+        hdr = f"{'#':<4} {'PID':<7} {'name':<22} {'RSS(MB)':<10} {'RSS%':>6}"
+        if has_anon:
+            hdr += f"  {'anon(MB)':<9} {'file(MB)':<9}"
+        if has_swap:
+            hdr += f"  {'swap(pg)':>8}"
+        print(hdr)
+
+        for i, p in enumerate(by_rss[:10], 1):
+            rss_mb = pages_to_mb(p["rss"])
+            rss_pct = (p["rss"] / total_rss * 100) if total_rss else 0
+            row = f"{i:<4} {p['pid']:<7} {p['name']:<22} {rss_mb:>8.2f}   {rss_pct:>5.1f}%"
+            if has_anon:
+                row += f"  {pages_to_mb(p['rss_anon']):>8.2f}  {pages_to_mb(p['rss_file']):>8.2f}"
+            if has_swap:
+                row += f"  {p['swapents']:>8,}"
+            print(row)
+        print()
+
+        self.print_top_consumer_details(has_anon, has_swap)
+
+    def print_top_consumer_details(self, has_anon, has_swap):
+        top = self.top_process
+        if not top:
+            return
+        print(
+            f"top consumer: {top['name']} (PID {top['pid']}, UID {top['uid']})"
+        )
+        print(
+            f"  virtual size : {top['total_vm']:,} pages = {pages_to_mb(top['total_vm']):.2f} MB"
+        )
+        print(
+            f"  RSS          : {top['rss']:,} pages = {pages_to_mb(top['rss']):.2f} MB  <- actual RAM used"
+        )
+        if has_anon and top["rss_anon"] > 0:
+            print(
+                f"    anon   : {pages_to_mb(top['rss_anon']):.2f} MB  (heap/stack, likely leaked)"
+            )
+            print(
+                f"    file   : {pages_to_mb(top['rss_file']):.2f} MB  (mapped files/libs)"
+            )
+            print(f"    shared : {pages_to_mb(top['rss_shmem']):.2f} MB")
+        if has_swap and top["swapents"] > 0:
+            print(
+                f"  swap entries : {top['swapents']:,} pages = {pages_to_mb(top['swapents']):.2f} MB"
+            )
+        print(
+            f"  page tables  : {top['pgtables_bytes']:,} bytes ({top['pgtables_bytes']/1024:.1f} KB)"
+        )
+        print()
+
+    def print_mem_info(self):
+        m = self.mem_info
+        print("system memory state at OOM")
+        print("-" * 80)
+
+        if "total_pages_ram" in m:
+            print(f"total RAM  : {pages_to_mb(m['total_pages_ram']):.2f} MB")
+            if "reserved_pages" in m:
+                print(
+                    f"reserved   : {pages_to_mb(m['reserved_pages']):.2f} MB"
+                )
+        elif "managed_kb" in m:
+            print(f"managed RAM: {kb_to_mb(m['managed_kb']):.2f} MB")
+
+        if "normal_free_kb" in m:
+            print(f"free at OOM: {kb_to_mb(m['normal_free_kb']):.2f} MB")
+        elif "free" in m:
+            print(f"free at OOM: {pages_to_mb(m['free']):.2f} MB")
+
+        if "min_kb" in m and "normal_free_kb" in m:
+            deficit = m["min_kb"] - m["normal_free_kb"]
+            if deficit > 0:
+                print(
+                    f"below min watermark by {deficit:,} KB - kernel was forced to OOM kill"
+                )
+            else:
+                print(f"above min watermark by {-deficit:,} KB")
+        if "min_kb" in m:
+            print(
+                f"watermarks : min={m['min_kb']:,}KB low={m.get('low_kb', 0):,}KB high={m.get('high_kb', 0):,}KB"
+            )
+
+        print("\nbreakdown:")
+        breakdown = [
+            ("active anon  ", "active_anon_kb", "active_anon", "heap, stack"),
+            ("inactive anon", "inactive_anon_kb", "inactive_anon", ""),
+            ("active file  ", "active_file_kb", "active_file", "page cache"),
+            (
+                "inactive file",
+                "inactive_file_kb",
+                "inactive_file",
+                "reclaimable",
+            ),
+            ("shared mem   ", "shmem_kb", "shmem", ""),
+            ("kernel stack ", "kernel_stack_kb", None, ""),
+            ("page tables  ", "pagetables_kb", "pagetables", ""),
+        ]
+        for label, kb_key, pages_key, note in breakdown:
+            suffix = f"  ({note})" if note else ""
+            if kb_key in m:
+                print(f"  {label}: {kb_to_mb(m[kb_key]):.2f} MB{suffix}")
+            elif pages_key and pages_key in m:
+                print(f"  {label}: {pages_to_mb(m[pages_key]):.2f} MB{suffix}")
+
+        if "slab_reclaimable" in m or "slab_unreclaimable" in m:
+            print("\nslab:")
+            if "slab_reclaimable" in m:
+                print(
+                    f"  reclaimable  : {pages_to_mb(m['slab_reclaimable']):.2f} MB"
+                )
+            if "slab_unreclaimable" in m:
+                print(
+                    f"  unreclaimable: {pages_to_mb(m['slab_unreclaimable']):.2f} MB"
+                )
+        print()
+
+    def analyze_smaps(self):
+        smaps_files = self.find_smaps_files()
+        if not smaps_files:
+            return
+        print(f"smaps analysis ({len(smaps_files)} file(s))")
+        print("-" * 80)
+        for sf in smaps_files:
+            data = self.parse_smaps_rollup(sf)
+            if not data:
+                continue
+            print(f"  {sf.name}")
+            for label, key, note in (
+                ("RSS      ", "Rss", ""),
+                ("PSS      ", "Pss", "proportional"),
+                ("Anonymous", "Anonymous", ""),
+                ("Swap     ", "Swap", ""),
+            ):
+                val = data.get(key, 0)
+                if val:
+                    suffix = f"  ({note})" if note else ""
+                    print(f"    {label}: {kb_to_mb(val):.2f} MB{suffix}")
+        print()
+
+    def generate_summary(self):
+        print("summary")
+        print("-" * 80)
+        if not self.oom_detected:
+            print(
+                "no OOM event detected - the BMC didn't crash from memory exhaustion"
+            )
+            return
+        if self.kernel_panic:
+            print("kernel panicked after running out of memory")
+
+        m = self.mem_info
+        if "normal_free_kb" in m:
+            print(f"  free at crash : {kb_to_mb(m['normal_free_kb']):.2f} MB")
+        elif "free" in m:
+            print(f"  free at crash : {pages_to_mb(m['free']):.2f} MB")
+        if "total_pages_ram" in m and "free" in m:
+            used_pct = (1 - m["free"] / m["total_pages_ram"]) * 100
+            print(f"  usage at crash: {used_pct:.1f}% of RAM")
+
+        top = self.top_process
+        if top:
+            print(f"\n  largest process: {top['name']} (PID {top['pid']})")
+            print(f"    RSS: {pages_to_mb(top['rss']):.2f} MB")
+            if top["rss_anon"] > 0:
+                print(
+                    f"    anon: {pages_to_mb(top['rss_anon']):.2f} MB (not reclaimable)"
+                )
+            print(f"    VmSize: {pages_to_mb(top['total_vm']):.2f} MB")
+        if "active_anon_kb" in m:
+            total_anon = kb_to_mb(
+                m["active_anon_kb"] + m.get("inactive_anon_kb", 0)
+            )
+            print(f"\n  system-wide anon memory: {total_anon:.2f} MB")
+
+
+def run_oom_analysis(dump_dir):
+    dump_dir = str(dump_dir)
+    if not os.path.exists(dump_dir):
+        sys.exit(f"'{dump_dir}' does not exist")
+    if os.path.isfile(dump_dir):
+        sys.exit(
+            "pass a directory, not a raw file (use 'bmcdump-extract oom <file>' to extract first)"
+        )
+
+    analyzer = BMCDumpAnalyzer(dump_dir)
+    dmesg_file = analyzer.find_dmesg_file()
+    if not dmesg_file:
+        summary = analyzer.find_summary_file()
+        if summary:
+            print(f"no dmesg/ramoops found, falling back to {summary.name}")
+            try:
+                print(summary.read_text(errors="ignore"))
+            except OSError:
+                pass
+        else:
+            print(f"no dmesg/ramoops files found in {dump_dir}")
+        sys.exit(1)
+
+    analyzer.analyze_dmesg(dmesg_file)
+    analyzer.analyze_smaps()
+    analyzer.generate_summary()
+
+
+def _extract_or_passthrough(args):
+    path = Path(args.dump_file_or_dir)
+    if not path.exists():
+        sys.exit(f"'{path}' does not exist")
+    if path.is_file():
+        return extract_bmc_dump(path, Path(args.out) if args.out else None)
+    return path
+
+
+def cmd_oom(args):
+    run_oom_analysis(_extract_or_passthrough(args))
+
+
+def build_parser():
+    parser = argparse.ArgumentParser(
+        prog="bmcdump-extract",
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    sub = parser.add_subparsers(dest="subcommand", metavar="SUBCOMMAND")
+    sub.required = True
+
+    p_oom = sub.add_parser(
+        "oom", help="extract (if needed) and run the OOM/panic analyser"
+    )
+    p_oom.add_argument(
+        "dump_file_or_dir",
+        metavar="BMCDUMP_FILE_OR_DIR",
+        help="raw BMCDUMP file or already-extracted directory",
+    )
+    p_oom.add_argument(
+        "--out",
+        metavar="DIR",
+        help="where to extract to (default: temp dir); ignored if a directory is passed",
+    )
+    p_oom.set_defaults(func=cmd_oom)
+
+    return parser
+
+
+def main():
+    args = build_parser().parse_args()
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()
