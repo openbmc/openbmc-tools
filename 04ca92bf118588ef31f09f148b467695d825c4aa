@@ -96,6 +96,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "62ec2365_d10ac872",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T16:15:40Z",
+      "side": 1,
+      "message": "Fixed in Patchset 12",
+      "parentUuid": "28ea78b4_20edb717",
+      "range": {
+        "startLine": 3,
+        "startChar": 61,
+        "endLine": 3,
+        "endChar": 65
+      },
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "16d923c6_4788dad1",
@@ -163,6 +187,24 @@
       "side": 1,
       "message": "I am asking to change the syntax line. It is not changed in patch set 9.",
       "parentUuid": "6447c5c2_d86a089d",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83b5d31b_1fc3afe5",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T16:15:40Z",
+      "side": 1,
+      "message": "Fixed in Patchset 12",
+      "parentUuid": "4a7801e2_6b4cfdda",
       "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
