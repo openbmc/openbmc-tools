@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "28ea78b4_20edb717",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1001634
+      },
+      "writtenOn": "2026-07-07T15:52:51Z",
+      "side": 1,
+      "message": "We need this change.",
+      "parentUuid": "e2fc68ae_07f0b109",
+      "range": {
+        "startLine": 3,
+        "startChar": 61,
+        "endLine": 3,
+        "endChar": 65
+      },
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "16d923c6_4788dad1",
         "filename": "bmcdump-extract/README.md",
         "patchSetId": 6
@@ -121,6 +145,24 @@
       "side": 1,
       "message": "It can be a file or a path to a directory. This is mentioned in the README in patchset 9.",
       "parentUuid": "9d678304_ef4bdf4f",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a7801e2_6b4cfdda",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1001634
+      },
+      "writtenOn": "2026-07-07T15:52:51Z",
+      "side": 1,
+      "message": "I am asking to change the syntax line. It is not changed in patch set 9.",
+      "parentUuid": "6447c5c2_d86a089d",
       "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
