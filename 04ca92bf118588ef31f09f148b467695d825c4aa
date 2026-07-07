@@ -48,6 +48,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e2fc68ae_07f0b109",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T15:10:39Z",
+      "side": 1,
+      "message": "Kept in Patchset 9, but will remove later if needed",
+      "parentUuid": "0d077606_d8628390",
+      "range": {
+        "startLine": 3,
+        "startChar": 61,
+        "endLine": 3,
+        "endChar": 65
+      },
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "16d923c6_4788dad1",
@@ -79,6 +103,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "16d923c6_4788dad1",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6447c5c2_d86a089d",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T15:10:39Z",
+      "side": 1,
+      "message": "It can be a file or a path to a directory. This is mentioned in the README in patchset 9.",
+      "parentUuid": "9d678304_ef4bdf4f",
       "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -153,6 +195,42 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "95a61eaf_b879b43b",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T15:10:39Z",
+      "side": 1,
+      "message": "Fixed in Patchset 9",
+      "parentUuid": "c01e3d8d_9d2c855a",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c3d72d1_93764711",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T15:10:39Z",
+      "side": 1,
+      "message": "Fixed in Patchset 9",
+      "parentUuid": "689b350b_78f6f898",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "311260cf_8f9b4693",
@@ -184,6 +262,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "311260cf_8f9b4693",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c24b2f6_45112a0b",
+        "filename": "bmcdump-extract/bmcdump-extract",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T15:10:39Z",
+      "side": 1,
+      "message": "Fixes made in Patchset 9",
+      "parentUuid": "c0b321ee_a4685f32",
       "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
