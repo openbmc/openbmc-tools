@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d077606_d8628390",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T14:55:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6dd7e4d1_b99bc3b7",
+      "range": {
+        "startLine": 3,
+        "startChar": 61,
+        "endLine": 3,
+        "endChar": 65
+      },
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "16d923c6_4788dad1",
@@ -37,6 +61,24 @@
       "writtenOn": "2026-07-07T14:51:55Z",
       "side": 1,
       "message": "I think it should be [\u003cbmcdump_file\u003e | --out DIR]?",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d678304_ef4bdf4f",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T14:55:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "16d923c6_4788dad1",
       "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -75,6 +117,42 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c01e3d8d_9d2c855a",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T14:55:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e4c1c25b_ba018452",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "689b350b_78f6f898",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T14:55:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0362d9bb_36edd84c",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "311260cf_8f9b4693",
@@ -88,6 +166,24 @@
       "writtenOn": "2026-07-07T14:51:55Z",
       "side": 1,
       "message": "remove the hex stuff",
+      "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0b321ee_a4685f32",
+        "filename": "bmcdump-extract/bmcdump-extract",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-07T14:55:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "311260cf_8f9b4693",
       "revId": "04ca92bf118588ef31f09f148b467695d825c4aa",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
