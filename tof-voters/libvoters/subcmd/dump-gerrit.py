@@ -3,8 +3,7 @@
 import argparse
 import json
 import os
-
-from sh import ssh  # type: ignore
+import subprocess
 
 
 class subcmd:
@@ -36,24 +35,33 @@ class subcmd:
         if not os.path.exists(data_path):
             os.mkdir(data_path)
 
-        query = list(
-            ssh(
-                args.server,
-                "gerrit",
-                "query",
-                "--format=json",
-                "--patch-sets",
-                "--comments",
-                "--files",
-                "--no-limit",
-                f"after:{args.after} AND delta:>=10",
+        query = (
+            subprocess.run(
+                [
+                    "ssh",
+                    args.server,
+                    "gerrit",
+                    "query",
+                    "--format=json",
+                    "--patch-sets",
+                    "--comments",
+                    "--files",
+                    "--no-limit",
+                    f"after:{args.after} AND delta:>=10",
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
             )
-        )[
-            0:-1
-        ]  # The last result from Gerrit is a query stat result.
+            .stdout.strip()
+            .split("\n")
+        )
 
         for change in query:
             data = json.loads(change)
+            # Drop the gerrit status JSON line by looking for the 'project' kw.
+            if "project" not in data:
+                continue
             formatted_data = json.dumps(data, indent=4)
 
             with open(
