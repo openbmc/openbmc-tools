@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a38e0e1e_005e3a68",
+        "filename": "bmcdump-extract/README.md",
+        "patchSetId": 12
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-15T16:37:21Z",
+      "side": 1,
+      "message": "Fixed in Patchset 13",
+      "parentUuid": "65ee973f_3c9a29b7",
+      "range": {
+        "startLine": 22,
+        "startChar": 41,
+        "endLine": 22,
+        "endChar": 48
+      },
+      "revId": "d373ffdbd49d3f7375e57b0790910b36a2bcaca4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "59128f5b_932aa28e",
@@ -41,6 +65,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c87b4eb4_9ffb3ba0",
+        "filename": "bmcdump-extract/bmcdump-extract",
+        "patchSetId": 12
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-15T16:37:21Z",
+      "side": 1,
+      "message": "Fixed in Patchset 13",
+      "parentUuid": "59128f5b_932aa28e",
+      "revId": "d373ffdbd49d3f7375e57b0790910b36a2bcaca4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4612d9bd_2352a31f",
@@ -54,6 +96,24 @@
       "writtenOn": "2026-07-15T15:46:06Z",
       "side": 1,
       "message": "I\u0027m pretty sure this 628 byte thing is IBM specific? i.e. an upstream dump does not have this 628 byte header. Can we make this tool support both? Is there an eyecatcher at the start of the dump to look for? Or just try and unzstd and if it fails, try the offset?",
+      "revId": "d373ffdbd49d3f7375e57b0790910b36a2bcaca4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d59c9017_b1771f27",
+        "filename": "bmcdump-extract/bmcdump-extract",
+        "patchSetId": 12
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002996
+      },
+      "writtenOn": "2026-07-15T16:37:21Z",
+      "side": 1,
+      "message": "Fixed in Patchset 13",
+      "parentUuid": "4612d9bd_2352a31f",
       "revId": "d373ffdbd49d3f7375e57b0790910b36a2bcaca4",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
