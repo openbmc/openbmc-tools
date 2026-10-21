@@ -18,6 +18,7 @@
 
 import argparse
 import os
+import subprocess
 import sys
 
 import sh
@@ -128,6 +129,8 @@ def find_candidate_recipes(meta, args):
 
 
 def find_and_process_bumps(meta, args):
+    """Return False if a webui-vue bump failed to regenerate npm recipes."""
+    ok = True
     candidate_recipes = find_candidate_recipes(meta, args)
 
     for recipe in candidate_recipes:
@@ -194,9 +197,27 @@ def find_and_process_bumps(meta, args):
 
         git.add(recipe, _cwd=meta)
 
+        npm_note = ""
+        if project_name == "webui-vue":
+            try:
+                npm_note = regenerate_webui_vue_npm_recipes(
+                    meta, recipe, project_name, project_sha
+                )
+            except Exception as error:
+                sys.stderr.write(
+                    "{}: webui-vue npm recipes were not regenerated: {}\n".format(
+                        recipe_basename, error
+                    )
+                )
+                git.reset(*reset_args, _cwd=meta)
+                ok = False
+                continue
+
         commit_summary_args = (project_name, recipe_sha[:10], project_sha[:10])
         commit_msg = "{}: srcrev bump {}..{}".format(*commit_summary_args)
         commit_msg += "\n\n{}".format(shortlog)
+        if npm_note:
+            commit_msg += "\n\n{}".format(npm_note)
         commit_msg += "\n\nChange-Id: {}".format(change_id)
 
         git.commit(sh.echo(commit_msg), "-s", "-F", "-", _cwd=meta)
@@ -208,6 +229,72 @@ def find_and_process_bumps(meta, args):
         if not args.dry_run:
             git.push(*push_args, _cwd=meta)
 
+    return ok
+
+
+def git_show_bytes(repo, revision, path):
+    """Return a file's bytes at revision, exactly as committed."""
+    result = subprocess.run(
+        ["git", "--no-pager", "show", "{}:{}".format(revision, path)],
+        cwd=repo,
+        capture_output=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            "git show {}:{} failed: {}".format(
+                revision,
+                path,
+                result.stderr.decode("utf-8", "replace").strip(),
+            )
+        )
+    return result.stdout
+
+
+def common_licenses_above(meta):
+    """Search meta, then each parent directory, for oe-core's common-licenses.
+
+    Autobump clones layers into the working directory, so a run from an
+    OpenBMC tree finds them in a parent. If no directory has them, the
+    error is the one for meta itself.
+    """
+    from webui_vue_npm_recipes import find_common_licenses
+
+    current = os.path.abspath(meta)
+    first_error = None
+    while True:
+        try:
+            return find_common_licenses(current)
+        except ValueError as error:
+            first_error = first_error or error
+        parent = os.path.dirname(current)
+        if parent == current:
+            raise first_error
+        current = parent
+
+
+def regenerate_webui_vue_npm_recipes(meta, recipe, project_name, project_sha):
+    """Regenerate webui-vue npm recipes and stage them. Return a commit note.
+
+    Reads package-lock.json and vite.config.js at project_sha from the
+    project clone. The note is empty when the recipes already match those
+    inputs. A failure leaves the caller to reset the meta repository.
+    """
+    from webui_vue_npm_recipes import update_recipes_for_bump
+
+    lock_bytes = git_show_bytes(project_name, project_sha, "package-lock.json")
+    vite_config = git_show_bytes(project_name, project_sha, "vite.config.js")
+    out_rel, changed = update_recipes_for_bump(
+        meta,
+        recipe,
+        lock_bytes,
+        common_licenses_above(meta),
+        vite_config.decode("utf-8"),
+    )
+    if not changed:
+        return ""
+    subprocess.run(["git", "add", "-A", out_rel], cwd=meta, check=True)
+    return "Regenerated {} from package-lock.json.".format(out_rel)
+
 
 def main():
     app_description = """OpenBMC bitbake recipe bumping tool.
@@ -216,6 +303,7 @@ Find bitbake metadata files (recipes) that use the git fetcher
 and check the project repository for newer revisions.
 
 Generate commits that update bitbake metadata files with SRCREV.
+A webui-vue bump also regenerates that project's npm package recipes.
 
 Push generated commits to the OpenBMC Gerrit instance for review.
     """
@@ -261,8 +349,11 @@ Push generated commits to the OpenBMC Gerrit instance for review.
         metas = metas.stdout.decode("utf-8").split()
         metas = [os.path.split(x)[-1] for x in metas]
 
+    ok = True
     for meta in metas:
-        find_and_process_bumps(meta, args)
+        if not find_and_process_bumps(meta, args):
+            ok = False
+    return ok
 
 
 if __name__ == "__main__":
